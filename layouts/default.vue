@@ -2,11 +2,17 @@
     <div>
         <Header />
         <Sidebar />
-        <slot />
+        <div id="layout" class="container m-8 mx-auto">
+            <slot />
+        </div>
     </div>
 </template>
 
 
 
-<style scoped></style>
+<style scoped>
+#layout {
+    height: 80vh;
+}
+</style>
   

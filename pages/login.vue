@@ -1,10 +1,9 @@
 <template>
-    <div>
-        <!-- <Header /> -->
-        <div class="container m-12 mx-auto">
-            <h2>Welcome</h2>
-        </div>
+  <div class="container max-w h-full flex flex-col">
+    <div class="rounded-lg overflow shadow-lg bg-[#034EA2] text-white h-2/4 w-1/3 p-4 mx-auto my-auto">
+      asdasd
     </div>
+  </div>
 </template>
 
 <script setup>
