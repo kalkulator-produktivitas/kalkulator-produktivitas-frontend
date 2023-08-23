@@ -1,6 +1,7 @@
 <template>
   <div class="mb-4" :style="{ width: inputWide }">
-    <label class="block text-gray-700 text-sm font-bold mb-2" for="{{this.labeling}}">
+    <label class="block text-sm font-bold mb-2" :style="color ? { color: textColor } : { color: '#334155' }"
+      for="{{this.labeling}}">
       {{ label }}
     </label>
     <input
@@ -18,7 +19,8 @@ export default {
     'disabled',
     'type',
     'value',
-    'placeholder'
+    'placeholder',
+    'color'
   ],
   computed: {
     inputWide() {
@@ -27,6 +29,9 @@ export default {
     labeling() {
       const noSpaces = this.label.replace(/ /g, '');
       return noSpaces
+    },
+    textColor() {
+      return this.color
     }
   }
 }
