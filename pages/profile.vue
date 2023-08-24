@@ -47,41 +47,20 @@
           <CardLabel label="Profil User" />
         </div>
         <div class="px-6 py-4 mt-2">
-          <div class="flex gap-6">
-            <InputField label="Nama Perusahaan" wide="300" type="text" disabled="true"
-              value="PT. Indonesia Makmur Sejahtera" />
-            <InputField label="Pemiliki Perusahaan" wide="300" type="text" disabled="true" value="Budi Budiman" />
-          </div>
-          <div class="flex gap-6">
-            <InputField label="Nama Pimpinan" wide="300" type="text" disabled="true" value="Budi Budiman" />
-            <div class="mb-4" style="width: 300px">
-              <label class="block text-gray-700 text-sm font-bold mb-2" for="Telpon/Fax">
-                Telpon/Fax
-              </label>
-              <div class="shadow rounded">
-                <input
-                  class="shadow-none appearance-none border border-r-1 border-r-gray-300 rounded-l w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
-                  value="+62" disabled readonly :id="handphone" :type="number" style="width: 50px">
-                <input
-                  class="shadow-none appearance-none border border-l-0 rounded-r w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
-                  value="7895135135" disabled readonly :type="number" style="width: 221px" id="Telpon/Fax">
-              </div>
-            </div>
-          </div>
-          <div class="flex gap-6">
-
-            <div class="mb-4" style="width: 300px">
-              <label class="block text-gray-700 text-sm font-bold mb-2" for="handphone">
-                Nomor Handphone
-              </label>
-              <div class="shadow rounded">
-                <input
-                  class="shadow-none appearance-none border border-r-1 border-r-gray-300 rounded-l w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
-                  value="+62" disabled readonly :id="handphone" :type="number" style="width: 50px">
-                <input
-                  class="shadow-none appearance-none border border-l-0 rounded-r w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
-                  value="7895135135" disabled readonly :id="handphone" :type="number" style="width: 221px" id="phone">
-              </div>
+          <InputField label="Nama Perusahaan" type="text" disabled="true" value="PT. Indonesia Makmur Sejahtera" />
+          <InputField label="Pemiliki Perusahaan" type="text" disabled="true" value="Budi Budiman" />
+          <InputField label="Nama Pimpinan" type="text" disabled="true" value="Budi Budiman" />
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="nmr">
+              Nomor Handphone
+            </label>
+            <div class="rounded">
+              <input
+                class="shadow appearance-none border border-r-1 border-r-gray-300 rounded-l w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
+                value="+62" disabled readonly style="width: 50px">
+              <input
+                class="shadow appearance-none border border-l-0 rounded-r w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
+                value="7895135135" disabled readonly style="width: 90%" id="nmr">
             </div>
           </div>
         </div>

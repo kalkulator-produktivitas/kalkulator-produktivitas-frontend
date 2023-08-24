@@ -19,10 +19,10 @@
             <div class="shadow rounded">
               <input
                 class="shadow-none appearance-none border border-r-1 border-r-gray-300 rounded-l w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
-                value="+62" disabled readonly :id="handphone" :type="number" style="width: 50px">
+                value="+62" disabled readonly style="width: 50px">
               <input
                 class="shadow-none appearance-none border border-l-0 rounded-r w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
-                value="7895135135" disabled readonly :id="handphone" :type="number" style="width: 221px" id="phone">
+                value="7895135135" disabled readonly id="handphone" style="width: 221px">
             </div>
           </div>
         </div>
@@ -84,11 +84,11 @@
               </div>
             </div>
           </div>
-          <div class="col-span-2 grid grid-rows-7 gap-3">
-            <div class="row-span-5 border">
-              <div class="h-full bg-white border border-gray-200 shadow-sm p-2 overflow">
+          <div class="col-span-2 flex flex-col gap-3">
+            <div class="row-span-5">
+              <div class="h-full bg-white border border-gray-200 shadow-sm p-2 md:table-fixed">
                 <p class="font-normal text-zinc-900 dark:text-gray-400 py-1 px-2">Riwayat Pelaporan</p>
-                <table class="table-fixed">
+                <table class="table-auto">
                   <thead>
                     <tr class="text-left">
                       <th class="w-[25%]">Tahun</th>
@@ -121,7 +121,7 @@
                 </table>
               </div>
             </div>
-            <div class="row-span-2 flex flex-row gap-16 justify-center content-end">
+            <div class="row-span-2 flex flex-row gap-16 justify-center content-end lg:">
               <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-full w-32 h-9">
                 Tambah
               </button>
