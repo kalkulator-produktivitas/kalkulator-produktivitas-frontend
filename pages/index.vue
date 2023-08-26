@@ -5,13 +5,13 @@
       <div class="px-6 py-4 mt-2">
         <div class="font-bold text-xl mb-2">Profil Pengguna</div>
         <div class="flex gap-6">
-          <InputField label="Nama" wide="300" type="text" disabled="true" value="Budi Budiman" />
-          <InputField label="NIK" wide="300" type="number" disabled="true" value="1324568798456" />
+          <InputField1 label="Nama" wide="300" type="text" disabled="true" value="Budi Budiman" />
+          <InputField1 label="NIK" wide="300" type="number" disabled="true" value="1324568798456" />
         </div>
-        <InputField label="Alamat" type="text" disabled="true"
+        <InputField1 label="Alamat" type="text" disabled="true"
           value="Jl. Tengah Raya No.XX, Tengah Baru, Ancol, Jakarta Utara" />
         <div class="flex gap-6">
-          <InputField label="Email" wide="300" type="text" disabled="true" value="budibudiman@gmail.com" />
+          <InputField1 label="Email" wide="300" type="text" disabled="true" value="budibudiman@gmail.com" />
           <div class="mb-4" style="width: 300px">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="handphone">
               Nomor Handphone
@@ -30,13 +30,13 @@
       <div class="px-6 py-4">
         <div class="font-bold text-xl mb-2">Profil Perusahaan</div>
         <div class="flex gap-6">
-          <InputField label="Nama Perusahaan" wide="300" type="text" disabled="true"
+          <InputField1 label="Nama Perusahaan" wide="300" type="text" disabled="true"
             value="PT. Indonesia Makmur Sejahtera" />
-          <InputField label="Telpon" wide="300" type="number" disabled="true" value="0218798456" />
+          <InputField1 label="Telpon" wide="300" type="number" disabled="true" value="0218798456" />
         </div>
-        <InputField label="Alamat Perusahaan" type="text" disabled="true"
+        <InputField1 label="Alamat Perusahaan" type="text" disabled="true"
           value="Jl. Tengah Raya No.XX, Tengah Baru, Ancol, Jakarta Utara" />
-        <InputField label="Email Perusahaan" wide="300" type="text" disabled="true" value="info@ims.co.id" />
+        <InputField1 label="Email Perusahaan" wide="300" type="text" disabled="true" value="info@ims.co.id" />
       </div>
     </div>
 

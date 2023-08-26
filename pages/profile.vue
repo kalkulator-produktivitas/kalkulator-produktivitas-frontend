@@ -3,7 +3,7 @@
     <div class="max-w static rounded overflow shadow-lg bg-[#F6F6F6] card-border">
       <CardLabel label="Profil Perusahaan" />
       <div class="px-6 py-4 mt-2">
-        <InputField label="Nama Perusahaan" wide="480" type="text" disabled="true"
+        <InputField1 label="Nama Perusahaan" wide="480" type="text" disabled="true"
           value="PT. Indonesia Makmur Sejahtera" />
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2" for="Telpon/Fax">
@@ -18,20 +18,20 @@
               value="7895135135" disabled readonly type="text" style="width: 430px" id="Telpon/Fax">
           </div>
         </div>
-        <InputField label="Nama Pimpinan" wide="480" type="text" disabled="true" value="Budi Budiman" />
+        <InputField1 label="Nama Pimpinan" wide="480" type="text" disabled="true" value="Budi Budiman" />
 
-        <InputField label="Alamat Perusahaan" type="text" disabled="true"
+        <InputField1 label="Alamat Perusahaan" type="text" disabled="true"
           value="Jl. Tengah Raya No.XX, Tengah Baru, Ancol, Jakarta Utara" />
-        <InputField label="Alamat Pabrik" type="text" disabled="true"
+        <InputField1 label="Alamat Pabrik" type="text" disabled="true"
           value="Jl. Tengah Raya No.XX, Tengah Baru, Ancol, Jakarta Utara" />
 
         <div class="flex gap-6">
-          <InputField label="Email Perusahaan" wide="300" type="text" disabled="true" value="info@ims.co.id" />
-          <InputField label="Tanggal Pendirian" wide="300" type="text" disabled="true" value="06 Februari 1987" />
+          <InputField1 label="Email Perusahaan" wide="300" type="text" disabled="true" value="info@ims.co.id" />
+          <InputField1 label="Tanggal Pendirian" wide="300" type="text" disabled="true" value="06 Februari 1987" />
         </div>
 
         <div class="flex gap-6">
-          <InputField label="Website Perusahaan" wide="400" type="text" disabled="true" value="www.ims.co.id" />
+          <InputField1 label="Website Perusahaan" wide="400" type="text" disabled="true" value="www.ims.co.id" />
           <button
             class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold text-sm py-1 px-4 rounded-full w-36 h-9 mt-7">
             Bidang Usaha
@@ -47,9 +47,9 @@
           <CardLabel label="Profil User" />
         </div>
         <div class="px-6 py-4 mt-2">
-          <InputField label="Nama Perusahaan" type="text" disabled="true" value="PT. Indonesia Makmur Sejahtera" />
-          <InputField label="Pemiliki Perusahaan" type="text" disabled="true" value="Budi Budiman" />
-          <InputField label="Nama Pimpinan" type="text" disabled="true" value="Budi Budiman" />
+          <InputField1 label="Nama Perusahaan" type="text" disabled="true" value="PT. Indonesia Makmur Sejahtera" />
+          <InputField1 label="Pemiliki Perusahaan" type="text" disabled="true" value="Budi Budiman" />
+          <InputField1 label="Nama Pimpinan" type="text" disabled="true" value="Budi Budiman" />
           <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="nmr">
               Nomor Handphone
