@@ -3,7 +3,7 @@
     <div class="col-span-1">
       <ul class="flex list-none flex-col flex-wrap border-b-0 border-r-2 pl-0">
         <li v-for="tabName in tabList" class="mr-2">
-          <button class="inline-block px-4 py-3 rounded-t-lg" @click="tab = tabName"
+          <button class="inline-block px-4 py-3" @click="tab = tabName"
             :class="tab === tabName ? 'text-blue-600 border-l-2 border-blue-600 active' : 'border-l-2 border-transparent hover:text-gray-600 hover:border-gray-300'">{{
               tabName }}</button>
         </li>
@@ -12,7 +12,6 @@
     <div class="col-span-3 overflow-y-auto">
       <InputField2 v-for="param in parameters[tab]" :label="param" type="number" />
     </div>
-
   </div>
 </template>
 

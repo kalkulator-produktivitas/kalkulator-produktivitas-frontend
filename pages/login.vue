@@ -14,7 +14,7 @@
     <div v-if="tab === 'login'" class="rounded-lg shadow-lg bg-[#034EA2] text-white w-1/3 p-4 mx-auto mt-4"
       style="min-height: 280px;">
       <div class="text-white">
-        <InputField label="Username" type="text" color="white" v-model="login.username" />
+        <InputField1 label="Username" type="text" color="white" v-model="login.username" />
       </div>
       <div class="grid grid-cols-5 mb-4">
         <div class="col-span-4">
@@ -40,11 +40,11 @@
     <div v-if="tab === 'register'" class="rounded-lg shadow-lg bg-[#034EA2] text-white w-1/3 p-4 mx-auto mt-4"
       style="min-height: 280px;">
       <div class="grid grid-cols-2 gap-4">
-        <InputField label="First Name" type="text" color="white" v-model="register.firstName" class="col-span-1" />
-        <InputField label="Last Name" type="text" color="white" v-model="register.lastName" class="col-span-1" />
+        <InputField1 label="First Name" type="text" color="white" v-model="register.firstName" class="col-span-1" />
+        <InputField1 label="Last Name" type="text" color="white" v-model="register.lastName" class="col-span-1" />
       </div>
       <div class="mb-4">
-        <InputField label="Company" type="text" color="white" v-model="register.company" />
+        <InputField1 label="Company" type="text" color="white" v-model="register.company" />
       </div>
       <div class="flex">
         <button
