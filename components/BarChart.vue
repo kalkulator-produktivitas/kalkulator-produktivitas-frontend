@@ -1,6 +1,11 @@
 <template>
-  <div>
-    <Bar :options="config" :data="dataset" />
+  <div class="flex flex-col">
+    <div>
+      <p class="font-bold text-lg">{{ title }}</p>
+    </div>
+    <div class="my-auto">
+      <Bar :options="config" :data="dataset" />
+    </div>
   </div>
 </template>
 
@@ -25,7 +30,7 @@ ChartJS.register(
   LinearScale
 );
 
-defineProps(['dataset', 'config'])
+defineProps(['dataset', 'config', 'title'])
 </script>
 
 <style scoped></style>

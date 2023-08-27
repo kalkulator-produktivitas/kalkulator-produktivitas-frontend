@@ -122,12 +122,14 @@
               </div>
             </div>
             <div class="row-span-2 flex flex-row gap-16 justify-center content-end lg:">
-              <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-full w-32 h-9">
+              <nuxt-link to="/report/new"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 text-center rounded-full w-32 h-9">
                 Tambah
-              </button>
-              <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-full w-32 h-9">
+              </nuxt-link>
+              <nuxt-link to="/report"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 text-center rounded-full w-32 h-9">
                 Lihat
-              </button>
+              </nuxt-link>
             </div>
           </div>
         </div>
@@ -158,7 +160,6 @@
 </template>
 
 <script>
-
 
 </script>
 

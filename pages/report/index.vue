@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="flex justify-end">
-      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-full h-9">
+      <nuxt-link to="/report/new" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-full h-9">
         Buat Laporan
-      </button>
+      </nuxt-link>
     </div>
     <div class="container m-12 mt-6 mx-auto grid grid-cols-10">
       <div class="col-span-1 mr-4">

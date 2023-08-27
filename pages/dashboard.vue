@@ -1,21 +1,28 @@
 <template>
-  <div class="container m-12 mx-auto grid grid-cols-2 h-full">
-    <div class="h-full w-full">
-      <BarChart class="h-60 mb-8" id="1" :config="options" :dataset="data[0]" />
-      <PieChart class="h-60 mb-8" id="3" :config="options" :dataset="data[2]" />
-    </div>
-    <div class="h-full w-full">
-      <LineChart class="h-60" id="2" :config="options" :dataset="data[1]" />
-      <div style="{ height: 100px;}" class="flex m-6 gap-6">
-        <CardInfo label="Produktivitas tenaga kerja rata-rata terakhir" value="4.8" rate="2" unit="%" />
-        <CardInfo label="Produktivitas tenaga kerja rata-rata terakhir" value="4.8" rate="2" unit="%" />
+  <div class="container mx-auto flex flex-col gap-4 h-full w-full">
+    <div class="grid grid-cols-4 gap-4">
+      <div class="col-span-2 grid grid-rows-2">
+        <BarChart class="shadow-lg p-2" id="1" :config="options.bar" :dataset="data.line" title="Nilai Tambah" />
+        <PieChart class="h-60 shadow-lg p-2" id="3" :config="options.bar" :dataset="data.pie" />
       </div>
+      <div class="col-span-2">
+        <BarChart class="shadow-lg p-2" id="1" :config="options.bar" :dataset="data.bar" />
+        <BarChart class="shadow-lg p-2" id="1" :config="options.bar" :dataset="data.bar" />
+        <BarChart class="shadow-lg p-2" id="1" :config="options.bar" :dataset="data.bar" />
+      </div>
+    </div>
+    <div class="grid grid-cols-3 gap-4">
+      <DashboardInfo label="Nilai Tambah / Penjualan" value="0.67" rate="-0.74" sublabel="Ratio Pendukung"
+        details="Tingkat efisiensi proses pembuatan produk terhadap bahan dan jasa dalam rangka pembuatan produk akhir" />
+      <DashboardInfo label="Nilai Tambah / Pembelian Bahan" value="1.99" rate="-2.21" sublabel="Ratio Pendukung"
+        details="Kreativitas dan kemampuan inovasi perusahaan terhadap bahan-bahan dan jasa" />
+      <DashboardInfo label="Laba / Biaya Tenaga Kerja" value="0.1" rate="88.45" sublabel="Ratio Pendukung"
+        details="Ukuran kemampuan melipatgandakan biaya tenaga kerja yg dibayarkan dalam menghasilkan laba perusahaan" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { Bar } from 'vue-chartjs';
 import {
   Chart as ChartJS,
   Title,
@@ -35,55 +42,60 @@ ChartJS.register(
   LinearScale
 );
 
-const data = ref([
-  {
-    labels: ['January', 'February', 'March', 'April', 'May'],
+const data = ref({
+  bar: {
+    labels: ['2018', '2019'],
     datasets: [
       {
-        label: 'Data One',
-        backgroundColor: '#f87979',
-        data: [40, 20, 12, 50, 10],
+        label: 'N. Tmbh / Jml Tng Kerja',
+        backgroundColor: '#7EC27E',
+        data: [2.38, 2.38],
       },
       {
-        label: 'Data Twi',
-        backgroundColor: '#f8f579',
-        data: [22, 20, 44, 33, 16],
+        label: 'N. Tmbh / Jam Kerja',
+        backgroundColor: '#FFEFA1',
+        data: [2.38, 2.38],
+      },
+      {
+        label: 'N. Tmbh / By. Tng Kerja',
+        backgroundColor: '#FFBE85',
+        data: [-3.53, -3.53],
+      },
+      {
+        label: 'By. Tng Kerja/Total Jam Kerja',
+        backgroundColor: '#DE8CD4',
+        data: [6.12, -9.79],
       },
     ],
   },
-  {
-    labels: ['June', 'July', 'August', 'September', 'October'],
+  line: {
+    labels: ['2017', '2018', '2019'],
     datasets: [
       {
-        label: 'Data One',
-        backgroundColor: '#f87979',
-        data: [10, 20, 40, 100, 30],
-      },
-      {
-        label: 'Data Two',
-        backgroundColor: '#f8f579',
-        data: [22, 20, 44, 33, 16],
+        label: "Nilai",
+        backgroundColor: '#034EA2',
+        data: [2350226879, 2406084929, 2455863415],
       },
     ],
   },
-  {
-    labels: ['VueJs', 'EmberJs', 'ReactJs', 'AngularJs'],
+  pie: {
+    labels: ['Gaji Karyawan', 'Laba', 'Penyusutan', 'Pajak', 'Bunga Bank'],
     datasets: [
       {
         label: 'Data One',
-        backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
-        data: [40, 20, 80, 10],
+        backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16', '#FF1B16'],
+        data: [877598183, 1303228333, 256584565, 18452334, 0],
       },
     ],
   },
-]);
+});
 
-const options = ref(
-  {
+const options = ref({
+  bar: {
     responsive: true,
     maintainAspectRatio: false,
   }
-);
+});
 </script>
 
 <style scoped></style>
