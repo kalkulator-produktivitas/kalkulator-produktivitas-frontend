@@ -1,6 +1,17 @@
 <template>
   <div class="container max-w h-full grid grid-cols-5">
+
     <div class="col-span-1">
+      <div class="ml-2 flex items-center space-x-4">
+        <label for="select" class="text-gray-600">Pilih tahun</label>
+        <div class="relative inline-block w-[40%]">
+          <select id="year"
+            class="block py-2.5 pl-2 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-400 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
+            v-model="selectedYear">
+            <option v-for="year in yearOptions" :key="year" :value="year">{{ year }}</option>
+          </select>
+        </div>
+      </div>
       <ul class="flex list-none flex-col flex-wrap border-b-0 border-r-2 pl-0">
         <li v-for="tabName in tabList" class="mr-2">
           <button class="inline-block px-4 py-3" @click="tab = tabName"
@@ -8,45 +19,233 @@
               tabName }}</button>
         </li>
       </ul>
+      <div class="mt-8 flex">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white mx-auto font-bold py-1 px-4 rounded-full w-32 h-9">
+          Submit
+        </button>
+      </div>
     </div>
-    <div class="col-span-3 overflow-y-auto">
-      <InputField2 v-for="param in parameters[tab]" :label="param" type="number" />
+    <div class="col-span-3 overflow-y-auto pt-10">
+      <!-- <InputField2 v-for="param in parameters[tab]" :label="param" type="number" /> -->
+      <div v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja'" class="flex items-center mb-4 ml-4">
+        <input @change="zeroParams(tab)" :id="labeling(tab + '_checkbox')" type="checkbox" v-model="total_fill[tab]"
+          class="w-4 h-4 bg-gray-100 rounded-2 dark:bg-gray-700">
+        <label :for="labeling(tab + '_checkbox')" class="ml-2 text-sm font-medium text-gray-900">Isi Total Saja</label>
+      </div>
+      <div v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja'" v-for="param in Object.keys(parameters[tab])"
+        class="mb-4 md:flex md:items-center">
+        <div class="md:w-1/2">
+          <label class="block text-sm font-bold mr-8 md:text-right" :for="labeling(param)">
+            {{ param }}
+          </label>
+        </div>
+        <div class="md:w-1/2 flex">
+          <input class="appearance-none border-b-2 h-100 py-2.5 ml-2 text-gray-700 text-sm leading-tight w-6 text-center"
+            :class="total_fill[tab] ? 'bg-gray-100' : 'bg-white'" disabled readonly type="text" value="Rp">
+          <input
+            class="appearance-none border-b-2 w-full h-100 py-2.5 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
+            :class="total_fill[tab] ? 'bg-gray-100' : ''" :id="labeling(param)" type="number" :readonly="total_fill[tab]"
+            v-model="parameters[tab][param]">
+        </div>
+      </div>
+      <hr v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja'" class="h-px mt-8 border-black border-1 ml-12">
+      <div v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja'" class="mb-4 md:flex md:items-center">
+        <div class="md:w-1/2">
+          <label class="block text-sm font-bold mr-8 md:text-right" :for="labeling(tab + '_total')">
+            {{ tab + ' Total' }}
+          </label>
+        </div>
+        <div class="md:w-1/2 flex mt-2">
+          <input class="appearance-none border-b-2 h-100 py-2.5 ml-2 text-gray-700 text-sm leading-tight w-6 text-center"
+            :class="!total_fill[tab] ? 'bg-gray-100' : 'bg-white'" disabled readonly type="text" value="Rp">
+          <input
+            class="appearance-none border-b-2 w-full h-100 py-2.5 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
+            :class="!total_fill[tab] ? 'bg-gray-100' : ''" :disabled="!total_fill[tab]" :id="labeling(tab + '_total')"
+            type="number" v-model="totals[tab]">
+          <button
+            class="bg-transparent hover:bg-gray-400 text-gray-400 font-bold hover:text-white py-1 px-4 border border-blue hover:border-transparent rounded ml-1"
+            @click="sumParams(tab)">
+            Sum
+          </button>
+        </div>
+      </div>
+
+      <div v-if="tab === 'Jumlah Tenaga Kerja'" v-for="param in Object.keys(parameters[tab])"
+        class="mb-4 md:flex md:items-center">
+        <div class="md:w-1/2">
+          <label class="block text-sm font-bold mr-8 md:text-right" :for="labeling(param)">
+            {{ param }}
+          </label>
+        </div>
+        <div class="md:w-1/2 flex">
+          <input class="appearance-none border-b-2 h-100 py-2.5 ml-2 text-gray-700 text-sm leading-tight w-6 text-center"
+            :class="total_fill[tab] ? 'bg-gray-100' : 'bg-white'" disabled readonly type="text" value="Rp">
+          <input
+            class="appearance-none border-b-2 w-full h-100 py-2.5 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
+            :class="total_fill[tab] ? 'bg-gray-100' : ''" :id="labeling(param)" type="number" :disabled="total_fill[tab]"
+            v-model="parameters[tab][param]">
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
 
 <script>
-// const { id } = useRoute().params
 
 export default {
   data() {
     return {
-      tab: 'login',
-      tabList: ['Biaya Tenaga Kerja', 'Bahan Yang Digunakan', 'Overhead Produksi', 'Bunga Pinjaman',
-        'Biaya Administrasi', 'Penyusutan', 'Pajak', 'Aktiva Perusahaan', 'Laba', 'Modal Operasi', 'Jumlah Tenaga Kerja', 'Jam Kerja'],
+      tab: 'default',
+      tabList: ['Penjualan dan Modal', 'Biaya Tenaga Kerja', 'Bahan Yang Digunakan', 'Overhead Produksi', 'Bunga Pinjaman',
+        'Biaya Administrasi', 'Penyusutan', 'Pajak', 'Aktiva Perusahaan', 'Laba', 'Jumlah Tenaga Kerja'],
       parameters: {
-        'Biaya Tenaga Kerja': ['Upah dan Gaji (Termasuk Direksi)', 'Dana Pensiun', 'Tunjangan-tunjangan Tenaga Kerja'],
-        'Bahan Yang Digunakan': ['Barang dan jasa yang dibeli', 'Barang yang digunakan', 'Bahan Baku', 'Bahan pengemas'],
-        'Overhead Produksi': ['Pekerjaan subkontrak', 'Sewa', 'Air dan Listrik', 'Asuransi Perusahaan', 'Biaya Transport', 'Pemeliharaan Mesin', 'Biaya Supplies dan gudang', 'Biaya lain-lain'],
-        'Bunga Pinjaman': [
-          'Bunga Pinjaman Jangka Pendek',
-          'Bunga Pinjaman Jangka Panjang'],
-        'Biaya Administrasi': ['Sewa', 'Air dan Listrik', 'Telepon',
-          'Pos dan telegram', 'Percetakan, Stationary & Office Supplies',
-          'Biaya Kendaraan', 'Advertising', 'Hiburan / Entertainment',
-          'Majalah dan surat kabar', 'Jamuan Makan', 'Perbaikan Umum',
-          'Biaya Bank', 'Biaya Akuntan dan Audit', 'Biaya	Bantuan	Hukum & Jasa Profesional lainnya', 'Komisi', 'Biaya Umum'],
-        'Penyusutan': ['Penyusutan Gedung', 'Penyusutan Peralatan dan Mesin'],
-        'Pajak': ['Pajak Penghasilan', 'Pajak Kekayaan', 'Pajak Upah'],
-        'Aktiva Perusahaan': ['Kas dan Bank', 'Persediaan', 'Piutang Dagang', 'Piutang Lain - Lain', 'Tanah', 'Gedung', 'Mesin dan Peralatan', 'Aktiva Tetap Lainnya'],
-        'Laba': ['Laba Bersih', 'Laba Operasi'],
-        'Modal Operasi': ['Modal Operasi'],
-        'Jumlah Tenaga Kerja': ['Jumlah Tenaga Kerja'],
-        'Jam Kerja': ['Jam Kerja']
+        'Penjualan dan Modal': { 'Penjualan': null, 'Modal Operasi': null, 'Investasi': null },
+        'Biaya Tenaga Kerja': { 'Upah dan Gaji (Termasuk Direksi)': null, 'Dana Pensiun': null, 'Tunjangan-tunjangan Tenaga Kerja': null },
+        'Bahan Yang Digunakan': { 'Barang dan jasa yang dibeli': null, 'Barang yang digunakan': null, 'Bahan Baku': null, 'Bahan pengemas': null },
+        'Overhead Produksi': {
+          'Pekerjaan subkontrak': null, 'Sewa': null, 'Air dan Listrik': null, 'Asuransi Perusahaan': null, 'Biaya Transport': null,
+          'Pemeliharaan Mesin': null, 'Biaya Supplies dan gudang': null, 'Biaya lain-lain': null
+        },
+        'Bunga Pinjaman': {
+          'Bunga Pinjaman Jangka Pendek': null,
+          'Bunga Pinjaman Jangka Panjang': null
+        },
+        'Biaya Administrasi': {
+          'Sewa': null, 'Air dan Listrik': null, 'Telepon': null,
+          'Pos dan telegram': null, 'Percetakan, Stationary & Office Supplies': null,
+          'Biaya Kendaraan': null, 'Advertising': null, 'Hiburan / Entertainment': null,
+          'Majalah dan surat kabar': null, 'Jamuan Makan': null, 'Perbaikan Umum': null,
+          'Biaya Bank': null, 'Biaya Akuntan dan Audit': null, 'Biaya	Bantuan	Hukum & Jasa Profesional lainnya': null, 'Komisi': null, 'Biaya Umum': null
+        },
+        'Penyusutan': { 'Penyusutan Gedung': null, 'Penyusutan Peralatan dan Mesin': null },
+        'Pajak': { 'Pajak Penghasilan': null, 'Pajak Kekayaan': null, 'Pajak Upah': null },
+        'Aktiva Perusahaan': {
+          'Kas dan Bank': null, 'Persediaan': null, 'Piutang Dagang': null, 'Piutang Lain - Lain': null,
+          'Tanah': null, 'Gedung': null, 'Mesin dan Peralatan': null, 'Aktiva Tetap Lainnya': null
+        },
+        'Laba': { 'Laba Bersih': null, 'Laba Operasi': null },
+        'Jumlah Tenaga Kerja': { 'Jumlah Tenaga Kerja': null, 'Jam Kerja': null, 'Jam Kerja Lembur': null },
       },
+      total_fill: {
+        'Penjualan dan Modal': false,
+        'Biaya Tenaga Kerja': false,
+        'Bahan Yang Digunakan': false,
+        'Overhead Produksi': false,
+        'Bunga Pinjaman': false,
+        'Biaya Administrasi': false,
+        'Penyusutan': false,
+        'Pajak': false,
+        'Aktiva Perusahaan': false,
+        'Laba': false,
+        'Jumlah Tenaga Kerja': false,
+      },
+      totals: {
+        // 'Biaya Tenaga Kerja': this.total_fill['Biaya Tenaga Kerja'] ? 0 : Object.values(this.parameters['Biaya Tenaga Kerja'].reduce((partialSum, a) => partialSum + a, 0)),
+        'Penjualan dan Modal': null,
+        'Biaya Tenaga Kerja': null,
+        'Bahan Yang Digunakan': null,
+        'Overhead Produksi': null,
+        'Bunga Pinjaman': null,
+        'Biaya Administrasi': null,
+        'Penyusutan': null,
+        'Pajak': null,
+        'Aktiva Perusahaan': null,
+        'Laba': null,
+        'Jumlah Tenaga Kerja': null,
+      },
+      selectedYear: new Date().getFullYear(),
+      yearOptions: this.generateYearOptions()
     }
   },
+  computed: {
+    param_1() {
+      // return { "justTotal": this.total_fill["Penjualan dan Modal"], "value": Object.values(this.parameters["Penjualan dan Modal"].reduce((partialSum, a) => partialSum + a, 0)) }
+      return his.total_fill["Penjualan dan Modal"]
+    },
+    param_2() {
+      return this.total_fill["Biaya Tenaga Kerja"]
+    },
+    param_3() {
+      return this.total_fill["Bahan Yang Digunakan"]
+    },
+    param_4() {
+      return this.total_fill["Overhead Produksi"]
+    },
+    param_5() {
+      return this.total_fill["Bunga Pinjaman"]
+    },
+    param_6() {
+      return this.total_fill["Biaya Administrasi"]
+    },
+    param_7() {
+      return this.total_fill["Penyusutan"]
+    },
+    param_8() {
+      return this.total_fill["Pajak"]
+    },
+    param_9() {
+      return this.total_fill["Aktiva Perusahaan"]
+    },
+    param_10() {
+      return this.total_fill["Laba"]
+    },
+    param_11() {
+      return this.total_fill["Jumlah Tenaga Kerja"]
+    },
+
+  },
+  methods: {
+    labeling(label) {
+      const noSpaces = label.replace(/ /g, '');
+      return noSpaces
+    },
+    generateYearOptions() {
+      const currentYear = new Date().getFullYear();
+      const years = [];
+      for (let i = 0; i <= 20; i++) {
+        years.push(currentYear - i);
+      }
+      return years;
+    },
+
+    sumParams(tabs) {
+      const sums = Object.values(this.parameters[tabs]).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+      this.totals[tabs] = sums
+    },
+
+    zeroParams(tabs) {
+      for (let param of Object.keys(this.parameters[tabs])) {
+        this.parameters[tabs][param] = null
+      }
+    },
+
+  }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+/* width */
+::-webkit-scrollbar {
+  width: 6px;
+  transition: ease-in-out 0.3s;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 6px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 6px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+  transition: ease-in-out 0.3s;
+}
+</style>

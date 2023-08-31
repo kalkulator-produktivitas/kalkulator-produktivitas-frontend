@@ -4,7 +4,7 @@
       class="fixed top-0 left-0 h-screen transition-all ease-in-out duration-500 z-30" aria-label="Sidebar">
       <div class="h-full bg-[#034EA2] overflow-hidden">
         <div class="flex items-center">
-          <img src="~/assets/logo.png" class="w-10 ml-1 pt-1 flex-none" alt="" srcset="">
+          <img src="~/assets/DKI_LOGO_2.png" class="w-10 ml-1 pt-3 flex-none" alt="" srcset="">
           <p class="ml-2 text-white font-thin mt-2" :class="!isOpen ? 'visible' : 'invisible'">
             Kalkulator Produktivitas</p>
         </div>

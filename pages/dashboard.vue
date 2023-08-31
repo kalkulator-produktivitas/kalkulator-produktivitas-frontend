@@ -1,11 +1,11 @@
 <template>
   <div class="container mx-auto flex flex-col gap-4 h-full w-full">
-    <div class="grid grid-cols-4 gap-4">
+    <div class="grid grid-cols-5 gap-4">
       <div class="col-span-2 grid grid-rows-2">
         <BarChart class="shadow-lg p-2" id="1" :config="options.bar" :dataset="data.line" title="Nilai Tambah" />
         <PieChart class="h-60 shadow-lg p-2" id="3" :config="options.bar" :dataset="data.pie" />
       </div>
-      <div class="col-span-2">
+      <div class="col-span-3">
         <BarChart class="shadow-lg p-2" id="1" :config="options.bar" :dataset="data.bar" />
         <BarChart class="shadow-lg p-2" id="1" :config="options.bar" :dataset="data.bar" />
         <BarChart class="shadow-lg p-2" id="1" :config="options.bar" :dataset="data.bar" />
@@ -72,7 +72,7 @@ const data = ref({
     labels: ['2017', '2018', '2019'],
     datasets: [
       {
-        label: "Nilai",
+        label: "",
         backgroundColor: '#034EA2',
         data: [2350226879, 2406084929, 2455863415],
       },
@@ -83,7 +83,7 @@ const data = ref({
     datasets: [
       {
         label: 'Data One',
-        backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16', '#FF1B16'],
+        backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16', '#7F00FF'],
         data: [877598183, 1303228333, 256584565, 18452334, 0],
       },
     ],

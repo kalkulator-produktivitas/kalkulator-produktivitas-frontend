@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full grid grid-cols-2 gap-12">
+  <div class="grid grid-cols-2 gap-12 profile-page">
     <div class="max-w static rounded overflow shadow-lg bg-[#F6F6F6] card-border">
       <CardLabel label="Profil Perusahaan" />
       <div class="px-6 py-4 mt-2">
@@ -88,5 +88,9 @@
 <style scoped>
 .card-border {
   border: solid 1px #CCC9D4;
+}
+
+.card-border {
+  max-height: 85vh;
 }
 </style>
