@@ -19,75 +19,83 @@
               tabName }}</button>
         </li>
       </ul>
-      <div class="mt-8 flex">
-        <button class="bg-blue-500 hover:bg-blue-700 text-white mx-auto font-bold py-1 px-4 rounded-full w-32 h-9">
+    </div>
+    <form class="col-span-4 overflow-y-auto pt-10 flex w-[90%]" @submit.prevent="submitForm">
+      <div class="w-[98%]">
+        <!-- <InputField2 v-for="param in parameters[tab]" :label="param" type="number" /> -->
+        <div v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja'" class="flex items-center mb-4 ml-4">
+          <input @change="zeroParams(tab)" :id="labeling(tab + '_checkbox')" type="checkbox" v-model="total_fill[tab]"
+            class="w-4 h-4 bg-gray-100 rounded-2 dark:bg-gray-700">
+          <label :for="labeling(tab + '_checkbox')" class="ml-2 text-sm font-medium text-gray-900">Isi Total Saja</label>
+        </div>
+        <div v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja'" v-for="param in Object.keys(parameters[tab])"
+          class="mb-4 md:flex md:items-center">
+          <div class="md:w-1/2">
+            <label class="block text-sm font-bold mr-8 md:text-right" :for="labeling(param)">
+              {{ param }}
+            </label>
+          </div>
+          <div class="md:w-1/2 flex">
+            <input
+              class="appearance-none border-b-2 h-100 py-2.5 ml-2 text-gray-700 text-sm leading-tight w-6 text-center"
+              :class="total_fill[tab] ? 'bg-gray-100' : 'bg-white'" disabled readonly type="text" value="Rp">
+            <input
+              class="appearance-none border-b-2 w-full h-100 py-2.5 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
+              :class="total_fill[tab] ? 'bg-gray-100' : ''" :id="labeling(param)" type="number"
+              :readonly="total_fill[tab]" v-model="parameters[tab][param]">
+          </div>
+        </div>
+        <hr v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja'" class="h-px mt-8 border-black border-1 ml-12">
+        <div v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja'" class="mb-4 md:flex md:items-center">
+          <div class="md:w-1/2">
+            <label class="block text-sm font-bold mr-8 md:text-right" :for="labeling(tab + '_total')">
+              {{ tab + ' Total' }}
+            </label>
+          </div>
+          <div class="md:w-1/2 flex mt-2">
+            <input
+              class="appearance-none border-b-2 h-100 py-2.5 ml-2 text-gray-700 text-sm leading-tight w-6 text-center"
+              :class="!total_fill[tab] ? 'bg-gray-100' : 'bg-white'" disabled readonly type="text" value="Rp">
+            <input
+              class="appearance-none border-b-2 w-full h-100 py-2.5 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
+              :class="!total_fill[tab] ? 'bg-gray-100' : ''" :disabled="!total_fill[tab]" :id="labeling(tab + '_total')"
+              type="number" v-model="totals[tab]">
+            <button
+              class="bg-transparent hover:bg-gray-400 text-gray-400 font-bold hover:text-white py-1 px-4 border border-blue hover:border-transparent rounded ml-1"
+              @click="sumParams(tab)">
+              Sum
+            </button>
+          </div>
+        </div>
+
+        <div v-if="tab === 'Jumlah Tenaga Kerja'" v-for="param in Object.keys(parameters[tab])"
+          class="mb-4 md:flex md:items-center">
+          <div class="md:w-1/2">
+            <label class="block text-sm font-bold mr-8 md:text-right" :for="labeling(param)">
+              {{ param }}
+            </label>
+          </div>
+          <div class="md:w-1/2 flex">
+            <input
+              class="appearance-none border-b-2 h-100 py-2.5 ml-2 text-gray-700 text-sm leading-tight w-6 text-center"
+              :class="total_fill[tab] ? 'bg-gray-100' : 'bg-white'" disabled readonly type="text" value="Rp">
+            <input
+              class="appearance-none border-b-2 w-full h-100 py-2.5 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
+              :class="total_fill[tab] ? 'bg-gray-100' : ''" :id="labeling(param)" type="number"
+              :disabled="total_fill[tab]" v-model="parameters[tab][param]">
+          </div>
+        </div>
+      </div>
+      <div class="absolute bottom-20 left-40">
+        <button @click="formRequest" type="submit"
+          class="bg-blue-500 hover:bg-blue-700 text-white mx-auto font-bold py-1 px-4 rounded-full w-32 h-9">
           Submit
         </button>
       </div>
-    </div>
-    <div class="col-span-3 overflow-y-auto pt-10">
-      <!-- <InputField2 v-for="param in parameters[tab]" :label="param" type="number" /> -->
-      <div v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja'" class="flex items-center mb-4 ml-4">
-        <input @change="zeroParams(tab)" :id="labeling(tab + '_checkbox')" type="checkbox" v-model="total_fill[tab]"
-          class="w-4 h-4 bg-gray-100 rounded-2 dark:bg-gray-700">
-        <label :for="labeling(tab + '_checkbox')" class="ml-2 text-sm font-medium text-gray-900">Isi Total Saja</label>
-      </div>
-      <div v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja'" v-for="param in Object.keys(parameters[tab])"
-        class="mb-4 md:flex md:items-center">
-        <div class="md:w-1/2">
-          <label class="block text-sm font-bold mr-8 md:text-right" :for="labeling(param)">
-            {{ param }}
-          </label>
-        </div>
-        <div class="md:w-1/2 flex">
-          <input class="appearance-none border-b-2 h-100 py-2.5 ml-2 text-gray-700 text-sm leading-tight w-6 text-center"
-            :class="total_fill[tab] ? 'bg-gray-100' : 'bg-white'" disabled readonly type="text" value="Rp">
-          <input
-            class="appearance-none border-b-2 w-full h-100 py-2.5 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
-            :class="total_fill[tab] ? 'bg-gray-100' : ''" :id="labeling(param)" type="number" :readonly="total_fill[tab]"
-            v-model="parameters[tab][param]">
-        </div>
-      </div>
-      <hr v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja'" class="h-px mt-8 border-black border-1 ml-12">
-      <div v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja'" class="mb-4 md:flex md:items-center">
-        <div class="md:w-1/2">
-          <label class="block text-sm font-bold mr-8 md:text-right" :for="labeling(tab + '_total')">
-            {{ tab + ' Total' }}
-          </label>
-        </div>
-        <div class="md:w-1/2 flex mt-2">
-          <input class="appearance-none border-b-2 h-100 py-2.5 ml-2 text-gray-700 text-sm leading-tight w-6 text-center"
-            :class="!total_fill[tab] ? 'bg-gray-100' : 'bg-white'" disabled readonly type="text" value="Rp">
-          <input
-            class="appearance-none border-b-2 w-full h-100 py-2.5 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
-            :class="!total_fill[tab] ? 'bg-gray-100' : ''" :disabled="!total_fill[tab]" :id="labeling(tab + '_total')"
-            type="number" v-model="totals[tab]">
-          <button
-            class="bg-transparent hover:bg-gray-400 text-gray-400 font-bold hover:text-white py-1 px-4 border border-blue hover:border-transparent rounded ml-1"
-            @click="sumParams(tab)">
-            Sum
-          </button>
-        </div>
-      </div>
+    </form>
 
-      <div v-if="tab === 'Jumlah Tenaga Kerja'" v-for="param in Object.keys(parameters[tab])"
-        class="mb-4 md:flex md:items-center">
-        <div class="md:w-1/2">
-          <label class="block text-sm font-bold mr-8 md:text-right" :for="labeling(param)">
-            {{ param }}
-          </label>
-        </div>
-        <div class="md:w-1/2 flex">
-          <input class="appearance-none border-b-2 h-100 py-2.5 ml-2 text-gray-700 text-sm leading-tight w-6 text-center"
-            :class="total_fill[tab] ? 'bg-gray-100' : 'bg-white'" disabled readonly type="text" value="Rp">
-          <input
-            class="appearance-none border-b-2 w-full h-100 py-2.5 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
-            :class="total_fill[tab] ? 'bg-gray-100' : ''" :id="labeling(param)" type="number" :disabled="total_fill[tab]"
-            v-model="parameters[tab][param]">
-        </div>
-      </div>
 
-    </div>
+    <!-- <FlashMessage :type="flashMessageType" :message="flashMessage" /> -->
   </div>
 </template>
 
@@ -155,47 +163,84 @@ export default {
         'Jumlah Tenaga Kerja': null,
       },
       selectedYear: new Date().getFullYear(),
-      yearOptions: this.generateYearOptions()
+      yearOptions: this.generateYearOptions(),
+      flashMessage: '',
+      flashMessageType: ''
     }
   },
   computed: {
-    param_1() {
-      // return { "justTotal": this.total_fill["Penjualan dan Modal"], "value": Object.values(this.parameters["Penjualan dan Modal"].reduce((partialSum, a) => partialSum + a, 0)) }
-      return his.total_fill["Penjualan dan Modal"]
+    total_pembelian_bahan() {
+      return this.totals["Bahan Yang Digunakan"] + this.totals["Overhead Produksi"] + this.totals["Biaya Administrasi"]
     },
-    param_2() {
-      return this.total_fill["Biaya Tenaga Kerja"]
+    nilai_tambah() {
+      return this.parameters['Penjualan dan Modal']['Penjualan'] - this.total_pembelian_bahan['Jumlah Tenaga Kerja']
     },
-    param_3() {
-      return this.total_fill["Bahan Yang Digunakan"]
+    produktivitas_tenaga_kerja() {
+      const params = {
+        ptk_1: this.nilai_tambah / this.parameters['Jumlah Tenaga Kerja']['Jumlah Tenaga Kerja'],
+        ptk_2: this.nilai_tambah / (this.parameters['Jumlah Tenaga Kerja']['Jam Kerja'] + this.parameters['Jumlah Tenaga Kerja']['Jam Kerja Lembur']),
+        ptk_3: this.nilai_tambah / this.totals['Biaya Tenaga Kerja'],
+        ptk_4: this.totals['Biaya Tenaga Kerja'] / (this.parameters['Jumlah Tenaga Kerja']['Jam Kerja'] + this.parameters['Jumlah Tenaga Kerja']['Jam Kerja Lembur']),
+      }
+      return params
     },
-    param_4() {
-      return this.total_fill["Overhead Produksi"]
+    produktivitas_modal() {
+      const params = {
+        pm_1: this.parameters['Penjualan dan Modal']['Penjualan'] / this.parameters['Penjualan dan Modal']['Modal Operasi'],
+        pm_2: this.nilai_tambah / this.parameters['Penjualan dan Modal']['Modal Operasi'],
+        pm_3: this.parameters['Penjualan dan Modal']['Modal Operasi'] / this.parameters['Jumlah Tenaga Kerja']['Jumlah Tenaga Kerja'],
+      }
+      return params
     },
-    param_5() {
-      return this.total_fill["Bunga Pinjaman"]
+    profitabilitas() {
+      const params = {
+        profit_1: this.totals['Laba'] / this.parameters['Penjualan dan Modal']['Penjualan'],
+        profit_2: this.totals['Laba'] / this.total_pembelian_bahan,
+        profit_3: this.totals['Laba'] / this.parameters['Penjualan dan Modal']['Modal Operasi'],
+      }
+      return params
     },
-    param_6() {
-      return this.total_fill["Biaya Administrasi"]
-    },
-    param_7() {
-      return this.total_fill["Penyusutan"]
-    },
-    param_8() {
-      return this.total_fill["Pajak"]
-    },
-    param_9() {
-      return this.total_fill["Aktiva Perusahaan"]
-    },
-    param_10() {
-      return this.total_fill["Laba"]
-    },
-    param_11() {
-      return this.total_fill["Jumlah Tenaga Kerja"]
+    tambahan() {
+      const params = {
+        profit_1: this.nilai_tambah / this.parameters['Penjualan dan Modal']['Penjualan'],
+        profit_2: this.nilai_tambah / this.total_pembelian_bahan,
+        profit_3: this.totals['Laba'] / this.totals['Biaya Tenaga Kerja'],
+      }
+      return params
     },
 
   },
   methods: {
+    async formRequest() {
+      try {
+        await useFetch('http://localhost:2020', {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          mode: 'no-cors',
+          method: 'POST',
+          body: {
+            raw_data: this.parameters,
+            totals: this.totals,
+            analysis: {
+              pembelian_bahan: this.total_pembelian_bahan,
+              nilai_tambah: this.nilai_tambah,
+              produktivitas_tenaga_kerja: this.produktivitas_tenaga_kerja,
+              produktivitas_modal: this.produktivitas_modal,
+              profitabilitas: this.profitabilitas,
+              tambahan: this.tambahan,
+            }
+          }
+        });
+        this.flashMessage = 'Form submitted successfully!';
+        this.flashMessageType = 'success';
+        // this.flashMessage = 'An error occurred while submitting the form.';
+        // this.flashMessageType = 'error';
+      } catch (error) {
+        this.flashMessage = 'An error occurred while submitting the form.';
+        this.flashMessageType = 'error';
+      }
+    },
     labeling(label) {
       const noSpaces = label.replace(/ /g, '');
       return noSpaces
