@@ -1,6 +1,14 @@
 <template>
   <div class="container max-w h-full">
-    <p class="text-xl">Report ID: {{ id }}</p>
+    <p class="text-xl">Report ID: {{ id }} {{ param1 }}</p>
+    <button @click="formRequest"
+      class="bg-blue-500 hover:bg-blue-700 text-white mx-auto font-bold py-1 px-4 rounded-full w-32 h-9">
+      Send Request
+    </button>
+    <button @click="getRequest"
+      class="bg-blue-500 hover:bg-blue-700 text-white mx-auto font-bold py-1 px-4 rounded-full w-32 h-9">
+      Get Request
+    </button>
     <div class="grid grid-cols-5 mt-4 h-full">
       <div class="col-span-1">
         <ul class="flex list-none flex-col flex-wrap border-b-0 border-r-2 pl-0">
@@ -44,6 +52,33 @@ const parameters = ref({
   'Jumlah Tenaga Kerja': ['Jumlah Tenaga Kerja'],
   'Jam Kerja': ['Jam Kerja']
 })
+
+
+
+const { data, pending, error, refresh } = await useFetch('http://localhost:2020/read');
+
+const param1 = ref(data)
+
+async function formRequest() {
+  try {
+    const { data } = await useFetch('http://localhost:2020/read', {
+    });
+    console.log(data.value);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getRequest() {
+  try {
+    const res = await fetch('http://localhost:2020/write', {
+    });;
+    const data = await res.json()
+    console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+}
 </script>
 
 <style scoped>

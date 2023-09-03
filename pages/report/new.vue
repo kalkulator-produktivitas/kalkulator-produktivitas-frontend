@@ -1,6 +1,5 @@
 <template>
   <div class="container max-w h-full grid grid-cols-5">
-
     <div class="col-span-1">
       <div class="ml-2 flex items-center space-x-4">
         <label for="select" class="text-gray-600">Pilih tahun</label>
@@ -77,10 +76,10 @@
           </div>
           <div class="md:w-1/2 flex">
             <input
-              class="appearance-none border-b-2 h-100 py-2.5 ml-2 text-gray-700 text-sm leading-tight w-6 text-center"
+              class="appearance-none border-b-2 h-100 py-auto ml-2 text-gray-700 text-sm leading-tight w-6 text-center"
               :class="total_fill[tab] ? 'bg-gray-100' : 'bg-white'" disabled readonly type="text" value="Rp">
             <input
-              class="appearance-none border-b-2 w-full h-100 py-2.5 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none border-b-2 w-full h-100 py-auto px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
               :class="total_fill[tab] ? 'bg-gray-100' : ''" :id="labeling(param)" type="number"
               :disabled="total_fill[tab]" v-model="parameters[tab][param]">
           </div>
@@ -99,174 +98,347 @@
   </div>
 </template>
 
-<script>
+<script setup>
 
-export default {
-  data() {
-    return {
-      tab: 'default',
-      tabList: ['Penjualan dan Modal', 'Biaya Tenaga Kerja', 'Bahan Yang Digunakan', 'Overhead Produksi', 'Bunga Pinjaman',
-        'Biaya Administrasi', 'Penyusutan', 'Pajak', 'Aktiva Perusahaan', 'Laba', 'Jumlah Tenaga Kerja'],
-      parameters: {
-        'Penjualan dan Modal': { 'Penjualan': null, 'Modal Operasi': null, 'Investasi': null },
-        'Biaya Tenaga Kerja': { 'Upah dan Gaji (Termasuk Direksi)': null, 'Dana Pensiun': null, 'Tunjangan-tunjangan Tenaga Kerja': null },
-        'Bahan Yang Digunakan': { 'Barang dan jasa yang dibeli': null, 'Barang yang digunakan': null, 'Bahan Baku': null, 'Bahan pengemas': null },
-        'Overhead Produksi': {
-          'Pekerjaan subkontrak': null, 'Sewa': null, 'Air dan Listrik': null, 'Asuransi Perusahaan': null, 'Biaya Transport': null,
-          'Pemeliharaan Mesin': null, 'Biaya Supplies dan gudang': null, 'Biaya lain-lain': null
-        },
-        'Bunga Pinjaman': {
-          'Bunga Pinjaman Jangka Pendek': null,
-          'Bunga Pinjaman Jangka Panjang': null
-        },
-        'Biaya Administrasi': {
-          'Sewa': null, 'Air dan Listrik': null, 'Telepon': null,
-          'Pos dan telegram': null, 'Percetakan, Stationary & Office Supplies': null,
-          'Biaya Kendaraan': null, 'Advertising': null, 'Hiburan / Entertainment': null,
-          'Majalah dan surat kabar': null, 'Jamuan Makan': null, 'Perbaikan Umum': null,
-          'Biaya Bank': null, 'Biaya Akuntan dan Audit': null, 'Biaya	Bantuan	Hukum & Jasa Profesional lainnya': null, 'Komisi': null, 'Biaya Umum': null
-        },
-        'Penyusutan': { 'Penyusutan Gedung': null, 'Penyusutan Peralatan dan Mesin': null },
-        'Pajak': { 'Pajak Penghasilan': null, 'Pajak Kekayaan': null, 'Pajak Upah': null },
-        'Aktiva Perusahaan': {
-          'Kas dan Bank': null, 'Persediaan': null, 'Piutang Dagang': null, 'Piutang Lain - Lain': null,
-          'Tanah': null, 'Gedung': null, 'Mesin dan Peralatan': null, 'Aktiva Tetap Lainnya': null
-        },
-        'Laba': { 'Laba Bersih': null, 'Laba Operasi': null },
-        'Jumlah Tenaga Kerja': { 'Jumlah Tenaga Kerja': null, 'Jam Kerja': null, 'Jam Kerja Lembur': null },
-      },
-      total_fill: {
-        'Penjualan dan Modal': false,
-        'Biaya Tenaga Kerja': false,
-        'Bahan Yang Digunakan': false,
-        'Overhead Produksi': false,
-        'Bunga Pinjaman': false,
-        'Biaya Administrasi': false,
-        'Penyusutan': false,
-        'Pajak': false,
-        'Aktiva Perusahaan': false,
-        'Laba': false,
-        'Jumlah Tenaga Kerja': false,
-      },
-      totals: {
-        // 'Biaya Tenaga Kerja': this.total_fill['Biaya Tenaga Kerja'] ? 0 : Object.values(this.parameters['Biaya Tenaga Kerja'].reduce((partialSum, a) => partialSum + a, 0)),
-        'Penjualan dan Modal': null,
-        'Biaya Tenaga Kerja': null,
-        'Bahan Yang Digunakan': null,
-        'Overhead Produksi': null,
-        'Bunga Pinjaman': null,
-        'Biaya Administrasi': null,
-        'Penyusutan': null,
-        'Pajak': null,
-        'Aktiva Perusahaan': null,
-        'Laba': null,
-        'Jumlah Tenaga Kerja': null,
-      },
-      selectedYear: new Date().getFullYear(),
-      yearOptions: this.generateYearOptions(),
-      flashMessage: '',
-      flashMessageType: ''
-    }
-  },
-  computed: {
-    total_pembelian_bahan() {
-      return this.totals["Bahan Yang Digunakan"] + this.totals["Overhead Produksi"] + this.totals["Biaya Administrasi"]
-    },
-    nilai_tambah() {
-      return this.parameters['Penjualan dan Modal']['Penjualan'] - this.total_pembelian_bahan['Jumlah Tenaga Kerja']
-    },
-    produktivitas_tenaga_kerja() {
-      const params = {
-        ptk_1: this.nilai_tambah / this.parameters['Jumlah Tenaga Kerja']['Jumlah Tenaga Kerja'],
-        ptk_2: this.nilai_tambah / (this.parameters['Jumlah Tenaga Kerja']['Jam Kerja'] + this.parameters['Jumlah Tenaga Kerja']['Jam Kerja Lembur']),
-        ptk_3: this.nilai_tambah / this.totals['Biaya Tenaga Kerja'],
-        ptk_4: this.totals['Biaya Tenaga Kerja'] / (this.parameters['Jumlah Tenaga Kerja']['Jam Kerja'] + this.parameters['Jumlah Tenaga Kerja']['Jam Kerja Lembur']),
-      }
-      return params
-    },
-    produktivitas_modal() {
-      const params = {
-        pm_1: this.parameters['Penjualan dan Modal']['Penjualan'] / this.parameters['Penjualan dan Modal']['Modal Operasi'],
-        pm_2: this.nilai_tambah / this.parameters['Penjualan dan Modal']['Modal Operasi'],
-        pm_3: this.parameters['Penjualan dan Modal']['Modal Operasi'] / this.parameters['Jumlah Tenaga Kerja']['Jumlah Tenaga Kerja'],
-      }
-      return params
-    },
-    profitabilitas() {
-      const params = {
-        profit_1: this.totals['Laba'] / this.parameters['Penjualan dan Modal']['Penjualan'],
-        profit_2: this.totals['Laba'] / this.total_pembelian_bahan,
-        profit_3: this.totals['Laba'] / this.parameters['Penjualan dan Modal']['Modal Operasi'],
-      }
-      return params
-    },
-    tambahan() {
-      const params = {
-        profit_1: this.nilai_tambah / this.parameters['Penjualan dan Modal']['Penjualan'],
-        profit_2: this.nilai_tambah / this.total_pembelian_bahan,
-        profit_3: this.totals['Laba'] / this.totals['Biaya Tenaga Kerja'],
-      }
-      return params
-    },
+function labeling(label) {
+  const noSpaces = label.replace(/ /g, '');
+  return noSpaces
+}
+function generateYearOptions() {
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  for (let i = 0; i <= 20; i++) {
+    years.push(currentYear - i);
+  }
+  return years;
+}
 
-  },
-  methods: {
-    async formRequest() {
-      try {
-        await useFetch('http://localhost:2020', {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          mode: 'no-cors',
-          method: 'POST',
-          body: {
-            raw_data: this.parameters,
-            totals: this.totals,
-            analysis: {
-              pembelian_bahan: this.total_pembelian_bahan,
-              nilai_tambah: this.nilai_tambah,
-              produktivitas_tenaga_kerja: this.produktivitas_tenaga_kerja,
-              produktivitas_modal: this.produktivitas_modal,
-              profitabilitas: this.profitabilitas,
-              tambahan: this.tambahan,
-            }
-          }
-        });
-        this.flashMessage = 'Form submitted successfully!';
-        this.flashMessageType = 'success';
-        // this.flashMessage = 'An error occurred while submitting the form.';
-        // this.flashMessageType = 'error';
-      } catch (error) {
-        this.flashMessage = 'An error occurred while submitting the form.';
-        this.flashMessageType = 'error';
-      }
-    },
-    labeling(label) {
-      const noSpaces = label.replace(/ /g, '');
-      return noSpaces
-    },
-    generateYearOptions() {
-      const currentYear = new Date().getFullYear();
-      const years = [];
-      for (let i = 0; i <= 20; i++) {
-        years.push(currentYear - i);
-      }
-      return years;
-    },
+function sumParams(tabs) {
+  const sums = Object.values(this.parameters[tabs]).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+  this.totals[tabs] = sums
+}
 
-    sumParams(tabs) {
-      const sums = Object.values(this.parameters[tabs]).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-      this.totals[tabs] = sums
-    },
-
-    zeroParams(tabs) {
-      for (let param of Object.keys(this.parameters[tabs])) {
-        this.parameters[tabs][param] = null
-      }
-    },
-
+function zeroParams(tabs) {
+  for (let param of Object.keys(this.parameters[tabs])) {
+    this.parameters[tabs][param] = null
   }
 }
+
+const years = generateYearOptions()
+
+const tab = ref('default')
+const tabList = ref(['Penjualan dan Modal', 'Biaya Tenaga Kerja', 'Bahan Yang Digunakan', 'Overhead Produksi', 'Bunga Pinjaman',
+  'Biaya Administrasi', 'Penyusutan', 'Pajak', 'Aktiva Perusahaan', 'Laba', 'Jumlah Tenaga Kerja'])
+const parameters = ref({
+  'Penjualan dan Modal': { 'Penjualan': null, 'Modal Operasi': null, 'Investasi': null },
+  'Biaya Tenaga Kerja': { 'Upah dan Gaji (Termasuk Direksi)': null, 'Dana Pensiun': null, 'Tunjangan-tunjangan Tenaga Kerja': null },
+  'Bahan Yang Digunakan': { 'Barang dan jasa yang dibeli': null, 'Barang yang digunakan': null, 'Bahan Baku': null, 'Bahan pengemas': null },
+  'Overhead Produksi': {
+    'Pekerjaan subkontrak': null, 'Sewa': null, 'Air dan Listrik': null, 'Asuransi Perusahaan': null, 'Biaya Transport': null,
+    'Pemeliharaan Mesin': null, 'Biaya Supplies dan gudang': null, 'Biaya lain-lain': null
+  },
+  'Bunga Pinjaman': {
+    'Bunga Pinjaman Jangka Pendek': null,
+    'Bunga Pinjaman Jangka Panjang': null
+  },
+  'Biaya Administrasi': {
+    'Sewa': null, 'Air dan Listrik': null, 'Telepon': null,
+    'Pos dan telegram': null, 'Percetakan, Stationary & Office Supplies': null,
+    'Biaya Kendaraan': null, 'Advertising': null, 'Hiburan / Entertainment': null,
+    'Majalah dan surat kabar': null, 'Jamuan Makan': null, 'Perbaikan Umum': null,
+    'Biaya Bank': null, 'Biaya Akuntan dan Audit': null, 'Biaya	Bantuan	Hukum & Jasa Profesional lainnya': null, 'Komisi': null, 'Biaya Umum': null
+  },
+  'Penyusutan': { 'Penyusutan Gedung': null, 'Penyusutan Peralatan dan Mesin': null },
+  'Pajak': { 'Pajak Penghasilan': null, 'Pajak Kekayaan': null, 'Pajak Upah': null },
+  'Aktiva Perusahaan': {
+    'Kas dan Bank': null, 'Persediaan': null, 'Piutang Dagang': null, 'Piutang Lain - Lain': null,
+    'Tanah': null, 'Gedung': null, 'Mesin dan Peralatan': null, 'Aktiva Tetap Lainnya': null
+  },
+  'Laba': { 'Laba Bersih': null, 'Laba Operasi': null },
+  'Jumlah Tenaga Kerja': { 'Jumlah Tenaga Kerja': null, 'Jam Kerja': null, 'Jam Kerja Lembur': null },
+})
+
+const total_fill = ref({
+  'Penjualan dan Modal': false,
+  'Biaya Tenaga Kerja': false,
+  'Bahan Yang Digunakan': false,
+  'Overhead Produksi': false,
+  'Bunga Pinjaman': false,
+  'Biaya Administrasi': false,
+  'Penyusutan': false,
+  'Pajak': false,
+  'Aktiva Perusahaan': false,
+  'Laba': false,
+  'Jumlah Tenaga Kerja': false,
+})
+
+const totals = ref({
+  'Penjualan dan Modal': null,
+  'Biaya Tenaga Kerja': null,
+  'Bahan Yang Digunakan': null,
+  'Overhead Produksi': null,
+  'Bunga Pinjaman': null,
+  'Biaya Administrasi': null,
+  'Penyusutan': null,
+  'Pajak': null,
+  'Aktiva Perusahaan': null,
+  'Laba': null,
+  'Jumlah Tenaga Kerja': null,
+})
+
+const selectedYear = ref(new Date().getFullYear())
+const yearOptions = ref(generateYearOptions())
+// const flashMessage = ref('')
+// const flashMessageType = ref('')
+const responded = ref('')
+
+
+
+
+const total_pembelian_bahan = computed(() => {
+  return totals.value["Bahan Yang Digunakan"] + totals.value["Overhead Produksi"] + totals.value["Biaya Administrasi"]
+})
+
+const nilai_tambah = computed(() => {
+  return parameters.value['Penjualan dan Modal']['Penjualan'] - total_pembelian_bahan.value['Jumlah Tenaga Kerja']
+})
+const produktivitas_tenaga_kerja = computed(() => {
+  const params = {
+    ptk_1: nilai_tambah.value / parameters.value['Jumlah Tenaga Kerja']['Jumlah Tenaga Kerja'],
+    ptk_2: nilai_tambah.value / (parameters.value['Jumlah Tenaga Kerja']['Jam Kerja'] + parameters.value['Jumlah Tenaga Kerja']['Jam Kerja Lembur']),
+    ptk_3: nilai_tambah.value / totals['Biaya Tenaga Kerja'],
+    ptk_4: totals.value['Biaya Tenaga Kerja'] / (parameters.value['Jumlah Tenaga Kerja']['Jam Kerja'] + parameters.value['Jumlah Tenaga Kerja']['Jam Kerja Lembur']),
+  }
+  return params
+})
+const produktivitas_modal = computed(() => {
+  const params = {
+    pm_1: parameters.value['Penjualan dan Modal']['Penjualan'] / parameters.value['Penjualan dan Modal']['Modal Operasi'],
+    pm_2: nilai_tambah.value / parameters.value['Penjualan dan Modal']['Modal Operasi'],
+    pm_3: parameters.value['Penjualan dan Modal']['Modal Operasi'] / parameters.value['Jumlah Tenaga Kerja']['Jumlah Tenaga Kerja'],
+  }
+  return params
+})
+const profitabilitas = computed(() => {
+  const params = {
+    profit_1: totals.value['Laba'] / parameters.value['Penjualan dan Modal']['Penjualan'],
+    profit_2: totals.value['Laba'] / total_pembelian_bahan.value,
+    profit_3: totals.value['Laba'] / parameters.value['Penjualan dan Modal']['Modal Operasi'],
+  }
+  return params
+})
+const tambahan = computed(() => {
+  const params = {
+    profit_1: nilai_tambah.value / parameters.value['Penjualan dan Modal']['Penjualan'],
+    profit_2: nilai_tambah.value / total_pembelian_bahan.value,
+    profit_3: totals.value['Laba'] / totals.value['Biaya Tenaga Kerja'],
+  }
+  return params
+})
+const formRequest = async () => {
+  try {
+    const data = await fetch('http://localhost:2020', {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        raw_data: (parameters.value),
+        totals: (totals.value),
+        analysis: ({
+          pembelian_bahan: total_pembelian_bahan.value,
+          nilai_tambah: nilai_tambah.value,
+          produktivitas_tenaga_kerja: produktivitas_tenaga_kerja.value,
+          produktivitas_modal: produktivitas_modal.value,
+          profitabilitas: profitabilitas.value,
+          tambahan: tambahan.value,
+        })
+      })
+    });
+    console.log(data);
+    // if (res.ok) {
+    //   const data = await res.json()
+    //   console.log(data);
+    // }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+
+// export default {
+//   data() {
+//     return {
+//       tab: 'default',
+//       tabList: ['Penjualan dan Modal', 'Biaya Tenaga Kerja', 'Bahan Yang Digunakan', 'Overhead Produksi', 'Bunga Pinjaman',
+//         'Biaya Administrasi', 'Penyusutan', 'Pajak', 'Aktiva Perusahaan', 'Laba', 'Jumlah Tenaga Kerja'],
+//       parameters: {
+//         'Penjualan dan Modal': { 'Penjualan': null, 'Modal Operasi': null, 'Investasi': null },
+//         'Biaya Tenaga Kerja': { 'Upah dan Gaji (Termasuk Direksi)': null, 'Dana Pensiun': null, 'Tunjangan-tunjangan Tenaga Kerja': null },
+//         'Bahan Yang Digunakan': { 'Barang dan jasa yang dibeli': null, 'Barang yang digunakan': null, 'Bahan Baku': null, 'Bahan pengemas': null },
+//         'Overhead Produksi': {
+//           'Pekerjaan subkontrak': null, 'Sewa': null, 'Air dan Listrik': null, 'Asuransi Perusahaan': null, 'Biaya Transport': null,
+//           'Pemeliharaan Mesin': null, 'Biaya Supplies dan gudang': null, 'Biaya lain-lain': null
+//         },
+//         'Bunga Pinjaman': {
+//           'Bunga Pinjaman Jangka Pendek': null,
+//           'Bunga Pinjaman Jangka Panjang': null
+//         },
+//         'Biaya Administrasi': {
+//           'Sewa': null, 'Air dan Listrik': null, 'Telepon': null,
+//           'Pos dan telegram': null, 'Percetakan, Stationary & Office Supplies': null,
+//           'Biaya Kendaraan': null, 'Advertising': null, 'Hiburan / Entertainment': null,
+//           'Majalah dan surat kabar': null, 'Jamuan Makan': null, 'Perbaikan Umum': null,
+//           'Biaya Bank': null, 'Biaya Akuntan dan Audit': null, 'Biaya	Bantuan	Hukum & Jasa Profesional lainnya': null, 'Komisi': null, 'Biaya Umum': null
+//         },
+//         'Penyusutan': { 'Penyusutan Gedung': null, 'Penyusutan Peralatan dan Mesin': null },
+//         'Pajak': { 'Pajak Penghasilan': null, 'Pajak Kekayaan': null, 'Pajak Upah': null },
+//         'Aktiva Perusahaan': {
+//           'Kas dan Bank': null, 'Persediaan': null, 'Piutang Dagang': null, 'Piutang Lain - Lain': null,
+//           'Tanah': null, 'Gedung': null, 'Mesin dan Peralatan': null, 'Aktiva Tetap Lainnya': null
+//         },
+//         'Laba': { 'Laba Bersih': null, 'Laba Operasi': null },
+//         'Jumlah Tenaga Kerja': { 'Jumlah Tenaga Kerja': null, 'Jam Kerja': null, 'Jam Kerja Lembur': null },
+//       },
+//       total_fill: {
+//         'Penjualan dan Modal': false,
+//         'Biaya Tenaga Kerja': false,
+//         'Bahan Yang Digunakan': false,
+//         'Overhead Produksi': false,
+//         'Bunga Pinjaman': false,
+//         'Biaya Administrasi': false,
+//         'Penyusutan': false,
+//         'Pajak': false,
+//         'Aktiva Perusahaan': false,
+//         'Laba': false,
+//         'Jumlah Tenaga Kerja': false,
+//       },
+//       totals: {
+//         // 'Biaya Tenaga Kerja': this.total_fill['Biaya Tenaga Kerja'] ? 0 : Object.values(this.parameters['Biaya Tenaga Kerja'].reduce((partialSum, a) => partialSum + a, 0)),
+//         'Penjualan dan Modal': null,
+//         'Biaya Tenaga Kerja': null,
+//         'Bahan Yang Digunakan': null,
+//         'Overhead Produksi': null,
+//         'Bunga Pinjaman': null,
+//         'Biaya Administrasi': null,
+//         'Penyusutan': null,
+//         'Pajak': null,
+//         'Aktiva Perusahaan': null,
+//         'Laba': null,
+//         'Jumlah Tenaga Kerja': null,
+//       },
+//       selectedYear: new Date().getFullYear(),
+//       yearOptions: this.generateYearOptions(),
+//       flashMessage: '',
+//       flashMessageType: '',
+//       responded: null
+//     }
+//   },
+//   computed: {
+//     total_pembelian_bahan() {
+//       return this.totals["Bahan Yang Digunakan"] + this.totals["Overhead Produksi"] + this.totals["Biaya Administrasi"]
+//     },
+//     nilai_tambah() {
+//       return this.parameters['Penjualan dan Modal']['Penjualan'] - this.total_pembelian_bahan['Jumlah Tenaga Kerja']
+//     },
+//     produktivitas_tenaga_kerja() {
+//       const params = {
+//         ptk_1: this.nilai_tambah / this.parameters['Jumlah Tenaga Kerja']['Jumlah Tenaga Kerja'],
+//         ptk_2: this.nilai_tambah / (this.parameters['Jumlah Tenaga Kerja']['Jam Kerja'] + this.parameters['Jumlah Tenaga Kerja']['Jam Kerja Lembur']),
+//         ptk_3: this.nilai_tambah / this.totals['Biaya Tenaga Kerja'],
+//         ptk_4: this.totals['Biaya Tenaga Kerja'] / (this.parameters['Jumlah Tenaga Kerja']['Jam Kerja'] + this.parameters['Jumlah Tenaga Kerja']['Jam Kerja Lembur']),
+//       }
+//       return params
+//     },
+//     produktivitas_modal() {
+//       const params = {
+//         pm_1: this.parameters['Penjualan dan Modal']['Penjualan'] / this.parameters['Penjualan dan Modal']['Modal Operasi'],
+//         pm_2: this.nilai_tambah / this.parameters['Penjualan dan Modal']['Modal Operasi'],
+//         pm_3: this.parameters['Penjualan dan Modal']['Modal Operasi'] / this.parameters['Jumlah Tenaga Kerja']['Jumlah Tenaga Kerja'],
+//       }
+//       return params
+//     },
+//     profitabilitas() {
+//       const params = {
+//         profit_1: this.totals['Laba'] / this.parameters['Penjualan dan Modal']['Penjualan'],
+//         profit_2: this.totals['Laba'] / this.total_pembelian_bahan,
+//         profit_3: this.totals['Laba'] / this.parameters['Penjualan dan Modal']['Modal Operasi'],
+//       }
+//       return params
+//     },
+//     tambahan() {
+//       const params = {
+//         profit_1: this.nilai_tambah / this.parameters['Penjualan dan Modal']['Penjualan'],
+//         profit_2: this.nilai_tambah / this.total_pembelian_bahan,
+//         profit_3: this.totals['Laba'] / this.totals['Biaya Tenaga Kerja'],
+//       }
+//       return params
+//     },
+
+//   },
+//   methods: {
+//     async formRequest() {
+//       try {
+//         const data = await fetch('http://localhost:2020', {
+//           headers: {
+//             'Content-Type': 'application/x-www-form-urlencoded',
+//             'Access-Control-Allow-Origin': '*',
+//             'Access-Control-Allow-Methods': 'POST,PATCH,OPTIONS'
+//           },
+//           mode: 'no-cors',
+//           method: 'POST',
+//           body: new URLSearchParams({
+//             raw_data: this.parameters,
+//             totals: this.totals,
+//             analysis: {
+//               pembelian_bahan: this.total_pembelian_bahan,
+//               nilai_tambah: this.nilai_tambah,
+//               produktivitas_tenaga_kerja: this.produktivitas_tenaga_kerja,
+//               produktivitas_modal: this.produktivitas_modal,
+//               profitabilitas: this.profitabilitas,
+//               tambahan: this.tambahan,
+//             }
+//           })
+
+//         });
+//         this.responded = data
+//         console.log(data);
+//         this.flashMessage = 'Form submitted successfully!';
+//         this.flashMessageType = 'success';
+//         // this.flashMessage = 'An error occurred while submitting the form.';
+//         // this.flashMessageType = 'error';
+//       } catch (error) {
+//         this.flashMessage = 'An error occurred while submitting the form.';
+//         this.flashMessageType = 'error';
+//       }
+//     },
+//     labeling(label) {
+//       const noSpaces = label.replace(/ /g, '');
+//       return noSpaces
+//     },
+//     generateYearOptions() {
+//       const currentYear = new Date().getFullYear();
+//       const years = [];
+//       for (let i = 0; i <= 20; i++) {
+//         years.push(currentYear - i);
+//       }
+//       return years;
+//     },
+
+//     sumParams(tabs) {
+//       const sums = Object.values(this.parameters[tabs]).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+//       this.totals[tabs] = sums
+//     },
+
+//     zeroParams(tabs) {
+//       for (let param of Object.keys(this.parameters[tabs])) {
+//         this.parameters[tabs][param] = null
+//       }
+//     },
+
+//   }
+// }
 </script>
 
 <style scoped>
