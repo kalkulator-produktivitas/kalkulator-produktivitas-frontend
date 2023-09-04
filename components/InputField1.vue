@@ -6,8 +6,8 @@
     </label>
     <input
       class="shadow appearance-none border rounded w-full h-100 py-2.5 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
-      :value="value" :disabled="disabled" :readonly="disabled" id="{{this.labeling}}" :type="type"
-      :placeholder="placeholder">
+      :value="modelValue" :disabled="disabled" :readonly="disabled" id="{{this.labeling}}" :type="type"
+      :placeholder="placeholder" @input="$emit('update:modelValue', $event.target.value)">
   </div>
 </template>
 
@@ -18,10 +18,11 @@ export default {
     'wide',
     'disabled',
     'type',
-    'value',
+    'modelValue',
     'placeholder',
     'color'
   ],
+  emits: ['update:modelValue'],
   computed: {
     inputWide() {
       return `${this.wide}px`

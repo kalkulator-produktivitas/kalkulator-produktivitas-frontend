@@ -31,7 +31,8 @@
       </div>
       <div class="flex">
         <button
-          class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full mx-auto w-40 ease-in-out duration-300 mt-4">
+          class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full mx-auto w-40 ease-in-out duration-300 mt-4"
+          @click="loginAuth">
           Login
         </button>
       </div>
@@ -46,10 +47,19 @@
       <div class="mb-4">
         <InputField1 label="Company" type="text" color="white" v-model="register.company" />
       </div>
+      <div class="mb-4">
+        <InputField1 label="Email" type="email" color="white" v-model="register.email" />
+      </div>
+      <div class="mb-4">
+        <InputField1 label="Username" type="text" color="white" v-model="register.username" />
+      </div>
+      <div class="mb-4">
+        <InputField1 label="Password" type="password" color="white" v-model="register.password" />
+      </div>
       <div class="flex">
-        <button
+        <button @click="registerAuth"
           class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full mx-auto w-40 ease-in-out duration-300 mt-4">
-          Register
+          Daftar
         </button>
       </div>
     </div>
@@ -72,6 +82,9 @@ export default {
         firstName: '',
         lastName: '',
         company: '',
+        email: '',
+        username: '',
+        password: ''
       }
     }
   },
@@ -87,8 +100,36 @@ export default {
         this.type = 'password'
         this.icon = 'bi:eye'
       }
+    },
+    async loginAuth() {
+      try {
+        const data = await fetch('http://localhost:2020/auth/login', {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          method: 'POST',
+          body: JSON.stringify(this.login)
+        })
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async registerAuth() {
+      try {
+        const data = await fetch('http://localhost:2020/auth/register', {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          method: 'POST',
+          body: JSON.stringify(this.register)
+        })
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
     }
-  },
+  }
 }
 </script>
 

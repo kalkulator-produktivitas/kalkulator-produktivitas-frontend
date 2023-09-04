@@ -48,10 +48,10 @@ export default {
     return {
       isOpen: true,
       items: [
-        { text: 'Home', to: '/', icon: 'fe:home' },
-        { text: 'Report', to: '/report', icon: 'fe:document' },
+        { text: 'Beranda', to: '/', icon: 'fe:home' },
+        { text: 'Laporan', to: '/report', icon: 'fe:document' },
         { text: 'Dashboard', to: '/dashboard', icon: 'fe:bar-chart' },
-        { text: 'Profile', to: '/profile', icon: 'fe:user' }
+        { text: 'Profil', to: '/profile', icon: 'fe:user' }
       ]
     }
   }
