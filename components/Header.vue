@@ -4,20 +4,24 @@
       <div class="container">
 
 
-        <span class="text-black flex flex justify-end">
-          <Icon name="fe:user" size="6mm" class="my-auto flex-none mr-2" />Budi Budiman
+        <span v-if="authStore.isAuthenticated" class="text-black flex flex justify-end">
+          <Icon name="fe:user" size="6mm" class="my-auto flex-none mr-2" />{{ authStore.authUser }}
           <Icon name="fe:arrow-down" size="6mm" class="my-auto flex-none mr-2 ml-8" />
         </span>
+        <span v-else class="text-black flex flex justify-end">
+          <Icon name="fe:user" size="6mm" class="my-auto flex-none mr-2" />No User
 
+        </span>
       </div>
     </header>
   </div>
 </template>
 
-<script>
-export default {
-  transition: 'navigation'
-}
+<script setup>
+import { useAuthStore } from '../store/auth';
+const authStore = useAuthStore()
+
+// const username = ref(authStore.jwtToken.user)
 </script>
 
 <style scoped>

@@ -239,7 +239,7 @@ const formRequest = async () => {
   try {
     const data = await fetch('http://localhost:2020', {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/json'
       },
       method: 'POST',
       body: JSON.stringify({

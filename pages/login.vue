@@ -35,39 +35,43 @@
           @click="loginAuth">
           Login
         </button>
+        <button
+          class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full mx-auto w-40 ease-in-out duration-300 mt-4"
+          @click="checkAuth">
+          Check
+        </button>
+        {{ authStore.isAuthenticated }}
       </div>
     </div>
 
-    <div v-if="tab === 'register'" class="rounded-lg shadow-lg bg-[#034EA2] text-white w-1/3 p-4 mx-auto mt-4"
-      style="min-height: 280px;">
-      <div class="grid grid-cols-2 gap-4">
-        <InputField1 label="First Name" type="text" color="white" v-model="register.firstName" class="col-span-1" />
-        <InputField1 label="Last Name" type="text" color="white" v-model="register.lastName" class="col-span-1" />
+    <div v-if="tab === 'register'"
+      class="rounded-lg shadow-lg bg-gradient-to-r from-[#034EA2] to-[#0577f7] text-white w-1/3 p-6 mx-auto mt-4"
+      style="min-height: 140px;">
+      <div class="">
+        <p class="text-2xl font-medium">Belum punya akun?</p>
+        <p class="text-base font-normal mt-4">Daftarkan perusahan anda di halaman kalkulator produktivitas untuk
+          mendapatkan
+          manfaat program produktivitas P3D</p>
       </div>
-      <div class="mb-4">
-        <InputField1 label="Company" type="text" color="white" v-model="register.company" />
-      </div>
-      <div class="mb-4">
-        <InputField1 label="Email" type="email" color="white" v-model="register.email" />
-      </div>
-      <div class="mb-4">
-        <InputField1 label="Username" type="text" color="white" v-model="register.username" />
-      </div>
-      <div class="mb-4">
-        <InputField1 label="Password" type="password" color="white" v-model="register.password" />
-      </div>
-      <div class="flex">
-        <button @click="registerAuth"
+      <div class="flex my-2">
+        <a href="http://127.0.0.1:8080/daftar"
           class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full mx-auto w-40 ease-in-out duration-300 mt-4">
-          Daftar
-        </button>
+          Daftar Sekarang
+        </a>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { useAuthStore } from '@/store/auth';
+
 export default {
+  setup() {
+    const authStore = useAuthStore()
+
+    return { authStore }
+  },
   data() {
     return {
       showPassword: false,
@@ -78,14 +82,6 @@ export default {
         username: '',
         password: '',
       },
-      register: {
-        firstName: '',
-        lastName: '',
-        company: '',
-        email: '',
-        username: '',
-        password: ''
-      }
     }
   },
   methods: {
@@ -103,31 +99,23 @@ export default {
     },
     async loginAuth() {
       try {
-        const data = await fetch('http://localhost:2020/auth/login', {
+        const token = await $fetch('http://localhost:2020/auth/login', {
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/json',
           },
           method: 'POST',
           body: JSON.stringify(this.login)
         })
-        console.log(data);
+        console.log(token);
+        if (token !== 'No User Found') {
+          this.authStore.setToken(token)
+        }
       } catch (error) {
         console.log(error);
       }
     },
-    async registerAuth() {
-      try {
-        const data = await fetch('http://localhost:2020/auth/register', {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          method: 'POST',
-          body: JSON.stringify(this.register)
-        })
-        console.log(data);
-      } catch (error) {
-        console.log(error);
-      }
+    checkAuth() {
+      console.log(this.authStore.jwtToken.user);
     }
   }
 }
