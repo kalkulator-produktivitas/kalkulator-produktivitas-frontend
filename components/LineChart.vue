@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col">
-    <div>
-      <p class="font-bold text-lg">{{ title }}</p>
+    <div class="p-1 bg-[#034EA2]">
+      <p class="font-bold text-md text-white ml-2">{{ title }}</p>
     </div>
-    <div class="my-auto">
+    <div class="my-auto px-4">
       <Line :options="config" :data="dataset" />
     </div>
   </div>

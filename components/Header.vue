@@ -9,8 +9,9 @@
           <Icon name="fe:arrow-down" size="6mm" class="my-auto flex-none mr-2 ml-8" />
         </span>
         <span v-else class="text-black flex flex justify-end">
-          <Icon name="fe:user" size="6mm" class="my-auto flex-none mr-2" />No User
-
+          <button @click="signInPage">
+            <Icon name="fe:user" size="6mm" class="my-auto flex-none mr-2" />Sign In
+          </button>
         </span>
       </div>
     </header>
@@ -20,6 +21,12 @@
 <script setup>
 import { useAuthStore } from '../store/auth';
 const authStore = useAuthStore()
+
+const signInPage = async () => {
+  await navigateTo({
+    path: '/login'
+  })
+}
 
 // const username = ref(authStore.jwtToken.user)
 </script>

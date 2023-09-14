@@ -22,13 +22,14 @@
     <form class="col-span-4 overflow-y-auto pt-10 flex w-[90%]" @submit.prevent="submitForm">
       <div class="w-[98%]">
         <!-- <InputField2 v-for="param in parameters[tab]" :label="param" type="number" /> -->
-        <div v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja'" class="flex items-center mb-4 ml-4">
+        <div v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja' && tab !== 'Informasi Tambahan'"
+          class="flex items-center mb-4 ml-4">
           <input @change="zeroParams(tab)" :id="labeling(tab + '_checkbox')" type="checkbox" v-model="total_fill[tab]"
             class="w-4 h-4 bg-gray-100 rounded-2 dark:bg-gray-700">
           <label :for="labeling(tab + '_checkbox')" class="ml-2 text-sm font-medium text-gray-900">Isi Total Saja</label>
         </div>
-        <div v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja'" v-for="param in Object.keys(parameters[tab])"
-          class="mb-4 md:flex md:items-center">
+        <div v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja' && tab !== 'Informasi Tambahan'"
+          v-for="param in Object.keys(parameters[tab])" class="mb-4 md:flex md:items-center">
           <div class="md:w-1/2">
             <label class="block text-sm font-bold mr-8 md:text-right" :for="labeling(param)">
               {{ param }}
@@ -44,8 +45,10 @@
               :readonly="total_fill[tab]" v-model="parameters[tab][param]">
           </div>
         </div>
-        <hr v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja'" class="h-px mt-8 border-black border-1 ml-12">
-        <div v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja'" class="mb-4 md:flex md:items-center">
+        <hr v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja' && tab !== 'Informasi Tambahan'"
+          class="h-px mt-8 border-black border-1 ml-12">
+        <div v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja' && tab !== 'Informasi Tambahan'"
+          class="mb-4 md:flex md:items-center">
           <div class="md:w-1/2">
             <label class="block text-sm font-bold mr-8 md:text-right" :for="labeling(tab + '_total')">
               {{ tab + ' Total' }}
@@ -84,8 +87,20 @@
               :disabled="total_fill[tab]" v-model="parameters[tab][param]">
           </div>
         </div>
+        <div v-if="tab === 'Informasi Tambahan'" v-for="param in informasi_tambahan" class="mb-4 ml-8 flex-col">
+          <div class="w-3/4 mb-2">
+            <label class="block text-sm font-bold mr-8 md:text-left" :for="labeling(param.id)">
+              {{ param.question }}
+            </label>
+          </div>
+          <div class="w-3/4">
+            <textarea id="message" rows="4"
+              class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Write here..." v-model="param.jawaban" :id="labeling(param.id)"></textarea>
+          </div>
+        </div>
       </div>
-      <div class="absolute bottom-20 left-40">
+      <div class="absolute bottom-10 left-40">
         <button @click="formRequest" type="submit"
           class="bg-blue-500 hover:bg-blue-700 text-white mx-auto font-bold py-1 px-4 rounded-full w-32 h-9">
           Submit
@@ -99,6 +114,8 @@
 </template>
 
 <script setup>
+import { useAuthStore } from '../../store/auth';
+const authStore = useAuthStore()
 
 function labeling(label) {
   const noSpaces = label.replace(/ /g, '');
@@ -128,13 +145,13 @@ const years = generateYearOptions()
 
 const tab = ref('default')
 const tabList = ref(['Penjualan dan Modal', 'Biaya Tenaga Kerja', 'Bahan Yang Digunakan', 'Overhead Produksi', 'Bunga Pinjaman',
-  'Biaya Administrasi', 'Penyusutan', 'Pajak', 'Aktiva Perusahaan', 'Laba', 'Jumlah Tenaga Kerja'])
+  'Biaya Administrasi', 'Penyusutan', 'Pajak', 'Aktiva Perusahaan', 'Laba', 'Jumlah Tenaga Kerja', 'Informasi Tambahan'])
 const parameters = ref({
   'Penjualan dan Modal': { 'Penjualan': null, 'Modal Operasi': null, 'Investasi': null },
   'Biaya Tenaga Kerja': { 'Upah dan Gaji (Termasuk Direksi)': null, 'Dana Pensiun': null, 'Tunjangan-tunjangan Tenaga Kerja': null },
   'Bahan Yang Digunakan': { 'Barang dan jasa yang dibeli': null, 'Barang yang digunakan': null, 'Bahan Baku': null, 'Bahan pengemas': null },
   'Overhead Produksi': {
-    'Pekerjaan subkontrak': null, 'Sewa': null, 'Air dan Listrik': null, 'Asuransi Perusahaan': null, 'Biaya Transport': null,
+    'Pekerjaan Subkontrak': null, 'Sewa': null, 'Air dan Listrik': null, 'Asuransi Perusahaan': null, 'Biaya Transport': null,
     'Pemeliharaan Mesin': null, 'Biaya Supplies dan gudang': null, 'Biaya lain-lain': null
   },
   'Bunga Pinjaman': {
@@ -146,7 +163,7 @@ const parameters = ref({
     'Pos dan telegram': null, 'Percetakan, Stationary & Office Supplies': null,
     'Biaya Kendaraan': null, 'Advertising': null, 'Hiburan / Entertainment': null,
     'Majalah dan surat kabar': null, 'Jamuan Makan': null, 'Perbaikan Umum': null,
-    'Biaya Bank': null, 'Biaya Akuntan dan Audit': null, 'Biaya	Bantuan	Hukum & Jasa Profesional lainnya': null, 'Komisi': null, 'Biaya Umum': null
+    'Biaya Bank': null, 'Biaya Akuntan dan Audit': null, 'Biaya	Bantuan	Hukum dan Jasa Profesional lainnya': null, 'Komisi': null, 'Biaya Umum': null
   },
   'Penyusutan': { 'Penyusutan Gedung': null, 'Penyusutan Peralatan dan Mesin': null },
   'Pajak': { 'Pajak Penghasilan': null, 'Pajak Kekayaan': null, 'Pajak Upah': null },
@@ -157,6 +174,14 @@ const parameters = ref({
   'Laba': { 'Laba Bersih': null, 'Laba Operasi': null },
   'Jumlah Tenaga Kerja': { 'Jumlah Tenaga Kerja': null, 'Jam Kerja': null, 'Jam Kerja Lembur': null },
 })
+
+const informasi_tambahan = ref([
+  { id: "pertanyaan_1", jawaban: null, question: 'Teknik, metode apa saja yang sudah diterapkan perusahaan untuk meningkatkan produktivitas' },
+  { id: "pertanyaan_2", jawaban: null, question: 'Apa saja Kebijakan pimpinan perusahaan dalam rangka mendorong peningkatan produktivitas perusahaan dan tenaga kerja?' },
+  { id: "pertanyaan_3", jawaban: null, question: 'Pada tiga tahun terakhir ini apakah perusahaan anda meningkat atau menurun kemajuan atau produktivitasnya?' },
+  { id: "pertanyaan_4", jawaban: null, question: 'Jika terjadi peningkatan kemajuan /produktivitas perusahaan, apa saja penyebabnya?' },
+  { id: "pertanyaan_5", jawaban: null, question: 'Dan jika terjadi penurunan kemajuan/produktivitas perusahaan, apa saja penyebabnya?' }
+])
 
 const total_fill = ref({
   'Penjualan dan Modal': false,
@@ -190,10 +215,18 @@ const selectedYear = ref(new Date().getFullYear())
 const yearOptions = ref(generateYearOptions())
 // const flashMessage = ref('')
 // const flashMessageType = ref('')
-const responded = ref('')
 
 
 
+const all_params = computed(() => {
+  let params = parameters.value
+  let answer = {}
+  for (let ans of informasi_tambahan.value) {
+    answer[ans.id] = ans.jawaban
+  }
+  params["Informasi Tambahan"] = answer
+  return params
+})
 
 const total_pembelian_bahan = computed(() => {
   return totals.value["Bahan Yang Digunakan"] + totals.value["Overhead Produksi"] + totals.value["Biaya Administrasi"]
@@ -237,13 +270,16 @@ const tambahan = computed(() => {
 })
 const formRequest = async () => {
   try {
-    const data = await fetch('http://localhost:2020', {
+    const data = await fetch('http://localhost:2020/write', {
       headers: {
         'Content-Type': 'application/json'
       },
       method: 'POST',
       body: JSON.stringify({
-        raw_data: (parameters.value),
+        year_report: selectedYear.value,
+        id_perusahaan: 'default',
+        nama_laporan: `Laporan Produktivitas Tahun ${selectedYear.value}`,
+        raw_data: (all_params.value),
         totals: (totals.value),
         analysis: ({
           pembelian_bahan: total_pembelian_bahan.value,

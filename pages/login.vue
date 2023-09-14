@@ -35,12 +35,12 @@
           @click="loginAuth">
           Login
         </button>
-        <button
+        <!-- <button
           class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-full mx-auto w-40 ease-in-out duration-300 mt-4"
           @click="checkAuth">
           Check
         </button>
-        {{ authStore.isAuthenticated }}
+        {{ authStore.isAuthenticated }} -->
       </div>
     </div>
 

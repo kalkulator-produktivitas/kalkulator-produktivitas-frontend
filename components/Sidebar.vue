@@ -5,13 +5,13 @@
       <div class="h-full bg-[#034EA2] overflow-hidden">
         <div class="flex items-center">
           <img src="~/assets/DKI_LOGO_2.png" class="w-10 ml-1 pt-3 flex-none" alt="" srcset="">
-          <p class="ml-2 text-white font-thin mt-2" :class="!isOpen ? 'visible' : 'invisible'">
+          <p class="ml-2 font-semibold text-white font-thin mt-2" :class="!isOpen ? 'visible' : 'invisible'">
             Kalkulator Produktivitas</p>
         </div>
         <div class="px-3 py-4">
           <ul class="mt-6">
             <li v-for="item in items" :key="item.text" class="mb-4">
-              <nuxt-link :to="item.to" class="text-xl flex items-left text-white">
+              <nuxt-link :to="item.to" class="text-xl font-semibold flex items-left text-white">
                 <Icon :name="item.icon" size="6mm" class="my-auto flex-none mr-2" />
                 <p :class="!isOpen ? 'visible' : 'invisible'">{{ item.text }}</p>
               </nuxt-link>

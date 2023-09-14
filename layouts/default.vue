@@ -2,7 +2,7 @@
     <div>
         <Header />
         <Sidebar />
-        <div id="layout" class="container md:container md:mx-auto my-8 mx-auto">
+        <div id="layout" class="container md:container md:mx-auto my-6 mx-auto">
             <slot />
         </div>
     </div>
