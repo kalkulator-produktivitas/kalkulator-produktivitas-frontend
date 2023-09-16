@@ -16,8 +16,8 @@
       <div class="text-white">
         <InputField1 label="Username" type="text" color="white" v-model="login.username" />
       </div>
-      <div class="grid grid-cols-5 mb-4">
-        <div class="col-span-4">
+      <div class="grid grid-cols-6 mb-4">
+        <div class="col-span-5">
           <label class="block text-sm font-bold mb-2" style="color: white" for="password">
             Password
           </label>
@@ -60,6 +60,8 @@
         </a>
       </div>
     </div>
+    <Loading v-if="loading" text="Please wait...." />
+    <Popup v-if="modal.show" :message="modal.message" :type="modal.type" @close="closeModal" />
   </div>
 </template>
 
@@ -82,6 +84,12 @@ export default {
         username: '',
         password: '',
       },
+      loading: false,
+      modal: {
+        show: false,
+        type: '',
+        message: '',
+      }
     }
   },
   methods: {
@@ -97,7 +105,12 @@ export default {
         this.icon = 'bi:eye'
       }
     },
+    closeModal() {
+      // console.log('closing modal');
+      this.modal.show = false
+    },
     async loginAuth() {
+      this.loading = true
       try {
         const token = await $fetch('http://localhost:2020/auth/login', {
           headers: {
@@ -106,17 +119,46 @@ export default {
           method: 'POST',
           body: JSON.stringify(this.login)
         })
-        console.log(token);
-        if (token !== 'No User Found') {
-          this.authStore.setToken(token)
+        if (token !== 'No User Found' || token !== 'Password Incorrect') {
+          // this.authStore.setToken(token)
+          this.loading = false
+          this.modal.show = true
+          this.modal.message = 'Logged In'
+          this.modal.type = 'ATTENTION'
+        } else {
+          this.loading = false
+          this.modal.show = true
+          this.modal.message = token
+          this.modal.type = 'ERROR'
         }
+
       } catch (error) {
+        this.loading = false
+        this.modal.type = 'ERROR'
+        this.modal.message = error.message
+        this.modal.show = true
         console.log(error);
       }
     },
     checkAuth() {
       console.log(this.authStore.jwtToken.user);
-    }
+    },
+    async trial() {
+
+      try {
+        const data = await $fetch('http://localhost:2020/auth/trial', {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          method: 'POST'
+        })
+        console.log(data.value);
+        this.loading = false
+      } catch (error) {
+        console.log(error);
+        this.loading = false
+      }
+    },
   }
 }
 </script>

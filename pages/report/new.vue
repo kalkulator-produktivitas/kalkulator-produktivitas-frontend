@@ -108,7 +108,8 @@
       </div>
     </form>
 
-
+    <Loading v-if="loading" text="Please wait...." />
+    <Popup v-if="modal.show" :message="modal.message" :type="modal.type" @close="closeModal" />
     <!-- <FlashMessage :type="flashMessageType" :message="flashMessage" /> -->
   </div>
 </template>
@@ -116,6 +117,14 @@
 <script setup>
 import { useAuthStore } from '../../store/auth';
 const authStore = useAuthStore()
+
+const loading = ref(false)
+
+const modal = ref({
+  show: false,
+  type: '',
+  message: '',
+})
 
 function labeling(label) {
   const noSpaces = label.replace(/ /g, '');
@@ -269,8 +278,9 @@ const tambahan = computed(() => {
   return params
 })
 const formRequest = async () => {
+  this.loading = true
   try {
-    const data = await fetch('http://localhost:2020/write', {
+    const data = await $fetch('http://localhost:2020/write', {
       headers: {
         'Content-Type': 'application/json'
       },
@@ -291,7 +301,10 @@ const formRequest = async () => {
         })
       })
     });
-    console.log(data);
+    loading = false
+    modal.value.show = true
+    modal.value.message = 'Data Berhasil Ditambahkan'
+    modal.value.type = 'ATTENTION'
     // if (res.ok) {
     //   const data = await res.json()
     //   console.log(data);
