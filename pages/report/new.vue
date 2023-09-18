@@ -108,8 +108,8 @@
       </div>
     </form>
 
-    <Loading v-if="loading" text="Please wait...." />
-    <Popup v-if="modal.show" :message="modal.message" :type="modal.type" @close="closeModal" />
+    <Loading v-if="loading" text="Menginput Data" />
+    <Popup v-if="modal.show" :message="modal.message" :status="modal.status" :type="modal.type" @close="closeModal" />
     <!-- <FlashMessage :type="flashMessageType" :message="flashMessage" /> -->
   </div>
 </template>
@@ -124,6 +124,7 @@ const modal = ref({
   show: false,
   type: '',
   message: '',
+  status: undefined
 })
 
 function labeling(label) {
@@ -277,8 +278,13 @@ const tambahan = computed(() => {
   }
   return params
 })
+
+const closeModal = () => {
+  modal.value.show = false
+}
+
 const formRequest = async () => {
-  this.loading = true
+  loading.value = true
   try {
     const data = await $fetch('http://localhost:2020/write', {
       headers: {
@@ -301,193 +307,20 @@ const formRequest = async () => {
         })
       })
     });
-    loading = false
+    loading.value = false
     modal.value.show = true
     modal.value.message = 'Data Berhasil Ditambahkan'
     modal.value.type = 'ATTENTION'
-    // if (res.ok) {
-    //   const data = await res.json()
-    //   console.log(data);
-    // }
   } catch (error) {
     console.log(error);
+    loading.value = false
+    modal.value.show = true
+    modal.value.message = error.message
+    modal.value.status = 500
+    modal.value.type = 'ERROR'
   }
 }
 
-
-
-// export default {
-//   data() {
-//     return {
-//       tab: 'default',
-//       tabList: ['Penjualan dan Modal', 'Biaya Tenaga Kerja', 'Bahan Yang Digunakan', 'Overhead Produksi', 'Bunga Pinjaman',
-//         'Biaya Administrasi', 'Penyusutan', 'Pajak', 'Aktiva Perusahaan', 'Laba', 'Jumlah Tenaga Kerja'],
-//       parameters: {
-//         'Penjualan dan Modal': { 'Penjualan': null, 'Modal Operasi': null, 'Investasi': null },
-//         'Biaya Tenaga Kerja': { 'Upah dan Gaji (Termasuk Direksi)': null, 'Dana Pensiun': null, 'Tunjangan-tunjangan Tenaga Kerja': null },
-//         'Bahan Yang Digunakan': { 'Barang dan jasa yang dibeli': null, 'Barang yang digunakan': null, 'Bahan Baku': null, 'Bahan pengemas': null },
-//         'Overhead Produksi': {
-//           'Pekerjaan subkontrak': null, 'Sewa': null, 'Air dan Listrik': null, 'Asuransi Perusahaan': null, 'Biaya Transport': null,
-//           'Pemeliharaan Mesin': null, 'Biaya Supplies dan gudang': null, 'Biaya lain-lain': null
-//         },
-//         'Bunga Pinjaman': {
-//           'Bunga Pinjaman Jangka Pendek': null,
-//           'Bunga Pinjaman Jangka Panjang': null
-//         },
-//         'Biaya Administrasi': {
-//           'Sewa': null, 'Air dan Listrik': null, 'Telepon': null,
-//           'Pos dan telegram': null, 'Percetakan, Stationary & Office Supplies': null,
-//           'Biaya Kendaraan': null, 'Advertising': null, 'Hiburan / Entertainment': null,
-//           'Majalah dan surat kabar': null, 'Jamuan Makan': null, 'Perbaikan Umum': null,
-//           'Biaya Bank': null, 'Biaya Akuntan dan Audit': null, 'Biaya	Bantuan	Hukum & Jasa Profesional lainnya': null, 'Komisi': null, 'Biaya Umum': null
-//         },
-//         'Penyusutan': { 'Penyusutan Gedung': null, 'Penyusutan Peralatan dan Mesin': null },
-//         'Pajak': { 'Pajak Penghasilan': null, 'Pajak Kekayaan': null, 'Pajak Upah': null },
-//         'Aktiva Perusahaan': {
-//           'Kas dan Bank': null, 'Persediaan': null, 'Piutang Dagang': null, 'Piutang Lain - Lain': null,
-//           'Tanah': null, 'Gedung': null, 'Mesin dan Peralatan': null, 'Aktiva Tetap Lainnya': null
-//         },
-//         'Laba': { 'Laba Bersih': null, 'Laba Operasi': null },
-//         'Jumlah Tenaga Kerja': { 'Jumlah Tenaga Kerja': null, 'Jam Kerja': null, 'Jam Kerja Lembur': null },
-//       },
-//       total_fill: {
-//         'Penjualan dan Modal': false,
-//         'Biaya Tenaga Kerja': false,
-//         'Bahan Yang Digunakan': false,
-//         'Overhead Produksi': false,
-//         'Bunga Pinjaman': false,
-//         'Biaya Administrasi': false,
-//         'Penyusutan': false,
-//         'Pajak': false,
-//         'Aktiva Perusahaan': false,
-//         'Laba': false,
-//         'Jumlah Tenaga Kerja': false,
-//       },
-//       totals: {
-//         // 'Biaya Tenaga Kerja': this.total_fill['Biaya Tenaga Kerja'] ? 0 : Object.values(this.parameters['Biaya Tenaga Kerja'].reduce((partialSum, a) => partialSum + a, 0)),
-//         'Penjualan dan Modal': null,
-//         'Biaya Tenaga Kerja': null,
-//         'Bahan Yang Digunakan': null,
-//         'Overhead Produksi': null,
-//         'Bunga Pinjaman': null,
-//         'Biaya Administrasi': null,
-//         'Penyusutan': null,
-//         'Pajak': null,
-//         'Aktiva Perusahaan': null,
-//         'Laba': null,
-//         'Jumlah Tenaga Kerja': null,
-//       },
-//       selectedYear: new Date().getFullYear(),
-//       yearOptions: this.generateYearOptions(),
-//       flashMessage: '',
-//       flashMessageType: '',
-//       responded: null
-//     }
-//   },
-//   computed: {
-//     total_pembelian_bahan() {
-//       return this.totals["Bahan Yang Digunakan"] + this.totals["Overhead Produksi"] + this.totals["Biaya Administrasi"]
-//     },
-//     nilai_tambah() {
-//       return this.parameters['Penjualan dan Modal']['Penjualan'] - this.total_pembelian_bahan['Jumlah Tenaga Kerja']
-//     },
-//     produktivitas_tenaga_kerja() {
-//       const params = {
-//         ptk_1: this.nilai_tambah / this.parameters['Jumlah Tenaga Kerja']['Jumlah Tenaga Kerja'],
-//         ptk_2: this.nilai_tambah / (this.parameters['Jumlah Tenaga Kerja']['Jam Kerja'] + this.parameters['Jumlah Tenaga Kerja']['Jam Kerja Lembur']),
-//         ptk_3: this.nilai_tambah / this.totals['Biaya Tenaga Kerja'],
-//         ptk_4: this.totals['Biaya Tenaga Kerja'] / (this.parameters['Jumlah Tenaga Kerja']['Jam Kerja'] + this.parameters['Jumlah Tenaga Kerja']['Jam Kerja Lembur']),
-//       }
-//       return params
-//     },
-//     produktivitas_modal() {
-//       const params = {
-//         pm_1: this.parameters['Penjualan dan Modal']['Penjualan'] / this.parameters['Penjualan dan Modal']['Modal Operasi'],
-//         pm_2: this.nilai_tambah / this.parameters['Penjualan dan Modal']['Modal Operasi'],
-//         pm_3: this.parameters['Penjualan dan Modal']['Modal Operasi'] / this.parameters['Jumlah Tenaga Kerja']['Jumlah Tenaga Kerja'],
-//       }
-//       return params
-//     },
-//     profitabilitas() {
-//       const params = {
-//         profit_1: this.totals['Laba'] / this.parameters['Penjualan dan Modal']['Penjualan'],
-//         profit_2: this.totals['Laba'] / this.total_pembelian_bahan,
-//         profit_3: this.totals['Laba'] / this.parameters['Penjualan dan Modal']['Modal Operasi'],
-//       }
-//       return params
-//     },
-//     tambahan() {
-//       const params = {
-//         profit_1: this.nilai_tambah / this.parameters['Penjualan dan Modal']['Penjualan'],
-//         profit_2: this.nilai_tambah / this.total_pembelian_bahan,
-//         profit_3: this.totals['Laba'] / this.totals['Biaya Tenaga Kerja'],
-//       }
-//       return params
-//     },
-
-//   },
-//   methods: {
-//     async formRequest() {
-//       try {
-//         const data = await fetch('http://localhost:2020', {
-//           headers: {
-//             'Content-Type': 'application/x-www-form-urlencoded',
-//             'Access-Control-Allow-Origin': '*',
-//             'Access-Control-Allow-Methods': 'POST,PATCH,OPTIONS'
-//           },
-//           mode: 'no-cors',
-//           method: 'POST',
-//           body: new URLSearchParams({
-//             raw_data: this.parameters,
-//             totals: this.totals,
-//             analysis: {
-//               pembelian_bahan: this.total_pembelian_bahan,
-//               nilai_tambah: this.nilai_tambah,
-//               produktivitas_tenaga_kerja: this.produktivitas_tenaga_kerja,
-//               produktivitas_modal: this.produktivitas_modal,
-//               profitabilitas: this.profitabilitas,
-//               tambahan: this.tambahan,
-//             }
-//           })
-
-//         });
-//         this.responded = data
-//         console.log(data);
-//         this.flashMessage = 'Form submitted successfully!';
-//         this.flashMessageType = 'success';
-//         // this.flashMessage = 'An error occurred while submitting the form.';
-//         // this.flashMessageType = 'error';
-//       } catch (error) {
-//         this.flashMessage = 'An error occurred while submitting the form.';
-//         this.flashMessageType = 'error';
-//       }
-//     },
-//     labeling(label) {
-//       const noSpaces = label.replace(/ /g, '');
-//       return noSpaces
-//     },
-//     generateYearOptions() {
-//       const currentYear = new Date().getFullYear();
-//       const years = [];
-//       for (let i = 0; i <= 20; i++) {
-//         years.push(currentYear - i);
-//       }
-//       return years;
-//     },
-
-//     sumParams(tabs) {
-//       const sums = Object.values(this.parameters[tabs]).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-//       this.totals[tabs] = sums
-//     },
-
-//     zeroParams(tabs) {
-//       for (let param of Object.keys(this.parameters[tabs])) {
-//         this.parameters[tabs][param] = null
-//       }
-//     },
-
-//   }
-// }
 </script>
 
 <style scoped>

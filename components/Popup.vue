@@ -1,7 +1,10 @@
 <template>
   <div class="modal-overlay z-20">
     <div class="modal p-6 text-center justify-center" :class="data.bgColor">
-      <p>
+      <p v-if="status" class="text-8xl font-bold text-center my-6">
+        {{ status }}
+      </p>
+      <p v-else>
         <Icon :name="data.icon" size="75px" />
       </p>
       <p class="text-4xl font-bold text-center my-6">{{ data.title }}</p>
@@ -16,7 +19,7 @@
 
 <script setup>
 
-const props = defineProps(['type', 'message'])
+const props = defineProps(['type', 'message', 'status'])
 
 const data = computed(() => {
   let bgColor

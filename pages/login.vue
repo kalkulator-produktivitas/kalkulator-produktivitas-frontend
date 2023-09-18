@@ -66,9 +66,13 @@
 </template>
 
 <script>
+import { reloadNuxtApp } from "nuxt/app";
 import { useAuthStore } from '@/store/auth';
 
 export default {
+  mounted() {
+    // this.storage()
+  },
   setup() {
     const authStore = useAuthStore()
 
@@ -112,23 +116,32 @@ export default {
     async loginAuth() {
       this.loading = true
       try {
-        const token = await $fetch('http://localhost:2020/auth/login', {
+        const res = await $fetch('http://localhost:2020/auth/login', {
           headers: {
             'Content-Type': 'application/json',
           },
           method: 'POST',
           body: JSON.stringify(this.login)
         })
-        if (token !== 'No User Found' || token !== 'Password Incorrect') {
-          // this.authStore.setToken(token)
+        if (res !== 'No User Found' && res !== 'Password Incorrect') {
           this.loading = false
           this.modal.show = true
           this.modal.message = 'Logged In'
           this.modal.type = 'ATTENTION'
+          if (process.client) {
+            localStorage.setItem("auth", JSON.stringify(res))
+            setTimeout(() => {
+              reloadNuxtApp({
+                path: "/",
+                ttl: 5000,
+              });
+            }, 1500);
+
+          }
         } else {
           this.loading = false
           this.modal.show = true
-          this.modal.message = token
+          this.modal.message = res
           this.modal.type = 'ERROR'
         }
 

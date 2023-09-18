@@ -11,7 +11,7 @@
         <div class="px-3 py-4">
           <ul class="mt-6">
             <li v-for="item in items" :key="item.text" class="mb-4">
-              <nuxt-link :to="item.to" class="text-xl font-semibold flex items-left text-white">
+              <nuxt-link :to="item.to" class="text-xl font-normal flex items-left text-white">
                 <Icon :name="item.icon" size="6mm" class="my-auto flex-none mr-2" />
                 <p :class="!isOpen ? 'visible' : 'invisible'">{{ item.text }}</p>
               </nuxt-link>

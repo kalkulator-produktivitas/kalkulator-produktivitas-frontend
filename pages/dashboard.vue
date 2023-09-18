@@ -32,6 +32,16 @@
 </template>
 
 <script setup>
+definePageMeta({
+  middleware: process.client ? [
+    function (to, from) {
+      let auth = localStorage.getItem('auth')
+      if (!auth) {
+        return navigateTo('/login');
+      }
+    },] : undefined
+});
+
 import {
   Chart as ChartJS,
   Title,
@@ -50,6 +60,8 @@ ChartJS.register(
   CategoryScale,
   LinearScale
 );
+
+
 
 const data = ref({
   produktivitas_tenaga_kerja: {

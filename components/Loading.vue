@@ -1,6 +1,6 @@
 <template>
   <div class="fixed z-80 modal-overlay top-0 left-0 w-screen h-screen flex">
-    <div role="status" class="my-auto">
+    <div role="status" class="my-auto text-center">
       <svg aria-hidden="true" class="inline w-48 h-48 mr-2 text-gray-200 animate-spin dark:text-gray-200 fill-green-600"
         viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
