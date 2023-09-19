@@ -79,10 +79,7 @@
           </div>
           <div class="md:w-1/2 flex">
             <input
-              class="appearance-none border-b-2 h-100 py-auto ml-2 text-gray-700 text-sm leading-tight w-6 text-center"
-              :class="total_fill[tab] ? 'bg-gray-100' : 'bg-white'" disabled readonly type="text" value="Rp">
-            <input
-              class="appearance-none border-b-2 w-full h-100 py-auto px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none border-b-2 w-full h-100 py-auto px-3 my-1 w-[30%] text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
               :class="total_fill[tab] ? 'bg-gray-100' : ''" :id="labeling(param)" type="number"
               :disabled="total_fill[tab]" v-model="parameters[tab][param]">
           </div>
@@ -115,8 +112,12 @@
 </template>
 
 <script setup>
-import { useAuthStore } from '../../store/auth';
-const authStore = useAuthStore()
+const global = useRuntimeConfig();
+
+let authUser
+if (process.client) {
+  authUser = ref(JSON.parse(localStorage.getItem("auth")))
+}
 
 const loading = ref(false)
 
@@ -204,7 +205,6 @@ const total_fill = ref({
   'Pajak': false,
   'Aktiva Perusahaan': false,
   'Laba': false,
-  'Jumlah Tenaga Kerja': false,
 })
 
 const totals = ref({
@@ -218,15 +218,10 @@ const totals = ref({
   'Pajak': null,
   'Aktiva Perusahaan': null,
   'Laba': null,
-  'Jumlah Tenaga Kerja': null,
 })
 
 const selectedYear = ref(new Date().getFullYear())
 const yearOptions = ref(generateYearOptions())
-// const flashMessage = ref('')
-// const flashMessageType = ref('')
-
-
 
 const all_params = computed(() => {
   let params = parameters.value
@@ -238,18 +233,22 @@ const all_params = computed(() => {
   return params
 })
 
+const total_jam_kerja = computed(() => {
+  return parameters.value['Jumlah Tenaga Kerja']['Jam Kerja'] + parameters.value['Jumlah Tenaga Kerja']['Jam Kerja Lembur']
+})
+
 const total_pembelian_bahan = computed(() => {
   return totals.value["Bahan Yang Digunakan"] + totals.value["Overhead Produksi"] + totals.value["Biaya Administrasi"]
 })
 
 const nilai_tambah = computed(() => {
-  return parameters.value['Penjualan dan Modal']['Penjualan'] - total_pembelian_bahan.value['Jumlah Tenaga Kerja']
+  return parameters.value['Penjualan dan Modal']['Penjualan'] - total_pembelian_bahan.value
 })
 const produktivitas_tenaga_kerja = computed(() => {
   const params = {
     ptk_1: nilai_tambah.value / parameters.value['Jumlah Tenaga Kerja']['Jumlah Tenaga Kerja'],
     ptk_2: nilai_tambah.value / (parameters.value['Jumlah Tenaga Kerja']['Jam Kerja'] + parameters.value['Jumlah Tenaga Kerja']['Jam Kerja Lembur']),
-    ptk_3: nilai_tambah.value / totals['Biaya Tenaga Kerja'],
+    ptk_3: nilai_tambah.value / totals.value['Biaya Tenaga Kerja'],
     ptk_4: totals.value['Biaya Tenaga Kerja'] / (parameters.value['Jumlah Tenaga Kerja']['Jam Kerja'] + parameters.value['Jumlah Tenaga Kerja']['Jam Kerja Lembur']),
   }
   return params
@@ -286,14 +285,14 @@ const closeModal = () => {
 const formRequest = async () => {
   loading.value = true
   try {
-    const data = await $fetch('http://localhost:2020/write', {
+    const data = await $fetch(`${global.public.baseURL}/write/api/postdata`, {
       headers: {
         'Content-Type': 'application/json'
       },
       method: 'POST',
       body: JSON.stringify({
         year_report: selectedYear.value,
-        id_perusahaan: 'default',
+        id_perusahaan: authUser.value.data.id_perusahaan,
         nama_laporan: `Laporan Produktivitas Tahun ${selectedYear.value}`,
         raw_data: (all_params.value),
         totals: (totals.value),
@@ -309,10 +308,14 @@ const formRequest = async () => {
     });
     loading.value = false
     modal.value.show = true
+    modal.value.status = null
     modal.value.message = 'Data Berhasil Ditambahkan'
     modal.value.type = 'ATTENTION'
+    reloadNuxtApp({
+      path: "/report",
+      ttl: 5000,
+    });
   } catch (error) {
-    console.log(error);
     loading.value = false
     modal.value.show = true
     modal.value.message = error.message
