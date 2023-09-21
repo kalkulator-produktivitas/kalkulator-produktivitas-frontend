@@ -112,6 +112,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  layout: 'app',
+  middleware: ['auth']
+});
 const global = useRuntimeConfig();
 
 let authUser

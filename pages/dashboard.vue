@@ -33,13 +33,8 @@
 
 <script setup>
 definePageMeta({
-  middleware: process.client ? [
-    function (to, from) {
-      let auth = localStorage.getItem('auth')
-      if (!auth) {
-        return navigateTo('/login');
-      }
-    },] : undefined
+  layout: 'app',
+  middleware: ['auth']
 });
 
 import {

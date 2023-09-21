@@ -42,6 +42,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  layout: 'app',
+  middleware: ['auth']
+});
 const global = useRuntimeConfig();
 
 const loading = ref(true)
@@ -49,8 +53,20 @@ let reports = ref()
 
 const yearFilter = ref(undefined)
 
+let authUser
+if (process.client) {
+  authUser = ref(JSON.parse(localStorage.getItem("auth")))
+}
+
 try {
-  const laporan = await $fetch(`${global.public.baseURL}/read/laporan`)
+  const laporan = await $fetch(`${global.public.baseURL}/read/laporan`,
+    {
+      method: "GET",
+      query: {
+        id: authUser.value.data.id_perusahaan
+      }
+    })
+  console.log(laporan);
   reports.value = laporan
   loading.value = false
 } catch (error) {

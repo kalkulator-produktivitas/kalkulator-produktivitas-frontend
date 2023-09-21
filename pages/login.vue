@@ -68,6 +68,9 @@
 <script>
 import { reloadNuxtApp } from "nuxt/app";
 import { useAuthStore } from '@/store/auth';
+definePageMeta({
+  layout: 'app'
+});
 
 export default {
   mounted() {

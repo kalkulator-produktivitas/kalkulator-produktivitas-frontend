@@ -20,7 +20,7 @@ export default {
     'type',
     'modelValue',
     'placeholder',
-    'color'
+    'color',
   ],
   emits: ['update:modelValue'],
   computed: {

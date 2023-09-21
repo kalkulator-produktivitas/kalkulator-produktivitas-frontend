@@ -2,16 +2,17 @@
   <div class="h-full grid grid-cols-2 gap-12">
     <div class="max-w static rounded overflow shadow-lg bg-[#F6F6F6] card-border">
       <CardLabel label="Profil" />
-      <div class="px-6 py-4 mt-2">
+      <div class="px-6 py-4 mt-6">
         <div class="font-bold text-xl mb-2">Profil Pengguna</div>
         <div class="flex gap-6">
-          <InputField1 label="Nama" wide="300" type="text" disabled="true" value="Budi Budiman" />
-          <InputField1 label="NIK" wide="300" type="number" disabled="true" value="1324568798456" />
+          <InputField1 label="Nama" wide="300" type="text" disabled="true" :modelValue="rawData.nama_user" />
+          <InputField1 label="Tanggal Daftar" wide="300" type="number" disabled="true"
+            :modelValue="rawData.tanggal_registrasi" />
         </div>
-        <InputField1 label="Alamat" type="text" disabled="true"
-          value="Jl. Tengah Raya No.XX, Tengah Baru, Ancol, Jakarta Utara" />
+        <!-- <InputField1 label="Alamat" type="text" disabled="true"
+          :modelValue="rawData.alamat_perusahaan" /> -->
         <div class="flex gap-6">
-          <InputField1 label="Email" wide="300" type="text" disabled="true" value="budibudiman@gmail.com" />
+          <InputField1 label="Email" wide="300" type="text" disabled="true" :modelValue="rawData.email_user" />
           <div class="mb-4" style="width: 300px">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="handphone">
               Nomor Handphone
@@ -22,21 +23,21 @@
                 value="+62" disabled readonly style="width: 50px">
               <input
                 class="shadow-none appearance-none border border-l-0 rounded-r w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
-                value="7895135135" disabled readonly id="handphone" style="width: 221px">
+                :value="rawData.kontak_user" disabled readonly id="handphone" style="width: 221px">
             </div>
           </div>
         </div>
       </div>
-      <div class="px-6 py-4">
+      <div class="px-6 py-4 mt-4">
         <div class="font-bold text-xl mb-2">Profil Perusahaan</div>
         <div class="flex gap-6">
           <InputField1 label="Nama Perusahaan" wide="300" type="text" disabled="true"
-            value="PT. Indonesia Makmur Sejahtera" />
-          <InputField1 label="Telpon" wide="300" type="number" disabled="true" value="0218798456" />
+            :modelValue="rawData.nama_perusahaan" />
+          <InputField1 label="Telpon" wide="300" type="number" disabled="true" :modelValue="rawData.telp_fax" />
         </div>
-        <InputField1 label="Alamat Perusahaan" type="text" disabled="true"
-          value="Jl. Tengah Raya No.XX, Tengah Baru, Ancol, Jakarta Utara" />
-        <InputField1 label="Email Perusahaan" wide="300" type="text" disabled="true" value="info@ims.co.id" />
+        <InputField1 label="Alamat Perusahaan" type="text" disabled="true" :modelValue="rawData.alamat_perusahaan" />
+        <InputField1 label="Email Perusahaan" wide="300" type="text" disabled="true"
+          :modelValue="rawData.email_perusahaan" />
       </div>
     </div>
 
@@ -61,11 +62,11 @@
                 <div class="h-full border-t-2 grid grid-cols-2">
                   <div class="col m-2 h-full">
                     <p class="text-black">Selesai</p>
-                    <p class="text-green-600 text-[24px] font-bold text-center">10</p>
+                    <p class="text-green-600 text-[24px] font-bold text-center">{{ reports.selesai }}</p>
                   </div>
                   <div class="col m-2 h-full">
                     <p class="text-black">Belum</p>
-                    <p class="text-red-600 text-[24px] font-bold text-center">2</p>
+                    <p class="text-red-600 text-[24px] font-bold text-center">{{ reports.belum }}</p>
                   </div>
                 </div>
               </div>
@@ -85,37 +86,22 @@
             </div>
           </div>
           <div class="col-span-2 flex flex-col gap-3">
-            <div class="row-span-5">
-              <div class="h-full bg-white border border-gray-200 shadow-sm p-2 md:table-fixed">
+            <div class="row-span-5 flex flex-col grow">
+              <div class="flex flex-col flex-nowrap grow bg-white border border-gray-200 shadow-sm p-2 md:table-fixed">
                 <p class="font-normal text-zinc-900 dark:text-gray-400 py-1 px-2">Riwayat Pelaporan</p>
                 <table class="table-auto">
                   <thead>
                     <tr class="text-left">
                       <th class="w-[25%]">Tahun</th>
-                      <th class="w-[60%]">Tanggal Lapor</th>
+                      <th class="w-[50%]">Tanggal Lapor</th>
                       <th>Status</th>
                     </tr>
                   </thead>
                   <tbody class="text-sm">
-                    <tr>
-                      <td>2018</td>
-                      <td>5 Januari 2019</td>
-                      <td>Diterima</td>
-                    </tr>
-                    <tr>
-                      <td>2019</td>
-                      <td>12 Februari 2020</td>
-                      <td>Diterima</td>
-                    </tr>
-                    <tr>
-                      <td>2020</td>
-                      <td>29 Desember 2021</td>
-                      <td>Revisi</td>
-                    </tr>
-                    <tr>
-                      <td>2021</td>
-                      <td>12 Januari 2022</td>
-                      <td>Ditolak</td>
+                    <tr v-for="dat in rawData.laporan">
+                      <td>{{ dat.tahun_laporan }}</td>
+                      <td>{{ dateLocal(dat.created_at) }}</td>
+                      <td>{{ dat.status_laporan }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -156,10 +142,55 @@
         </div>
       </div>
     </div>
+    <!-- {{ reports }} -->
   </div>
 </template>
 
-<script>
+<script setup>
+const global = useRuntimeConfig();
+const loading = ref(true)
+
+let authUser
+if (process.client) {
+  authUser = ref(JSON.parse(localStorage.getItem("auth")))
+}
+
+let rawData = ref()
+try {
+  rawData.value = await $fetch(`${global.public.baseURL}/read/halamandepan`,
+    {
+      method: "GET",
+      query: {
+        id: authUser.value.data.id_perusahaan
+      },
+    })
+  loading.value = false
+
+} catch (error) {
+  console.log(error);
+  loading.value = false
+  navigateTo('/error')
+}
+
+// console.log(rawData.laporan);
+
+const reports = computed(() => {
+  let laporan = rawData.value.laporan
+  const selesai = laporan.filter((laps) => laps.status_laporan === "ACCEPTED").length
+  const belum = laporan.filter((laps) => laps.status_laporan === "REJECTED").length
+  return { selesai, belum }
+})
+
+const d = new Date(0)
+
+const dateLocal = (dt) => {
+  const date = new Date(dt);
+  return date.toLocaleString('id', {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  })
+}
 
 </script>
 
