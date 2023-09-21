@@ -60,7 +60,7 @@ const check = () => {
 
 const signInPage = async () => {
   await navigateTo({
-    path: '/login'
+    path: '/app/login'
   })
 }
 

@@ -6,7 +6,7 @@
 
 <script setup>
 definePageMeta({
-    layout: 'app'
+
 });
 </script>
 

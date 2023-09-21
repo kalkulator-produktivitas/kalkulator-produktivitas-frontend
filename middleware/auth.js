@@ -1,6 +1,6 @@
 export default defineNuxtRouteMiddleware((to, from) => {
   let auth = localStorage.getItem('auth')
   if (!auth) {
-    return navigateTo('/login');
+    return navigateTo('/app/login');
   }
 })
