@@ -1,6 +1,5 @@
 <template>
-  <div class="h-[100px]">
-
+  <div class="h-[10px]">
   </div>
   <div class="flex">
     <ul class="flex list-none flex-row flex-wrap border-b-0 pl-0 mx-auto">
@@ -124,6 +123,8 @@
         </div>
       </div>
     </div>
+    <Loading v-if="loading" text="Menginput Data" />
+    <Popup v-if="modal.show" :message="modal.message" :status="modal.status" :type="modal.type" @close="closeModal" />
   </div>
 </template>
 
@@ -138,8 +139,17 @@ const tab = ref('Data Perusahaan')
 
 const showModal = ref(false)
 
+const loading = ref(false)
+
+const modal = ref({
+  show: false,
+  type: '',
+  message: '',
+  status: undefined
+})
+
 const closeModal = () => {
-  showModal.value = false
+  modal.value.show = false
 }
 
 const klasifikasi = ref([
@@ -202,8 +212,16 @@ const registerAuth = async () => {
       method: 'POST',
       body: JSON.stringify(register)
     })
+    loading.value = false
+    modal.value.show = true
+    modal.value.status = null
+    modal.value.message = 'Registrasi Berhasil'
+    modal.value.type = 'SUCCESS'
   } catch (error) {
-    console.log(error);
+    loading.value = false
+    modal.value.show = true
+    modal.value.message = "Terjadi Kendala Pada Server"
+    modal.value.type = 'ERROR'
   }
 }
 </script>

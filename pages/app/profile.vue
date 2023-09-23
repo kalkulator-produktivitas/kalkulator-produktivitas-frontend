@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-2 gap-12 profile-page">
+  <div v-if="!errorPage" class="grid grid-cols-2 gap-12 profile-page">
     <div class="max-w static rounded overflow shadow-lg bg-[#F6F6F6] card-border">
       <CardLabel label="Profil Perusahaan" />
       <div class="px-6 py-4 mt-2">
@@ -83,6 +83,7 @@
       </div>
     </div>
   </div>
+  <Popup v-if="modal.show" :message="modal.message" :status="modal.status" :type="modal.type" @close="closeModal" />
 </template>
 
 <script setup>
@@ -92,17 +93,41 @@ definePageMeta({
 });
 const global = useRuntimeConfig();
 
+const errorPage = ref(false)
+const loading = ref(true)
+
+const modal = ref({
+  show: false,
+  type: '',
+  message: '',
+  status: undefined
+})
+
+const closeModal = () => {
+  modal.value.show = false
+}
+
 let authUser
 if (process.client) {
   authUser = ref(JSON.parse(localStorage.getItem("auth")))
-
 }
 
-const { data: rawData, pending, error, refresh } = await useAsyncData(() =>
-  $fetch(`${global.public.baseURL}/read/dataperusahaan?id=${authUser.value.data.id_perusahaan}`, {
+let rawData = ref()
+
+try {
+  const response = await $fetch(`${global.public.baseURL}/read/dataperusahaan?id=${authUser.value.data.id_perusahaan}`, {
     method: 'GET'
   })
-)
+  rawData.value = response
+} catch (error) {
+  console.log(error);
+  errorPage.value = true
+  loading.value = false
+  modal.value.show = true
+  modal.value.message = "Gagat Memuat Data"
+  modal.value.status = 500
+  modal.value.type = 'ERROR'
+}
 
 const company = ref({
   "id_perusahaan": rawData.value["id_perusahaan"],

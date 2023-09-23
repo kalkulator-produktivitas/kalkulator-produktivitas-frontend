@@ -1,13 +1,13 @@
 <template>
-    <div class="container m-12 mx-auto">
-        <h2>This is error page</h2>
-    </div>
+  <div class="mt-7 max-w-sm mx-auto text-center card">
+    <p class="mt-7 text-7xl font-bold">{{ error.statusCode }}</p>
+    <p class="mt-7 text-6xl">Maaf....</p>
+    <p class="t-7">{{ error.message }}</p>
+  </div>
 </template>
 
 <script setup>
-definePageMeta({
-
-});
+defineProps(['error'])
 </script>
 
 <style scoped></style>

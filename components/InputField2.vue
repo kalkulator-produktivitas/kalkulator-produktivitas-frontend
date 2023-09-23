@@ -7,8 +7,8 @@
       </label>
     </div>
     <div class="md:w-1/2 flex">
-      <input class="appearance-none border-b-2 h-100 py-2.5 ml-2 text-gray-700 text-sm leading-tight bg-white w-6"
-        disabled readonly type="text" value="Rp">
+      <input class="appearance-none border-b-2 h-100 py-2.5 ml-2 text-gray-700 text-sm leading-tight w-6 pl-2" disabled
+        readonly type="text" value="Rp">
       <input
         class="appearance-none border-b-2 w-full h-100 py-2.5 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
         :value="value" :disabled="disabled" :readonly="disabled" id="{{this.labeling}}" :type="type"

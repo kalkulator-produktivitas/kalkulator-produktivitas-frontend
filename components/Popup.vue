@@ -4,10 +4,10 @@
       <p v-if="status" class="text-8xl font-bold text-center my-6">
         {{ status }}
       </p>
-      <p v-else>
-        <Icon :name="data.icon" size="75px" />
+      <p v-else :class="data.textColor">
+        <Icon :name="data.icon" size="100px" />
       </p>
-      <p class="text-4xl font-bold text-center my-6">{{ data.title }}</p>
+      <p class="text-4xl font-bold text-center my-2">{{ data.title }}</p>
       <p class="text-xl font-bold text-center">{{ props.message }}</p>
 
       <button type="button" class="bg-green-500" @click="$emit('close')">
@@ -25,19 +25,28 @@ const data = computed(() => {
   let bgColor
   let title
   let icon
+  let textColor
   if (props.type === 'ERROR') {
     bgColor = "bg-red-200"
     title = "ERROR"
     icon = "icomoon-free:cross"
+    textColor = "text-red-500"
+  } else if (props.type === 'SUCCESS') {
+    bgColor = "bg-green-200"
+    title = "SUCCESS"
+    icon = "ic:round-check"
+    textColor = "text-green-500"
   } else {
     bgColor = "bg-yellow-200"
-    title = "ATTENTION"
+    title = "PERHATIAN"
     icon = "fe:warning"
+    textColor = "text-yellow-500"
   }
   return {
     bgColor,
     title,
-    icon
+    icon,
+    textColor
   }
 })
 

@@ -1,14 +1,8 @@
 <template>
-  <div class="container max-w h-full">
-    <!-- <p class="text-xl">Report ID: {{ id }}</p> -->
-    <!-- <button @click="formRequest"
-      class="bg-blue-500 hover:bg-blue-700 text-white mx-auto font-bold py-1 px-4 rounded-full w-32 h-9">
-      Send Request
-    </button>
-    <button @click="getRequest"
-      class="bg-blue-500 hover:bg-blue-700 text-white mx-auto font-bold py-1 px-4 rounded-full w-32 h-9">
-      Get Request
-    </button> -->
+  <div v-if="!errorPage" class="container max-w h-full">
+    <nuxt-link to="/app/report" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+      Kembali
+    </nuxt-link>
     <div class="grid grid-cols-5 mt-4 h-full mt-8">
       <div class="col-span-1">
         <ul class="flex list-none flex-col flex-wrap border-b-0 border-r-2 pl-0">
@@ -19,16 +13,45 @@
           </li>
         </ul>
       </div>
-      <div v-if="loading" role="status" class="animate-pulse max-w-lg">
+      <!-- <div v-if="loading" role="status" class="animate-pulse max-w-lg">
         <div v-for="param in Object.keys(parameters[tab])" class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-32">
         </div>
-      </div>
-      <div v-else class="col-span-3 h-full overflow-y-auto">
+      </div> -->
+      <div v-if="tab !== 'Jumlah Tenaga Kerja' && tab !== 'Informasi Tambahan'" class="col-span-3 h-full overflow-y-auto">
         <InputField2 v-for="param in Object.keys(parameters[tab])" :label="param" type="text"
           :value="parameters[tab][param]" :disabled="true" />
       </div>
+      <div v-if="tab === 'Jumlah Tenaga Kerja'" class="col-span-3 h-full overflow-y-auto">
+        <div v-for="param in Object.keys(parameters[tab])" class="mb-4 md:flex md:items-center">
+          <div class="md:w-1/2">
+            <label class="block text-sm font-bold mr-8 md:text-right" :for="labeling(param)">
+              {{ param }}
+            </label>
+          </div>
+          <div class="md:w-1/2 flex">
+            <input
+              class="appearance-none border-b-2 w-full h-100 py-2 px-3 my-1 w-[30%] text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
+              :id="labeling(param)" type="number" :disabled="true" :value="parameters[tab][param]">
+          </div>
+        </div>
+      </div>
+      <div v-if="tab === 'Informasi Tambahan'" class="col-span-3 h-full overflow-y-auto">
+        <div v-for="param in informasi_tambahan" class="mb-4 md:flex md:items-center ml-8">
+          <div class="w-2/4 mb-2">
+            <label class="block text-sm font-bold mr-8 md:text-left" :for="labeling(param.id)">
+              {{ param.question }}
+            </label>
+          </div>
+          <div class="w-3/4">
+            <textarea id="message" rows="4"
+              class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Write here..." :value="param.jawaban" :id="labeling(param.id)" disabled></textarea>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+  <Popup v-if="modal.show" :message="modal.message" :status="modal.status" :type="modal.type" @close="closeModal" />
 </template>
 
 <script setup>
@@ -39,11 +62,31 @@ definePageMeta({
 const { id } = useRoute().params
 const global = useRuntimeConfig();
 
-let loading = ref(true)
+const errorPage = ref(false)
+const loading = ref(true)
+let reports = ref()
 
+const modal = ref({
+  show: false,
+  type: '',
+  message: '',
+  status: undefined
+})
+
+const closeModal = () => {
+  modal.value.show = false
+}
 
 const { data: rawData, pending, error, refresh } = await useAsyncData(() => $fetch(`${global.public.baseURL}/read/api/getdata/${id}`))
 // console.log(rawData.value);
+if (error.value) {
+  errorPage.value = true
+  loading.value = false
+  modal.value.show = true
+  modal.value.message = "Gagal Memuat Data"
+  modal.value.status = 500
+  modal.value.type = 'ERROR'
+}
 
 
 
@@ -85,7 +128,18 @@ let parameters = ref({
   'Jumlah Tenaga Kerja': { 'Jumlah Tenaga Kerja': rawData.value["jumlah_tenaga_kerja"], 'Jam Kerja': rawData.value["jumlah_jam_kerja"], 'Jam Kerja Lembur': rawData.value["jumlah_jam_lembur"] },
 })
 
-let data;
+const informasi_tambahan = ref([
+  { id: "pertanyaan_1", jawaban: rawData.value["pertanyaan_1"], question: 'Teknik, metode apa saja yang sudah diterapkan perusahaan untuk meningkatkan produktivitas' },
+  { id: "pertanyaan_2", jawaban: rawData.value["pertanyaan_2"], question: 'Apa saja Kebijakan pimpinan perusahaan dalam rangka mendorong peningkatan produktivitas perusahaan dan tenaga kerja?' },
+  { id: "pertanyaan_3", jawaban: rawData.value["pertanyaan_3"], question: 'Pada tiga tahun terakhir ini apakah perusahaan anda meningkat atau menurun kemajuan atau produktivitasnya?' },
+  { id: "pertanyaan_4", jawaban: rawData.value["pertanyaan_4"], question: 'Jika terjadi peningkatan kemajuan /produktivitas perusahaan, apa saja penyebabnya?' },
+  { id: "pertanyaan_5", jawaban: rawData.value["pertanyaan_5"], question: 'Dan jika terjadi penurunan kemajuan/produktivitas perusahaan, apa saja penyebabnya?' }
+])
+
+const labeling = (label) => {
+  const noSpaces = label.replace(/ /g, '');
+  return noSpaces
+}
 
 
 

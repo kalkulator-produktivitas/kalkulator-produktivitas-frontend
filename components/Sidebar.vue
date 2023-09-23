@@ -3,11 +3,11 @@
     <aside @mouseover="isOpen = false" @mouseleave="isOpen = true" id="default-sidebar" :class="isOpen ? 'w-12' : 'w-48'"
       class="fixed top-0 left-0 h-screen transition-all ease-in-out duration-500 z-30" aria-label="Sidebar">
       <div class="h-full bg-[#034EA2] overflow-hidden">
-        <div class="flex items-center">
-          <img src="~/assets/DKI_LOGO_2.png" class="w-10 ml-1 pt-3 flex-none" alt="" srcset="">
-          <p class="ml-2 font-semibold text-white font-thin mt-2" :class="!isOpen ? 'visible' : 'invisible'">
+        <nuxt-link class="flex items-center" to="/">
+          <img src="~/assets/P3D_logo.png" class="w-10 ml-1 pt-3 flex-none" alt="" srcset="">
+          <p class="ml-2 font-bold text-white mt-2" :class="!isOpen ? 'visible' : 'invisible'">
             Kalkulator Produktivitas</p>
-        </div>
+        </nuxt-link>
         <div class="px-3 py-4">
           <ul class="mt-6">
             <li v-for="item in items" :key="item.text" class="mb-4">

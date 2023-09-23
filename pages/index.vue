@@ -55,28 +55,13 @@
       </div>
       <div class="mb-4 ml-20 w-[40%]">
         <div class="mb-4">
-          <label class="block text-sm font-bold mb-2">
-            Nama
-          </label>
-          <input
-            class="shadow appearance-none border rounded w-full h-100 py-2.5 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
-            id="tes">
+          <InputField3 label="Nama" type="text" />
         </div>
         <div class="mb-4">
-          <label class="block text-sm font-bold mb-2">
-            Email
-          </label>
-          <input
-            class="shadow appearance-none border rounded w-full h-100 py-2.5 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
-            id="tes">
+          <InputField3 label="Email" type="text" />
         </div>
         <div class="mb-4">
-          <label class="block text-sm font-bold mb-2">
-            Subject
-          </label>
-          <input
-            class="shadow appearance-none border rounded w-full h-100 py-2.5 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
-            id="tes">
+          <InputField3 label="Subject" type="text" />
         </div>
         <label class="block text-sm font-bold mb-2">
           Pertanyaan

@@ -9,11 +9,13 @@
         <Icon name="fe:eye" class="mr-1" />
         View
       </button>
-      <button class="bg-blue-500 hover:bg-blue-700 text-white px-2 rounded ease-in duration-200 flex items-center">
+      <button @click="$emit('notReady')"
+        class="bg-blue-500 hover:bg-blue-700 text-white px-2 rounded ease-in duration-200 flex items-center">
         <Icon name="fe:download" class="mr-1" />
         Download
       </button>
-      <button class="bg-blue-500 hover:bg-blue-700 text-white px-2 rounded ease-in duration-200 flex items-center">
+      <button @click="$emit('notReady')"
+        class="bg-blue-500 hover:bg-blue-700 text-white px-2 rounded ease-in duration-200 flex items-center">
         <Icon name="fe:link-external" class="mr-1" />
         Certificate
       </button>
@@ -48,7 +50,7 @@ const checkReport = () => {
   const link = `/report/${props.reportId}`
   const report_id = props.reportId
   // const apiLink = `${global.public.baseURL}/api/getdata/${props.reportId}`
-  return router.push({ path: `/report/${report_id}` })
+  return router.push({ path: `/app/report/${report_id}` })
 }
 
 </script>

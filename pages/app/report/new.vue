@@ -1,11 +1,11 @@
 <template>
   <div class="container max-w h-full grid grid-cols-5">
     <div class="col-span-1">
-      <div class="ml-2 flex items-center space-x-4">
-        <label for="select" class="text-gray-600">Pilih tahun</label>
+      <div class="ml-2 flex items-center space-x-4 mb-4 ">
+        <label for="select" class="text-gray-600 font-bold">Pilih tahun</label>
         <div class="relative inline-block w-[40%]">
           <select id="year"
-            class="block py-2.5 pl-2 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-400 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
+            class="block py-1 text-center w-[70px] text-md text-gray-500 bg-transparent border-0 border-b-2 border-gray-400 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
             v-model="selectedYear">
             <option v-for="year in yearOptions" :key="year" :value="year">{{ year }}</option>
           </select>
@@ -63,8 +63,8 @@
               :class="!total_fill[tab] ? 'bg-gray-100' : ''" :disabled="!total_fill[tab]" :id="labeling(tab + '_total')"
               type="number" v-model="totals[tab]">
             <button
-              class="bg-transparent hover:bg-gray-400 text-gray-400 font-bold hover:text-white py-1 px-4 border border-blue hover:border-transparent rounded ml-1"
-              @click="sumParams(tab)">
+              class="bg-transparent hover:text-white hover:bg-gray-400 hover:border-transparent  text-gray-400 font-bold py-1 px-4 border border-blue  rounded ml-1"
+              :class="total_fill[tab] ? 'hidden' : ''" @click="sumParams(tab)" :disabled="total_fill[tab]">
               Sum
             </button>
           </div>
@@ -97,9 +97,9 @@
           </div>
         </div>
       </div>
-      <div class="absolute bottom-10 left-40">
-        <button @click="formRequest" type="submit"
-          class="bg-blue-500 hover:bg-blue-700 text-white mx-auto font-bold py-1 px-4 rounded-full w-32 h-9">
+      <div class="absolute bottom-[5%] right-[5%]">
+        <button @click="formRequest" type="submit" class="text-white mx-auto font-bold py-1 px-4 rounded-full w-32 h-9"
+          :disabled="!isValid" :class="isValid ? 'bg-blue-500 hover:bg-blue-700' : 'bg-gray-300'">
           Submit
         </button>
       </div>
@@ -146,6 +146,11 @@ function generateYearOptions() {
 }
 
 function sumParams(tabs) {
+  for (let params of Object.keys(this.parameters[tabs])) {
+    if (!this.parameters[tabs][params]) {
+      this.parameters[tabs][params] = 0
+    }
+  }
   const sums = Object.values(this.parameters[tabs]).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
   this.totals[tabs] = sums
 }
@@ -237,8 +242,22 @@ const all_params = computed(() => {
   return params
 })
 
-const total_jam_kerja = computed(() => {
-  return parameters.value['Jumlah Tenaga Kerja']['Jam Kerja'] + parameters.value['Jumlah Tenaga Kerja']['Jam Kerja Lembur']
+const isValid = computed(() => {
+  let obj = totals.value
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key) && obj[key] === null) {
+      return false
+    }
+  }
+
+  let obj2 = parameters.value["Jumlah Tenaga Kerja"]
+  for (const key in obj2) {
+    if (obj2.hasOwnProperty(key) && obj2[key] === null) {
+      return false
+    }
+  }
+
+  return true;
 })
 
 const total_pembelian_bahan = computed(() => {
@@ -248,6 +267,7 @@ const total_pembelian_bahan = computed(() => {
 const nilai_tambah = computed(() => {
   return parameters.value['Penjualan dan Modal']['Penjualan'] - total_pembelian_bahan.value
 })
+
 const produktivitas_tenaga_kerja = computed(() => {
   const params = {
     ptk_1: nilai_tambah.value / parameters.value['Jumlah Tenaga Kerja']['Jumlah Tenaga Kerja'],
@@ -314,7 +334,7 @@ const formRequest = async () => {
     modal.value.show = true
     modal.value.status = null
     modal.value.message = 'Data Berhasil Ditambahkan'
-    modal.value.type = 'ATTENTION'
+    modal.value.type = 'SUCCESS'
     reloadNuxtApp({
       path: "/app/report",
       ttl: 5000,

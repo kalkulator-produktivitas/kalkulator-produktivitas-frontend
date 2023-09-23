@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!errorPage">
     <div class="flex justify-between">
       <div>
         <div class="relative">
@@ -29,7 +29,7 @@
     <div v-if="filteredReports.length > 0" class="container my-2 mx-auto">
       <div class="">
         <ReportList v-for="rep of filteredReports" :year="rep.tahun_laporan" :title="rep.nama_laporan"
-          :reportId="rep.id_laporan" :reported_at="rep.created_at" />
+          :reportId="rep.id_laporan" :reported_at="rep.created_at" @not-ready="tidakSiap" />
       </div>
     </div>
     <div v-else class="container m-12 mt-6 mx-auto">
@@ -39,6 +39,7 @@
     </div>
     <Loading v-if="loading" text="Memuat Laporan" />
   </div>
+  <Popup v-if="modal.show" :message="modal.message" :status="modal.status" :type="modal.type" @close="closeModal" />
 </template>
 
 <script setup>
@@ -48,8 +49,20 @@ definePageMeta({
 });
 const global = useRuntimeConfig();
 
+const errorPage = ref(false)
 const loading = ref(true)
 let reports = ref()
+
+const modal = ref({
+  show: false,
+  type: '',
+  message: '',
+  status: undefined
+})
+
+const closeModal = () => {
+  modal.value.show = false
+}
 
 const yearFilter = ref(undefined)
 
@@ -70,13 +83,23 @@ try {
   reports.value = laporan
   loading.value = false
 } catch (error) {
-  console.log(error);
+  errorPage.value = true
   loading.value = false
-  navigateTo('/error')
+  modal.value.show = true
+  modal.value.message = "Gagal Memuat Data"
+  modal.value.status = 500
+  modal.value.type = 'ERROR'
 }
 
 const filterReports = () => {
 
+}
+
+const tidakSiap = () => {
+  console.log("Fitur Belum Siap");
+  modal.value.show = true
+  modal.value.message = "Mohon maaf, fitur belum siap"
+  modal.value.type = 'WARNING'
 }
 
 const filteredReports = ref(reports.value)

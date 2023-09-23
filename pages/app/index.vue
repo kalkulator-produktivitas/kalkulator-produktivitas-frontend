@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full grid grid-cols-2 gap-12">
+  <div v-if="!errorPage" class="h-full grid grid-cols-2 gap-12">
     <div class="max-w static rounded overflow shadow-lg bg-[#F6F6F6] card-border">
       <CardLabel label="Profil" />
       <div class="px-6 py-4 mt-6">
@@ -144,6 +144,7 @@
     </div>
     <!-- {{ reports }} -->
   </div>
+  <Popup v-if="modal.show" :message="modal.message" :status="modal.status" :type="modal.type" @close="closeModal" />
 </template>
 
 <script setup>
@@ -160,6 +161,19 @@ if (process.client) {
   authUser = ref(JSON.parse(localStorage.getItem("auth")))
 }
 
+const errorPage = ref(false)
+
+const modal = ref({
+  show: false,
+  type: '',
+  message: '',
+  status: undefined
+})
+
+const closeModal = () => {
+  modal.value.show = false
+}
+
 let rawData = ref()
 try {
   rawData.value = await $fetch(`${global.public.baseURL}/read/halamandepan`,
@@ -172,9 +186,12 @@ try {
   loading.value = false
 
 } catch (error) {
-  console.log(error);
+  errorPage.value = true
   loading.value = false
-  navigateTo('/error')
+  modal.value.show = true
+  modal.value.message = "Gagat Memuat Data"
+  modal.value.status = 500
+  modal.value.type = 'ERROR'
 }
 
 // console.log(rawData.laporan);

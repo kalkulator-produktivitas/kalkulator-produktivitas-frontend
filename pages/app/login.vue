@@ -130,7 +130,7 @@ export default {
           this.loading = false
           this.modal.show = true
           this.modal.message = 'Logged In'
-          this.modal.type = 'ATTENTION'
+          this.modal.type = 'SUCCESS'
           if (process.client) {
             localStorage.setItem("auth", JSON.stringify(res))
             setTimeout(() => {

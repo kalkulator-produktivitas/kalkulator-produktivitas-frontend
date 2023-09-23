@@ -5,7 +5,7 @@
     </div>
     <div>
       <div id="layout" class="flex flex-col justify-between">
-        <div class="mx-auto w-full">
+        <div class="mx-auto w-full mt-16">
           <slot />
         </div>
 
