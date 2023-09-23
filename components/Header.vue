@@ -44,7 +44,7 @@ const logout = async () => {
   if (process.client) {
     localStorage.removeItem("auth")
     reloadNuxtApp({
-      path: "/login",
+      path: "/app/login",
       ttl: 5000,
     });
   }

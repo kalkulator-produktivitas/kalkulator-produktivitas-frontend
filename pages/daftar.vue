@@ -132,6 +132,7 @@
 definePageMeta({
   layout: 'landing'
 });
+const global = useRuntimeConfig();
 
 const textColor = 'black'
 
@@ -205,7 +206,7 @@ const sameAddress = () => {
 
 const registerAuth = async () => {
   try {
-    const data = await fetch('http://localhost:2020/auth/register', {
+    const data = await fetch(`${global.public.baseURL}/auth/register`, {
       headers: {
         "Content-Type": "application/json"
       },
@@ -217,6 +218,7 @@ const registerAuth = async () => {
     modal.value.status = null
     modal.value.message = 'Registrasi Berhasil'
     modal.value.type = 'SUCCESS'
+    await navigateTo('/')
   } catch (error) {
     loading.value = false
     modal.value.show = true

@@ -72,14 +72,16 @@ definePageMeta({
   layout: 'app'
 });
 
+const global = useRuntimeConfig();
 export default {
   mounted() {
     // this.storage()
   },
   setup() {
     const authStore = useAuthStore()
-
     return { authStore }
+
+
   },
   data() {
     return {
@@ -119,7 +121,7 @@ export default {
     async loginAuth() {
       this.loading = true
       try {
-        const res = await $fetch('http://localhost:2020/auth/login', {
+        const res = await $fetch(`${global.public.baseURL}/auth/login`, {
           headers: {
             'Content-Type': 'application/json',
           },
