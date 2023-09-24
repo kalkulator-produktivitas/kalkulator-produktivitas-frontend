@@ -92,11 +92,11 @@
 
       <div class="flex">
         <button @click="registerAuth"
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mx-auto w-40 ease-in-out duration-300 mt-4">
+          class="text-white font-bold py-2 px-4 rounded-full mx-auto w-40 ease-in-out duration-300 mt-4"
+          :class="noEmpty ? 'bg-blue-500 hover:bg-blue-700' : 'bg-gray-500'" :disabled="!noEmpty">
           Daftar
         </button>
       </div>
-      {{ selectedClass }}
     </div>
     <div v-show="showModal">
       <div class="modal-overlay z-20">
@@ -203,6 +203,21 @@ const samePassword = computed(() => {
 const sameAddress = () => {
   register.alamatPabrik = register.alamatPerusahaan
 }
+
+const noEmpty = computed(() => {
+  const obj = register
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const value = obj[key];
+
+      // Check if the value has a length property (e.g., it's a string or array)
+      if (value.length !== undefined && value.length === 0) {
+        return false; // If any value has length 0, return false
+      }
+    }
+  }
+  return true; // If all values are not empty, return true
+})
 
 const registerAuth = async () => {
   try {

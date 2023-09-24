@@ -153,7 +153,7 @@ export default {
       } catch (error) {
         this.loading = false
         this.modal.type = 'ERROR'
-        this.modal.message = error.message
+        this.modal.message = "Internal Server Error"
         this.modal.show = true
         console.log(error);
       }
@@ -161,22 +161,22 @@ export default {
     checkAuth() {
       console.log(this.authStore.jwtToken.user);
     },
-    async trial() {
+    // async trial() {
 
-      try {
-        const data = await $fetch('http://localhost:2020/auth/trial', {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          method: 'POST'
-        })
-        console.log(data.value);
-        this.loading = false
-      } catch (error) {
-        console.log(error);
-        this.loading = false
-      }
-    },
+    //   try {
+    //     const data = await $fetch('http://localhost:2020/auth/trial', {
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //       method: 'POST'
+    //     })
+    //     console.log(data.value);
+    //     this.loading = false
+    //   } catch (error) {
+    //     console.log(error);
+    //     this.loading = false
+    //   }
+    // },
   }
 }
 </script>

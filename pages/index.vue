@@ -20,7 +20,7 @@
         </p>
       </div>
     </div>
-    <Quotes id="mengapa" quotes="If You Can’t Meauser It, You Can’t Manage It" by="Peter Drucker" class="mt-20" />
+    <Quotes id="mengapa" quotes="If You Can’t Measure It, You Can’t Manage It" by="Peter Drucker" class="mt-20" />
     <div class="relative">
       <Features />
       <JoinButton class="absolute top-[40%] right-60 my-auto" />
