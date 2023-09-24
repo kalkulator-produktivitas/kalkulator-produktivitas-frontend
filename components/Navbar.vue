@@ -4,7 +4,7 @@
       <div class="flex flex-wrap justify-between mx-auto max-w-screen-xl">
         <div class="flex items-center">
           <img src="~/assets/DKI_LOGO_2.png" class="w-10 flex-none mr-2" alt="" srcset="">
-          <img src="~/assets/P3D_logo.png" class="w-10 flex-none mr-2" alt="" srcset="">
+          <img src="~/assets/P3D_logo_2.png" class="h-10 flex-none mr-2" alt="" srcset="">
           <span class="self-center text-xl font-semibold whitespace-nowrap">Kalkulator Produktivitas</span>
         </div>
         <div class="flex items-center lg:order-2">
