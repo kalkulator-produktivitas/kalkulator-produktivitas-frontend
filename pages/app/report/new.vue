@@ -1,6 +1,6 @@
 <template>
-  <div class="container max-w h-full grid grid-cols-5">
-    <div class="col-span-1">
+  <div class="container max-w h-full grid grid-cols-8">
+    <div class="col-span-2 overflow-y-auto px-1">
       <div class="ml-2 flex items-center space-x-4 mb-4 ">
         <label for="select" class="text-gray-600 font-bold">Pilih tahun</label>
         <div class="relative inline-block w-[40%]">
@@ -19,7 +19,7 @@
         </li>
       </ul>
     </div>
-    <form class="col-span-4 overflow-y-auto pt-10 flex w-[90%]" @submit.prevent="submitForm">
+    <form class="col-span-6 overflow-y-auto pt-10 flex w-[90%] pl-2" @submit.prevent="submitForm">
       <div class="w-[98%]">
         <!-- <InputField2 v-for="param in parameters[tab]" :label="param" type="number" /> -->
         <div v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja' && tab !== 'Informasi Tambahan'"
@@ -145,22 +145,6 @@ function generateYearOptions() {
   return years;
 }
 
-function sumParams(tabs) {
-  for (let params of Object.keys(this.parameters[tabs])) {
-    if (!this.parameters[tabs][params]) {
-      this.parameters[tabs][params] = 0
-    }
-  }
-  const sums = Object.values(this.parameters[tabs]).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-  this.totals[tabs] = sums
-}
-
-function zeroParams(tabs) {
-  for (let param of Object.keys(this.parameters[tabs])) {
-    this.parameters[tabs][param] = null
-  }
-}
-
 const years = generateYearOptions()
 
 const tab = ref('default')
@@ -194,6 +178,23 @@ const parameters = ref({
   'Laba': { 'Laba Bersih': null, 'Laba Operasi': null },
   'Jumlah Tenaga Kerja': { 'Jumlah Tenaga Kerja': null, 'Jam Kerja': null, 'Jam Kerja Lembur': null },
 })
+
+function sumParams(tabs) {
+  for (let params of Object.keys(parameters.value[tabs])) {
+    if (!parameters.value[tabs][params]) {
+      parameters.value[tabs][params] = 0
+    }
+  }
+  const sums = Object.values(parameters.value[tabs]).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+  console.log(sums);
+  totals.value[tabs] = sums
+}
+
+function zeroParams(tabs) {
+  for (let param of Object.keys(parameters.value[tabs])) {
+    parameters.value[tabs][param] = 0
+  }
+}
 
 const informasi_tambahan = ref([
   { id: "pertanyaan_1", jawaban: null, question: 'Teknik, metode apa saja yang sudah diterapkan perusahaan untuk meningkatkan produktivitas' },

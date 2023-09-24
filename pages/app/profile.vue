@@ -1,21 +1,25 @@
 <template>
   <div v-if="!errorPage" class="grid grid-cols-2 gap-12 profile-page">
-    <div class="max-w static rounded overflow shadow-lg bg-[#F6F6F6] card-border">
-      <CardLabel label="Profil Perusahaan" />
-      <div class="px-6 py-4 mt-2">
-        <InputField1 label="Nama Perusahaan" wide="480" type="text" disabled="true"
-          :modelValue="company.nama_perusahaan" />
+    <div class="max-w static rounded shadow-lg bg-[#F6F6F6] card-border h-full">
+      <div class="relative">
+        <CardLabel label="Profil Perusahaan" />
+      </div>
+      <div class="px-6 py-2 mt-2 overflow-hidden h-full overflow-y-auto">
+        <div class="flex">
+          <InputField1 label="Nama Perusahaan" wide="480" type="text" disabled="true"
+            :modelValue="company.nama_perusahaan" />
+        </div>
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2" for="Telpon/Fax">
             Telpon/Fax
           </label>
           <div class="rounded">
             <input
-              class="shadow appearance-none border border-r-1 border-r-gray-300 rounded-l w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
+              class="shadow appearance-none border border-r-1 border-r-gray-300 rounded-l py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
               value="+62" disabled readonly type="text" style="width: 50px">
             <input
-              class="shadow appearance-none border border-l-0 rounded-r w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
-              :value="company.telp_fax" disabled readonly type="text" style="width: 430px" id="Telpon/Fax">
+              class="shadow appearance-none border border-l-0 rounded-r py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
+              :value="company.telp_fax" disabled readonly type="text" id="Telpon/Fax">
           </div>
         </div>
         <div class="flex gap-6">
@@ -61,11 +65,11 @@
             </label>
             <div class="rounded">
               <input
-                class="shadow appearance-none border border-r-1 border-r-gray-300 rounded-l w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
+                class="shadow appearance-none border border-r-1 border-r-gray-300 rounded-l py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
                 value="+62" disabled readonly style="width: 50px">
               <input
-                class="shadow appearance-none border border-l-0 rounded-r w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
-                :value="company.kontak_user" disabled readonly style="width: 90%" id="nmr">
+                class="shadow appearance-none border border-l-0 rounded-r py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
+                :value="company.kontak_user" disabled readonly id="nmr">
             </div>
           </div>
         </div>

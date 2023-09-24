@@ -1,6 +1,6 @@
 <template>
   <div v-if="!errorPage" class="h-full grid grid-cols-2 gap-12">
-    <div class="max-w static rounded overflow shadow-lg bg-[#F6F6F6] card-border">
+    <div class="max-w static rounded overflow shadow-lg bg-[#F6F6F6] card-border overflow-x-auto">
       <CardLabel label="Profil" />
       <div class="px-6 py-4 mt-6">
         <div class="font-bold text-xl mb-2">Profil Pengguna</div>
@@ -12,18 +12,18 @@
         <!-- <InputField1 label="Alamat" type="text" disabled="true"
           :modelValue="rawData.alamat_perusahaan" /> -->
         <div class="flex gap-6">
-          <InputField1 label="Email" wide="300" type="text" disabled="true" :modelValue="rawData.email_user" />
-          <div class="mb-4" style="width: 300px">
+          <InputField1 label="Email" type="text" disabled="true" :modelValue="rawData.email_user" />
+          <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="handphone">
               Nomor Handphone
             </label>
-            <div class="shadow rounded">
+            <div class="bg-transparent rounded flex">
               <input
-                class="shadow-none appearance-none border border-r-1 border-r-gray-300 rounded-l w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
+                class="shadow appearance-none border border-r-1 border-r-gray-300 rounded-l w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
                 value="+62" disabled readonly style="width: 50px">
               <input
-                class="shadow-none appearance-none border border-l-0 rounded-r w-full py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
-                :value="rawData.kontak_user" disabled readonly id="handphone" style="width: 221px">
+                class="shadow shrink appearance-none border border-l-0 rounded-r py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
+                :value="rawData.kontak_user" disabled readonly id="handphone">
             </div>
           </div>
         </div>
@@ -33,7 +33,19 @@
         <div class="flex gap-6">
           <InputField1 label="Nama Perusahaan" wide="300" type="text" disabled="true"
             :modelValue="rawData.nama_perusahaan" />
-          <InputField1 label="Telpon" wide="300" type="number" disabled="true" :modelValue="rawData.telp_fax" />
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="telpon">
+              Telpon
+            </label>
+            <div class="bg-transparent rounded flex">
+              <input
+                class="shadow appearance-none border border-r-1 border-r-gray-300 rounded-l py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
+                value="+62" disabled readonly style="width: 50px">
+              <input
+                class="shadow appearance-none border border-l-0 rounded-r py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
+                :value="rawData.telp_fax" disabled readonly id="telpon">
+            </div>
+          </div>
         </div>
         <InputField1 label="Alamat Perusahaan" type="text" disabled="true" :modelValue="rawData.alamat_perusahaan" />
         <InputField1 label="Email Perusahaan" wide="300" type="text" disabled="true"
@@ -41,8 +53,8 @@
       </div>
     </div>
 
-    <div class="static grid grid-rows-2 gap-12">
-      <div class="max-w static rounded overflow shadow-lg bg-[#F6F6F6] card-border">
+    <div class="grid grid-rows-2 gap-12 lg:h-full">
+      <div class="max-w  rounded overflow shadow-lg bg-[#F6F6F6] card-border">
         <div class="relative">
           <CardLabel label="Laporan" />
           <div class="absolute top-0 right-5">
@@ -54,8 +66,8 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-3 p-4 mt-2 flex flex-col">
-          <div class="col-span-1 grid grid-rows-2 gap-3">
+        <div class="lg:grid lg:grid-cols-3 gap-3 p-4 mt-2 lg:flex lg:flex-col">
+          <div class="lg:col-span-1 lg:grid lg:grid-rows-2 gap-3 hidden lg:visible">
             <div class="border">
               <div class="h-full bg-white border border-gray-200 shadow-sm">
                 <p class="font-normal text-zinc-900 dark:text-gray-400 py-1 px-2">Jumlah Laporan</p>
@@ -85,8 +97,8 @@
               </div>
             </div>
           </div>
-          <div class="col-span-2 flex flex-col gap-3">
-            <div class="row-span-5 flex flex-col grow">
+          <div class="lg:col-span-2 flex flex-col gap-3">
+            <div class="lg:row-span-5 flex flex-col grow">
               <div class="flex flex-col flex-nowrap grow bg-white border border-gray-200 shadow-sm p-2 md:table-fixed">
                 <p class="font-normal text-zinc-900 dark:text-gray-400 py-1 px-2">Riwayat Pelaporan</p>
                 <table class="table-auto">
@@ -122,8 +134,8 @@
       </div>
       <div class="max-w static rounded overflow shadow-lg bg-[#F6F6F6] card-border">
         <CardLabel label="Produktivitas" />
-        <div class="grid grid-cols-2 gap-8 p-5 mt-2 h-[85%]">
-          <div class="col-span-1 grid grid-rows-2 gap-6">
+        <div class="lg:grid lg:grid-cols-2 lg:flex-none gap-8 p-5 mt-2 lg:h-[85%]">
+          <div class="lg:col-span-1 lg:grid lg:grid-rows-2 gap-6">
             <div class="row-span-1 border">
               <CardInfo label="Nilai Tambah Terakhir" value="4.8" rate="2" unit="M" />
             </div>
@@ -131,7 +143,7 @@
               <CardInfo label="Produktivitas tenaga kerja rata-rata terakhir" value="4.8" rate="2" unit="%" />
             </div>
           </div>
-          <div class="col-span-1 grid grid-rows-2 gap-6">
+          <div class="lg:col-span-1 lg:grid lg:grid-rows-2 gap-6">
             <div class="row-span-1 border">
               <CardInfo label="Produktivitas modal rata-rata terakhir" value="4.8" rate="1.2" unit="%" />
             </div>

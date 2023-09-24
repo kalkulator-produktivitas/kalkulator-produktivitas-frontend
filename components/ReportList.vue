@@ -2,21 +2,21 @@
   <div class="px-2 py-3 border-b-2 text-lg grid grid-cols-12 items-center">
     <div class="ml-2 col-span-1">{{ year }}</div>
     <div class="col-span-5">{{ title }}</div>
-    <div class="col-span-2">{{ created_time }}</div>
-    <div class="col-span-4 flex gap-2 justify-center">
+    <div class="col-span-3 lg:col-span-2">{{ created_time }}</div>
+    <div class="col-span-3 lg:col-span-4 flex flex-col lg:flex-row gap-2 justify-center">
       <button @click="checkReport"
-        class="bg-blue-500 hover:bg-blue-700 text-white px-2 rounded ease-in duration-200 flex items-center">
-        <Icon name="fe:eye" class="mr-1" />
+        class="bg-blue-500 hover:bg-blue-700 text-white mx-auto w-[70%] lg:w-full lg:px-2 rounded ease-in duration-200 flex items-center justify-center">
+        <Icon name="fe:eye" class="lg:mr-1 collapse lg:visible" />
         View
       </button>
       <button @click="$emit('notReady')"
-        class="bg-blue-500 hover:bg-blue-700 text-white px-2 rounded ease-in duration-200 flex items-center">
-        <Icon name="fe:download" class="mr-1" />
+        class="bg-blue-500 hover:bg-blue-700 text-white mx-auto w-[70%] lg:w-full lg:px-2 rounded ease-in duration-200 flex items-center justify-center">
+        <Icon name="fe:download" class="lg:mr-1 collapse lg:visible" />
         Download
       </button>
       <button @click="$emit('notReady')"
-        class="bg-blue-500 hover:bg-blue-700 text-white px-2 rounded ease-in duration-200 flex items-center">
-        <Icon name="fe:link-external" class="mr-1" />
+        class="bg-blue-500 hover:bg-blue-700 text-white mx-auto w-[70%] lg:w-full lg:px-2 rounded ease-in duration-200 flex items-center justify-center">
+        <Icon name="fe:link-external" class="lg:mr-1 collapse lg:visible" />
         Certificate
       </button>
     </div>
