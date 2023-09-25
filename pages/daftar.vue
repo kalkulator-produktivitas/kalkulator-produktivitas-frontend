@@ -22,7 +22,6 @@
       <InputField3 class="col-span-3" label="Nama Perusahaan" type="text" :color="textColor"
         v-model="register.namaPerusahaan" />
       <div class="grid grid-cols-2 gap-4 mt-4">
-
         <InputField3 label="Nama Pemilik Perusahaan" type="text" :color="textColor"
           v-model="register.namaPemilikPerusahaan" />
         <InputField3 label="Nama Pimpinan" type="text" :color="textColor" v-model="register.namaPimpinan" />
@@ -39,26 +38,41 @@
         </button>
       </div>
       <div class="grid grid-cols-2 gap-4">
-        <InputField3 label="Telp/Fax" type="number" placeholder="02122878999" :color="textColor"
-          v-model="register.telpFax" />
-        <InputField3 label="Kontak Person" type="text" :color="textColor" v-model="register.kontakPerson" />
+        <div class="">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="Telp/Fax">
+            Telp/Fax
+          </label>
+          <div class="bg-transparent rounded flex">
+            <input
+              class="shadow appearance-none border border-r-none rounded-l py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
+              value="+62" readonly style="width: 50px">
+            <input
+              class="shadow appearance-none border rounded-r w-full h-100 py-2.5 px-3 text-gray-700 text-sm leading-tight focus:outline-[#1CA83B] focus:shadow-outline"
+              v-model="register.telpFax" id="Telp/Fax" :style="{ color: textColor }">
+          </div>
+        </div>
+        <!-- <InputField3 label="Telp/Fax" type="number" placeholder="02122878999" :color="textColor"
+          v-model="register.telpFax" /> -->
+        <InputField3 label="Nama Kontak Person" type="text" :color="textColor" v-model="register.kontakPerson" />
       </div>
-      <div>
-        <InputField3 label="Tanggal Pendirian" type="date" :color="textColor" v-model="register.tanggalPendirian" />
+      <div class="grid grid-cols-5 gap-4">
+        <InputField3 class="col-span-2" label="Tanggal Pendirian" type="date" :color="textColor"
+          v-model="register.tanggalPendirian" />
+        <div class="col-span-3 flex">
+          <InputField3 class="w-full" label="Klasifikasi Usaha" type="text" :color="textColor"
+            v-model="register.klasifikasiUsaha" />
+          <button @click="showModal = true"
+            class="bg-transparent hover:bg-gray-700 text-gray-500 hover:text-gray-100 font-semibold mt-3 px-4 border border-black hover:border-black rounded h-10 self-center ml-2">
+            Pilih
+          </button>
+        </div>
       </div>
       <div class="grid grid-cols-2 gap-4">
         <InputField3 label="Email Perusahaan" type="email" :color="textColor" v-model="register.email" />
         <InputField3 label="Website" type="text" :color="textColor" v-model="register.website" />
 
       </div>
-      <div class="flex">
-        <InputField3 class="w-full" label="Klasifikasi Usaha" type="text" :color="textColor"
-          v-model="register.klasifikasiUsaha" />
-        <button @click="showModal = true"
-          class="bg-transparent hover:bg-gray-700 text-gray-500 hover:text-gray-100 font-semibold mt-3 px-4 border border-black hover:border-black rounded h-10 self-center ml-2">
-          Pilih
-        </button>
-      </div>
+
       <div class="flex">
         <button @click="tab = 'Data Pengguna'"
           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mx-auto w-28 ease-in-out duration-300 mt-4">
@@ -72,11 +86,22 @@
         <div class="mb-4">
           <InputField3 label="Nama User" type="text" :color="textColor" v-model="register.namaPengguna" />
         </div>
-        <div class="mb-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="nomorUser">
+              Nomor Handphone User
+            </label>
+            <div class="bg-transparent rounded flex">
+              <input
+                class="shadow appearance-none border border-r-none rounded-l py-2.5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
+                value="+62" readonly style="width: 50px">
+              <input
+                class="shadow appearance-none border rounded-r w-full h-100 py-2.5 px-3 text-gray-700 text-sm leading-tight focus:outline-[#1CA83B] focus:shadow-outline"
+                v-model="register.nomorPengguna" id="nomorUser" :style="{ color: textColor }">
+            </div>
+          </div>
+          <!-- <InputField3 label="" type="number" :color="textColor" v-model="register.nomorPengguna" /> -->
           <InputField3 label="Email User" type="email" :color="textColor" v-model="register.emailPengguna" />
-        </div>
-        <div class="mb-4">
-          <InputField3 label="Nomor User" type="number" :color="textColor" v-model="register.nomorPengguna" />
         </div>
         <div class="mb-4">
           <InputField3 label="Username" type="text" :color="textColor" v-model="register.username" />
@@ -156,17 +181,27 @@ const closeModal = () => {
 }
 
 const klasifikasi = ref([
-  { name: 'Industri Makanan, Minuman dan Tembakau', selected: false, class: 'A' },
-  { name: 'Industri Tekstil, Pakaian Jadi dan Kulit', selected: false, class: 'B' },
-  { name: 'Industri Kayu dan Barang dari kayu', selected: false, class: 'C' },
-  { name: 'Industri Elektronika', selected: false, class: 'D' },
-  { name: 'Industri Kertas dan barang dari kertas, percetakan dan penerbitan', selected: false, class: 'E' },
-  { name: 'Industri kimia dan barang-barang dari bahan kimia, minyak bumi, batubara, karet dan plastic', selected: false, class: 'F' },
-  { name: 'Industri barang galian bukan logam, kecuali minyak bumi dan batubara', selected: false, class: 'G' },
-  { name: 'Industri logam dasar', selected: false, class: 'H' },
-  { name: 'Industri dari logam, mesin dan peralatannya', selected: false, class: 'I' },
-  { name: 'Industri pengolahan lainnya (barang pertanian, alat musik, mainan anak, alat tulis dan gambar/kerajinan', selected: false, class: 'J' },
-  { name: 'Usaha Dagang', selected: false, class: 'K' }
+  { name: 'Pertanian, Kehutanan dan Perikanan', selected: false, class: 'A' },
+  { name: 'Pertambangan dan Penggalian', selected: false, class: 'B' },
+  { name: 'Industri Pengolahan', selected: false, class: 'C' },
+  { name: 'Pengadaan Listrik, Gas, Uap/Air Panas Dan Udara Dingin', selected: false, class: 'D' },
+  { name: 'Treatment Air, Treatment Air Limbah, Treatment dan Pemulihan Material Sampah, dan Aktivitas Remediasi', selected: false, class: 'E' },
+  { name: 'Konstruksi', selected: false, class: 'F' },
+  { name: 'Perdagangan Besar Dan Eceran; Reparasi Dan Perawatan Mobil Dan Sepeda Motor', selected: false, class: 'G' },
+  { name: 'Pengangkutan dan Pergudangan', selected: false, class: 'H' },
+  { name: 'Penyediaan Akomodasi Dan Penyediaan Makan Minum', selected: false, class: 'I' },
+  { name: 'Informasi Dan Komunikasi', selected: false, class: 'J' },
+  { name: 'Aktivitas Keuangan dan Asuransi', selected: false, class: 'K' },
+  { name: 'Real Estat', selected: false, class: 'L' },
+  { name: 'Aktivitas Profesional, Ilmiah Dan Teknis', selected: false, class: 'M' },
+  { name: 'Aktivitas Penyewaan dan Sewa Guna Usaha Tanpa Hak Opsi, Ketenagakerjaan, Agen Perjalanan dan Penunjang Usaha Lainnya', selected: false, class: 'N' },
+  { name: 'Administrasi Pemerintahan, Pertahanan Dan Jaminan Sosial Wajib', selected: false, class: 'O' },
+  { name: 'Pendidikan', selected: false, class: 'P' },
+  { name: 'Aktivitas Kesehatan Manusia Dan Aktivitas Sosial', selected: false, class: 'Q' },
+  { name: 'Kesenian, Hiburan Dan Rekreasi', selected: false, class: 'R' },
+  { name: 'Aktivitas Jasa Lainnya', selected: false, class: 'S' },
+  { name: 'Aktivitas Rumah Tangga Sebagai Pemberi Kerja; Aktivitas Yang Menghasilkan Barang Dan Jasa Oleh Rumah Tangga yang Digunakan untuk Memenuhi Kebutuhan Sendiri', selected: false, class: 'T' },
+  { name: 'Aktivitas Badan Internasional Dan Badan Ekstra Internasional Lainnya', selected: false, class: 'U' }
 ])
 
 const selectedClass = computed(() => {
@@ -235,7 +270,13 @@ const registerAuth = async () => {
     modal.value.status = null
     modal.value.message = 'Registrasi Berhasil'
     modal.value.type = 'SUCCESS'
-    await navigateTo('/')
+    setTimeout(() => {
+      reloadNuxtApp({
+        path: "/",
+        ttl: 5000,
+      });
+    }, 1500);
+
   } catch (error) {
     loading.value = false
     modal.value.show = true

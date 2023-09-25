@@ -1,6 +1,6 @@
 <template>
   <div class="container grid grid-cols-2">
-    <div>
+    <div class="flex items-center">
       <img src="~/assets/frame_dashboard.png" class="w-[70%] flex-none mx-auto mr-8" alt="" srcset="">
     </div>
     <div class="w-full">

@@ -1,19 +1,21 @@
 <template>
-  <div class="mt-1 w-full">
+  <div class="mt-1 w-screen">
     <footer class="bg-[#1CA83B]">
       <div class="w-full max-w-screen-xl mx-auto py-8">
         <div class="flex sm:justify-between">
           <div class="flex flex-col items-center my-auto">
-            <div class="flex items-center sm:mb-0">
+            <div class="flex sm:mb-0">
               <img src="~/assets/DKI_LOGO_2.png" class="w-12 flex-none mr-2" alt="" srcset="">
-              <span class="self-center text-white text-4xl font-bold whitespace-nowrap">Kalkulator Produktivitas - {{
-                currentYear }}</span>
+              <span class="self-center text-white text-4xl font-bold whitespace-nowrap flex">Kalkulator Produktivitas
+              </span>
             </div>
             <p class="italic text-white font-semibold my-4 text-lg">"Hari ini lebih baik dari hari kemarin dan hari esok
               lebih
               baik
               dari
               hari ini"</p>
+            <p class="text-white text-sm font-semibold my-1 text-center align-bottom">{{
+              currentYear }} © P3D</p>
           </div>
           <div class="flex flex-col">
             <a href="https://www.instagram.com/pusat_produktivitas_jakarta/?hl=en"

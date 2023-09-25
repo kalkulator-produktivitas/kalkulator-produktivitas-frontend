@@ -19,7 +19,7 @@
         class="z-40 absolute bg-white w-[100px] top-8 border rounded-md right-[9%] p-1 px-2 text-black font-semibold flex flex-col">
         <button @click="logout" class="text-start ">
           Logout</button>
-        <button class="text-start ">
+        <button @click="profile" class="text-start ">
           Profil</button>
       </div>
     </header>
@@ -49,6 +49,12 @@ const logout = async () => {
     });
   }
   // this.authStore.clearToken(res)
+}
+
+const profile = async () => {
+  await navigateTo({
+    path: '/app/profile'
+  })
 }
 
 const check = () => {

@@ -9,6 +9,7 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     public: {
+      // baseURL: 'http://localhost:2020',
       baseURL: 'https://dev-api.japrieats.com/kalkulator-produktivitas',
     },
   },

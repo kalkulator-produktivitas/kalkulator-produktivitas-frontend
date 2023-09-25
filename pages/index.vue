@@ -23,7 +23,7 @@
     <Quotes id="mengapa" quotes="If You Can’t Measure It, You Can’t Manage It" by="Peter Drucker" class="mt-20" />
     <div class="relative">
       <Features />
-      <JoinButton class="absolute top-[40%] right-60 my-auto" />
+      <JoinButton class="absolute top-[40%] right-60 my-auto collapse lg:visible" />
     </div>
     <Steps class="mb-8" />
     <div id="contoh" class="container mx-auto my-10">
@@ -44,7 +44,7 @@
       <div id="kontak"></div>
     </div>
     <div class="container flex flex-row gap-4 content-center my-12">
-      <div class="container w-[50%] pl-72 mt-24">
+      <div class="container w-[50%] pl-48 lg:pl-72 mt-24">
         <p class="text-left text-4xl font-semibold mx-auto">Punya pertanyaan?
         </p>
         <p class="text-left text-xl mx-auto mt-4">Silahkan isi form disamping, tim kami akan segera menghubungi kembali

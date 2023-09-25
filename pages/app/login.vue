@@ -11,7 +11,7 @@
       </li>
     </ul>
 
-    <div v-if="tab === 'login'" class="rounded-lg shadow-lg bg-[#034EA2] text-white w-1/3 p-4 mx-auto mt-4"
+    <div v-if="tab === 'login'" class="rounded-lg shadow-lg bg-[#034EA2] text-white w-[420px] p-4 mx-auto mt-4 shrink-0"
       style="min-height: 280px;">
       <div class="text-white">
         <InputField1 label="Username" type="text" color="white" v-model="login.username" />
@@ -45,7 +45,7 @@
     </div>
 
     <div v-if="tab === 'register'"
-      class="rounded-lg shadow-lg bg-gradient-to-r from-[#034EA2] to-[#0577f7] text-white w-1/3 p-6 mx-auto mt-4"
+      class="rounded-lg shadow-lg bg-gradient-to-r from-[#034EA2] to-[#0577f7] text-white w-[420px] p-6 mx-auto mt-4 shrink-0"
       style="min-height: 140px;">
       <div class="">
         <p class="text-2xl font-medium">Belum punya akun?</p>
