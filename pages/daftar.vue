@@ -100,25 +100,27 @@
     </div>
     <div v-show="showModal">
       <div class="modal-overlay z-20">
-        <div class="modal p-6">
+        <div class="modal p-6 overflow-y-auto">
+          <div class="container ">
 
-          <p class="text-4xl font-bold text-center mb-6">Klasifikasi Usaha</p>
-          <ul class="list-none">
-            <li v-for="kelas of klasifikasi">
-              <div class="flex items-center mb-4 ml-4">
-                <input :id="kelas.class" type="checkbox" v-model="kelas.selected"
-                  class="w-[20px] h-[20px] shrink-0 bg-gray-100 rounded-2 dark:bg-gray-700">
-                <label :for="kelas.class" class="ml-6 text-sm font-medium text-gray-900">{{ kelas.name }}</label>
-              </div>
+            <p class="text-4xl font-bold text-center mb-6">Klasifikasi Usaha</p>
+            <ul class="list-none">
+              <li v-for="kelas of klasifikasi">
+                <div class="flex items-center mb-4 ml-4">
+                  <input :id="kelas.class" type="checkbox" v-model="kelas.selected"
+                    class="w-[20px] h-[20px] shrink-0 bg-gray-100 rounded-2 dark:bg-gray-700">
+                  <label :for="kelas.class" class="ml-6 text-sm font-medium text-gray-900">{{ kelas.name }}</label>
+                </div>
 
-            </li>
-          </ul>
-          <div class="flex justify-center">
-            <button type="button"
-              class="bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-full w-40 ease-in-out duration-300 mt-4"
-              @click="showModal = false">
-              Close
-            </button>
+              </li>
+            </ul>
+            <div class="flex justify-center">
+              <button type="button"
+                class="bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-full w-40 ease-in-out duration-300 mt-4"
+                @click="showModal = false">
+                Close
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -244,6 +246,29 @@ const registerAuth = async () => {
 </script>
 
 <style scoped>
+::-webkit-scrollbar {
+  width: 8px;
+  transition: ease-in-out 0.3s;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 6px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 6px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+  transition: ease-in-out 0.3s;
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -260,7 +285,7 @@ const registerAuth = async () => {
   height: 80vh;
   width: 80vh;
   margin-top: 5%;
-  border-radius: 20px;
+  border-radius: 5px;
 }
 
 .close {
