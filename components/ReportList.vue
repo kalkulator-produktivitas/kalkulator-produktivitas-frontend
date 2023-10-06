@@ -64,7 +64,7 @@ const startDownload = (input) => {
 
 const exrpotCsv = async () => {
   try {
-    const data = await $fetch(`http://localhost:2020/read/download-csv`,
+    const data = await $fetch(`${global.public.baseURL}/read/download-csv`,
       {
         method: "GET",
         query: {
