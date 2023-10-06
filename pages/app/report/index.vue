@@ -29,7 +29,7 @@
     <div v-if="filteredReports.length > 0" class="container my-2 mx-auto">
       <div class="">
         <ReportList v-for="rep of filteredReports" :year="rep.tahun_laporan" :title="rep.nama_laporan"
-          :reportId="rep.id_laporan" :reported_at="rep.created_at" @not-ready="tidakSiap" />
+          :reportId="rep.id_laporan" :reported_at="rep.created_at" :id="rep.id_laporan" @not-ready="tidakSiap" />
       </div>
     </div>
     <div v-else class="container m-12 mt-6 mx-auto">
@@ -96,7 +96,6 @@ const filterReports = () => {
 }
 
 const tidakSiap = () => {
-  console.log("Fitur Belum Siap");
   modal.value.show = true
   modal.value.message = "Mohon maaf, fitur belum siap"
   modal.value.type = 'WARNING'

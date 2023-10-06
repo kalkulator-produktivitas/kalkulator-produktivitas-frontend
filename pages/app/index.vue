@@ -58,7 +58,7 @@
         <div class="relative">
           <CardLabel label="Laporan" />
           <div class="absolute top-0 right-5">
-            <a href="#"
+            <a href="#" @click="tidakSiap"
               class=" inline-flex items-center px-3 py-1 text-sm font-medium text-center text-white bg-amber-400 rounded-b-md hover:bg-amber-600">
               Lihat Panduan
               <Icon name="fe:arrow-down" size="6mm" class="my-auto flex-none ml-2" />
@@ -224,6 +224,12 @@ const dateLocal = (dt) => {
     month: "long",
     day: "numeric",
   })
+}
+
+const tidakSiap = () => {
+  modal.value.show = true
+  modal.value.message = "Mohon maaf, fitur belum siap"
+  modal.value.type = 'WARNING'
 }
 
 </script>

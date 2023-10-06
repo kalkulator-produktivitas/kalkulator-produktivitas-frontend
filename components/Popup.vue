@@ -65,7 +65,7 @@ const data = computed(() => {
 }
 
 .modal {
-  height: 42vh;
+  height: fit-content;
   width: 70vh;
   margin-top: 5%;
   border-radius: 20px;

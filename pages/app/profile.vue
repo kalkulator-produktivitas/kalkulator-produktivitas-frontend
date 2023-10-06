@@ -77,12 +77,18 @@
       </div>
       <div class="max-w static overflow">
         <div class="row-span-2 flex flex-row gap-16 justify-center content-end">
-          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-full w-32 h-9">
+          <button @click="tidakSiap"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-full w-32 h-9">
             Edit
           </button>
-          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-full w-32 h-9">
+          <button @click="tidakSiap"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-full w-32 h-9">
             Cancel
           </button>
+          <!-- <button @click="checkAuth"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-full w-32 h-9">
+            Check Auth
+          </button> -->
         </div>
       </div>
     </div>
@@ -109,6 +115,12 @@ const modal = ref({
 
 const closeModal = () => {
   modal.value.show = false
+}
+
+const tidakSiap = () => {
+  modal.value.show = true
+  modal.value.message = "Mohon maaf, fitur belum siap"
+  modal.value.type = 'WARNING'
 }
 
 let authUser
@@ -153,6 +165,22 @@ const company = ref({
   "kontak_user": rawData.value["kontak_user"]
 })
 
+
+const checkAuth = async () => {
+  try {
+    const res = await $fetch(`${global.public.baseURL}/auth/trial`,
+      {
+        method: "GET",
+        headers: {
+          "content-type": "application/json",
+          "x-api-authorization": JSON.stringify(authUser.value)
+        }
+      })
+    console.log(res);
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 // try {
 //   const data = await $fetch(`${global.public.baseURL}/read/dataperusahaan`, {
