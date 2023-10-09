@@ -115,7 +115,7 @@ let parameters = ref({
     'Sewa': rawData.value["sewa_administrasi"], 'Air dan Listrik': rawData.value["air_dan_listrik_administrasi"], 'Telepon': rawData.value["telepon"],
     'Pos dan telegram': rawData.value["pos_dan_telegram"], 'Percetakan, Stationary & Office Supplies': rawData.value["percetakan_stationary_dan_office_suplies"],
     'Biaya Kendaraan': rawData.value["biaya_kendaraan"], 'Advertising': rawData.value["advertising"], 'Hiburan / Entertainment': rawData.value["hiburan_entertaiment"],
-    'Majalah dan surat kabar': rawData.value["majalah_dan_surat_kabar:"], 'Jamuan Makan': rawData.value["jamuan_makan"], 'Perbaikan Umum': rawData.value["perbaikan_umum"],
+    'Majalah dan surat kabar': rawData.value["majalah_dan_surat_kabar"], 'Jamuan Makan': rawData.value["jamuan_makan"], 'Perbaikan Umum': rawData.value["perbaikan_umum"],
     'Biaya Bank': rawData.value["biaya_bank"], 'Biaya Akuntan dan Audit': rawData.value["biaya_akuntan_dan_audit"], 'Biaya	Bantuan	Hukum dan Jasa Profesional lainnya': rawData.value["biaya_bantuan_hukum_dan_jasa_profesional"], 'Komisi': rawData.value["komisi"], 'Biaya Umum': rawData.value["biaya_umum"], 'Total': rawData.value["total_biaya_administrasi"]
   },
   'Penyusutan': { 'Penyusutan Gedung': rawData.value["penyusutan_gedung"], 'Penyusutan Peralatan dan Mesin': rawData.value["penyusutan_peralatan_dan_mesin"], 'Total': rawData.value["total_penyusutan"] },

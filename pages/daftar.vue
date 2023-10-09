@@ -258,7 +258,7 @@ const noEmpty = computed(() => {
 
 const registerAuth = async () => {
   try {
-    const data = await fetch(`${global.public.baseURL}/auth/register`, {
+    const data = await $fetch(`${global.public.baseURL}/auth/register`, {
       headers: {
         "Content-Type": "application/json"
       },
