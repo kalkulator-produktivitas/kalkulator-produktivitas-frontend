@@ -1,8 +1,8 @@
 <template>
   <div class="h-full overflow flex flex-col shadow-lg p-3">
     <div class="grid grid-cols-3">
-      <p class="font-bold text-slate-900 col-span-2 mr-2">{{ label }}</p>
-      <p class="font-light text-slate-500 col-span-1">{{ sublabel }}</p>
+      <p class="font-bold text-slate-900 col-span-3 mr-2">{{ label }}</p>
+      <!-- <p class="font-light text-slate-500 col-span-1">{{ sublabel }}</p> -->
     </div>
     <div class="h-full">
       <div class="h-full flex">

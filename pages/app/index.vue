@@ -84,15 +84,12 @@
               </div>
             </div>
             <div class="h-[80%] bg-white border border-gray-200 shadow-sm p-2 overflow flex flex-col">
-              <p class="font-normal text-zinc-900 dark:text-gray-400 px-2">Total Revenue</p>
-              <div class="grid grid-cols-3 flex content-end h-full">
-                <div class="h-full col-span-2 flex">
-                  <p class="text-[18px] font-bold text-center ml-2">Rp 20.4 M</p>
-                </div>
-                <div class="h-full col-span-1 flex content-end">
-                  <span class="text-green-600  text-[18px] font-bold text-center my-auto">
-                    <Icon name="fe:arrow-up" class="mb-1" />2%
-                  </span>
+              <p class="font-normal text-zinc-900 dark:text-gray-400 px-2">Total Penjualan</p>
+              <div class="flex justify-end h-full">
+                <div class="h-full">
+                  <p class="lg:text-[22px] text-green-600 font-bold text-center mr-3">Rp {{
+                    hitung_total_pendapatan }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -120,13 +117,17 @@
               </div>
             </div>
             <div class="row-span-2 flex flex-row gap-16 justify-center content-end lg:">
-              <nuxt-link to="/app/report/new"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 text-center rounded-full w-32 h-9">
-                Tambah
+              <nuxt-link to="/app/report/new">
+                <button
+                  class="bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 text-center rounded-full w-32 h-9 transition ease-in-out">
+                  Tambah
+                </button>
               </nuxt-link>
-              <nuxt-link to="/app/report"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 text-center rounded-full w-32 h-9">
-                Lihat
+              <nuxt-link to="/app/report">
+                <button
+                  class="bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 text-center rounded-full w-32 h-9 transition ease-in-out">
+                  Lihat
+                </button>
               </nuxt-link>
             </div>
           </div>
@@ -137,24 +138,32 @@
         <div class="lg:grid lg:grid-cols-2 lg:flex-none gap-8 p-5 mt-2 lg:h-[85%]">
           <div class="lg:col-span-1 lg:grid lg:grid-rows-2 gap-6">
             <div class="row-span-1 border">
-              <CardInfo label="Nilai Tambah Terakhir" value="4.8" rate="2" unit="M" />
+              <CardInfo label="Kemampuan perusahaan dalam menciptakan penjualan melalui pendayagunaan modal"
+                :value="performance.produktivitas_tenaga_kerja_latest" :rate="performance.produktivitas_tenaga_kerja_rate"
+                unit="%" />
             </div>
             <div class="row-span-1 border">
-              <CardInfo label="Produktivitas tenaga kerja rata-rata terakhir" value="4.8" rate="2" unit="%" />
+              <CardInfo
+                label="Kontiribusi/Sumbangan rata-rata setiap jam tenaga kerja dalam bekerja dalam menciptakan nilai tambah"
+                :value="performance.produktivitas_modal_latest" :rate="performance.produktivitas_modal_rate" unit="%" />
             </div>
           </div>
           <div class="lg:col-span-1 lg:grid lg:grid-rows-2 gap-6">
             <div class="row-span-1 border">
-              <CardInfo label="Produktivitas modal rata-rata terakhir" value="4.8" rate="1.2" unit="%" />
+              <CardInfo
+                label="Perbandingan antara nilai bersih yang didapatkan perusahaan dengan sejumlah biaya yang dikeluarkan untuk membayar bahan & jasa"
+                :value="performance.profitabilitas_latest" :rate="performance.profitabilitas_rate" unit="%" />
             </div>
             <div class="row-span-1 border">
-              <CardInfo label="Produktivitas modal rata-rata terakhir" value="1.8" rate="-1.2" unit="%" />
+              <CardInfo
+                label="Tingkat efisiensi proses pembuatan produk terhadap bahan dan jasa dalam rangka pembuatan produk akhir"
+                :value="performance.rasio_pendukung_latest" :rate="performance.rasio_pendukung_rate" unit="%" />
             </div>
           </div>
         </div>
       </div>
     </div>
-    <!-- {{ reports }} -->
+    <!-- {{ rawData }} -->
   </div>
   <Popup v-if="modal.show" :message="modal.message" :status="modal.status" :type="modal.type" @close="closeModal" />
 </template>
@@ -188,15 +197,37 @@ const closeModal = () => {
 
 let rawData = ref()
 try {
-  rawData.value = await $fetch(`${global.public.baseURL}/read/halamandepan`,
+  const res = await $fetch(`${global.public.baseURL}/read/halamandepan`,
     {
       method: "GET",
+      headers: {
+        "x-api-authorization": JSON.stringify(authUser.value)
+      },
       query: {
         id: authUser.value.data.id_perusahaan
       },
     })
-  loading.value = false
-
+  if (res.status && res.status >= 400) {
+    errorPage.value = true
+    loading.value = false
+    modal.value.show = true
+    modal.value.message = res.message
+    modal.value.status = res.status
+    modal.value.type = 'ERROR'
+    if (process.client) {
+      localStorage.removeItem("auth")
+      setTimeout(
+        reloadNuxtApp({
+          path: "/app/login",
+          ttl: 5000,
+        }),
+        5000
+      )
+    }
+  } else {
+    loading.value = false
+    rawData.value = res
+  }
 } catch (error) {
   errorPage.value = true
   loading.value = false
@@ -209,10 +240,14 @@ try {
 // console.log(rawData.laporan);
 
 const reports = computed(() => {
-  let laporan = rawData.value.laporan
-  const selesai = laporan.filter((laps) => laps.status_laporan === "ACCEPTED").length
-  const belum = laporan.filter((laps) => laps.status_laporan === "REJECTED").length
-  return { selesai, belum }
+  if (rawData.value) {
+    let laporan = rawData.value.laporan
+    const selesai = laporan.filter((laps) => laps.status_laporan === "ACCEPTED").length
+    const belum = laporan.filter((laps) => laps.status_laporan === "REJECTED").length
+    return { selesai, belum }
+  } else {
+
+  }
 })
 
 const d = new Date(0)
@@ -225,6 +260,82 @@ const dateLocal = (dt) => {
     day: "numeric",
   })
 }
+
+const performance = computed(() => {
+  let laporan = {}
+  let data = rawData.value.hasil
+
+  // Produktivitas Tenaga Kerja
+  laporan.produktivitas_tenaga_kerja_latest = ((data[0].produktivitas_tenaga_kerja_1 - data[1].produktivitas_tenaga_kerja_1) / data[1].produktivitas_tenaga_kerja_1 * 100).toFixed(2)
+  let produktivitas_tenaga_kerja_before
+  if (!data[2].produktivitas_tenaga_kerja_1) {
+    produktivitas_tenaga_kerja_before = 0
+  } else {
+    produktivitas_tenaga_kerja_before = ((data[1].produktivitas_tenaga_kerja_1 - data[2].produktivitas_tenaga_kerja_1) / data[2].produktivitas_tenaga_kerja_1 * 100).toFixed(2)
+  }
+  laporan.produktivitas_tenaga_kerja_rate = (laporan.produktivitas_tenaga_kerja_latest - produktivitas_tenaga_kerja_before).toFixed(2)
+
+  // Produktivitas Modal
+  laporan.produktivitas_modal_latest = ((data[0].produktivitas_modal_1 - data[1].produktivitas_modal_1) / data[1].produktivitas_modal_1 * 100).toFixed(2)
+  let produktivitas_modal_before
+  if (!data[2].produktivitas_modal_1) {
+    produktivitas_modal_before = 0
+  } else {
+    produktivitas_modal_before = ((data[1].produktivitas_modal_1 - data[2].produktivitas_modal_1) / data[2].produktivitas_modal_1 * 100).toFixed(2)
+  }
+  laporan.produktivitas_modal_rate = (laporan.produktivitas_modal_latest - produktivitas_modal_before).toFixed(2)
+
+  // Profitabilitas
+  laporan.profitabilitas_latest = ((data[0].profitabilitas_2 - data[1].profitabilitas_2) / data[1].profitabilitas_2 * 100).toFixed(2)
+  let profitabilitas_before
+  if (!data[2].profitabilitas_2) {
+    profitabilitas_before = 0
+  } else {
+    profitabilitas_before = ((data[1].profitabilitas_2 - data[2].profitabilitas_2) / data[2].profitabilitas_2 * 100).toFixed(2)
+  }
+  laporan.profitabilitas_rate = (laporan.profitabilitas_latest - profitabilitas_before).toFixed(2)
+
+  // Rasio Pendukung
+  laporan.rasio_pendukung_latest = ((data[0].rasio_pendukung_1 - data[1].rasio_pendukung_1) / data[1].rasio_pendukung_1 * 100).toFixed(2)
+  let rasio_pendukung_before
+  if (!data[2].rasio_pendukung_1) {
+    rasio_pendukung_before = 0
+  } else {
+    rasio_pendukung_before = ((data[1].rasio_pendukung_1 - data[2].rasio_pendukung_1) / data[2].rasio_pendukung_1 * 100).toFixed(2)
+  }
+  laporan.rasio_pendukung_rate = (laporan.rasio_pendukung_latest - rasio_pendukung_before).toFixed(2)
+
+  return laporan
+})
+
+const hitung_total_pendapatan = computed(() => {
+  if (rawData.value.total_penjualan[0].total_penjualan.toString()) {
+
+
+    let data = rawData.value.total_penjualan[0].total_penjualan.toString()
+    let num_string = ''
+    let c = 0
+    for (let i = (data.length - 1); i >= 0; i--) {
+      if (c % 3 === 0 && c !== 0) {
+        num_string = `${data[i]}.` + num_string
+        c += 1
+      } else {
+        num_string = `${data[i]}` + num_string
+        c += 1
+      }
+    }
+
+    if (data.length < 13) {
+      num_string = num_string.slice(0, 4) + " T"
+    } else if (data.length < 10) {
+      num_string = num_string.slice(0, 4) + " M"
+    } else if (data.length < 7) {
+      num_string = num_string.slice(0, 4) + " Jt"
+    }
+
+    return num_string
+  }
+})
 
 const tidakSiap = () => {
   modal.value.show = true

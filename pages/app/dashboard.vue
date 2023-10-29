@@ -1,33 +1,33 @@
 <template>
   <div class="container mx-auto flex flex-col gap-4 h-full w-full">
     <!-- {{ nilaiTambah }} -->
-    <div class="grid grid-cols-3 gap-4">
-      <LineChart class="col-span-2 shadow-lg border" id="1" :config="lineOptions" :dataset="data.line"
-        title="Nilai Tambah" />
-      <DoughnutChart class="h-60 shadow-lg border" id="3" :config="pieOptions" :dataset="data.pie"
+    <div class="grid grid-cols-8 gap-4">
+      <LineChart class="col-span-3 shadow-lg border" id="1" :config="lineOptions" :dataset="data.line"
+        title="Nilai Tambah (Rp)" />
+      <LineChart class="col-span-3 shadow-lg border" id="2" :config="lineOptions" :dataset="data.line2"
+        title="Produktivitas (Rp)" />
+      <DoughnutChart class="col-span-2 h-60 shadow-lg border" id="3" :config="pieOptions" :dataset="data.pie"
         title="Perbandingan Nilai Tambah" />
     </div>
 
     <div class="grid grid-cols-3 gap-2">
-      <BarChart class="shadow-lg border" id="10" :config="chartOptions" title="Produktivitas Tenaga Kerja"
+      <BarChart class="shadow-lg border" id="10" :config="chartOptions" title="Produktivitas Tenaga Kerja (%)"
         :dataset="data.produktivitas_tenaga_kerja" />
-      <BarChart class="shadow-lg border" id="11" :config="chartOptions" title="Produktivitas Modal"
+      <BarChart class="shadow-lg border" id="11" :config="chartOptions" title="Produktivitas Modal (%)"
         :dataset="data.produktivitas_modal" />
-      <BarChart class="shadow-lg border" id="12" :config="chartOptions" title="Profitabilitas"
+      <BarChart class="shadow-lg border" id="12" :config="chartOptions" title="Profitabilitas (%)"
         :dataset="data.profitabilitas" />
-      <!-- <BarChart class="shadow-lg border" id="13" :config="chartOptions" title="Rasio Pendukung"
-        :dataset="data.ratio_pendukung" /> -->
     </div>
 
     <div class="grid grid-cols-4 gap-4">
       <DashboardInfo label="Nilai Tambah" :value="`Rp ${new Intl.NumberFormat('id').format(nilaiTambah.total)}`"
         rate="2.06" sublabel=""
         details="Tingkat efisiensi proses pembuatan produk terhadap bahan dan jasa dalam rangka pembuatan produk akhir" />
-      <DashboardInfo label="Nilai Tambah / Penjualan" value="0.67 %" rate="-0.74" sublabel="Ratio Pendukung"
+      <DashboardInfo label="Nilai Tambah / Penjualan" :value="rasio.latest1" :rate="rasio.rasio1[1]"
         details="Tingkat efisiensi proses pembuatan produk terhadap bahan dan jasa dalam rangka pembuatan produk akhir" />
-      <DashboardInfo label="Nilai Tambah / Pembelian Bahan" value="1.99 %" rate="-2.21" sublabel="Ratio Pendukung"
+      <DashboardInfo label="Nilai Tambah / Pembelian Bahan" :value="rasio.latest2" :rate="rasio.rasio2[1]"
         details="Kreativitas dan kemampuan inovasi perusahaan terhadap bahan-bahan dan jasa" />
-      <DashboardInfo label="Laba / Biaya Tenaga Kerja" value="0.1 %" rate="88.45" sublabel="Ratio Pendukung"
+      <DashboardInfo label="Laba / Biaya Tenaga Kerja" :value="rasio.latest3" :rate="rasio.rasio3[1]"
         details="Ukuran kemampuan melipatgandakan biaya tenaga kerja yg dibayarkan dalam menghasilkan laba perusahaan" />
     </div>
 
@@ -50,15 +50,38 @@ if (process.client) {
 }
 
 try {
-  rawData.value = await $fetch(`${global.public.baseURL}/read/dashboard`,
+  const res = await $fetch(`${global.public.baseURL}/read/dashboard`,
     {
       method: "GET",
       query: {
         id: authUser.value.data.id_perusahaan
       },
+      headers: {
+        "x-api-authorization": JSON.stringify(authUser.value)
+      },
     })
-  loading.value = false
-  console.log(rawData.value);
+  // console.log(res);
+  if (res.status && res.status >= 400) {
+    errorPage.value = true
+    loading.value = false
+    modal.value.show = true
+    modal.value.message = res.message
+    modal.value.status = res.status
+    modal.value.type = 'ERROR'
+    if (process.client) {
+      localStorage.removeItem("auth")
+      setTimeout(
+        reloadNuxtApp({
+          path: "/app/login",
+          ttl: 5000,
+        }),
+        5000
+      )
+    }
+  } else {
+    loading.value = false
+    rawData.value = res
+  }
 } catch (error) {
   console.log(error);
   loading.value = false
@@ -91,104 +114,201 @@ const nilaiTambah = computed(() => {
   return data
 })
 
-const rasio = computed(() => {
+const produktivitas = computed(() => {
   let data = {
-    ptk: [],
-    pm: [],
-    prof: [],
-    lain: []
+    label: [],
+    value: [],
   }
   for (let year in rawData.value) {
     data["label"].push(year)
-    data["value"].push(rawData.value[year]["nilai_tambah"])
+    data["value"].push(rawData.value[year]["produktivitas_tenaga_kerja_1"])
   }
   return data
 })
 
+const ptk_params = computed(() => {
+  const year_0 = rawData.value[Object.keys(rawData.value).at(-3)]
+  const year_1 = rawData.value[Object.keys(rawData.value).at(-2)]
+  const year_2 = rawData.value[Object.keys(rawData.value).at(-1)]
+
+  let data = {
+    label: [Object.keys(rawData.value).at(-2), Object.keys(rawData.value).at(-1)],
+    ptk1: [],
+    ptk2: [],
+    ptk3: [],
+    ptk4: [],
+  }
+
+  data.ptk1[0] = 100 * (year_1.produktivitas_tenaga_kerja_1 - year_0.produktivitas_tenaga_kerja_1) / year_0.produktivitas_tenaga_kerja_1
+  data.ptk2[0] = 100 * (year_1.produktivitas_tenaga_kerja_2 - year_0.produktivitas_tenaga_kerja_2) / year_0.produktivitas_tenaga_kerja_2
+  data.ptk3[0] = 100 * (year_1.produktivitas_tenaga_kerja_3 - year_0.produktivitas_tenaga_kerja_3) / year_0.produktivitas_tenaga_kerja_3
+  data.ptk4[0] = 100 * (year_1.produktivitas_tenaga_kerja_4 - year_0.produktivitas_tenaga_kerja_4) / year_0.produktivitas_tenaga_kerja_4
+
+  data.ptk1[1] = 100 * (year_2.produktivitas_tenaga_kerja_1 - year_1.produktivitas_tenaga_kerja_1) / year_1.produktivitas_tenaga_kerja_1
+  data.ptk2[1] = 100 * (year_2.produktivitas_tenaga_kerja_2 - year_1.produktivitas_tenaga_kerja_2) / year_1.produktivitas_tenaga_kerja_2
+  data.ptk3[1] = 100 * (year_2.produktivitas_tenaga_kerja_3 - year_1.produktivitas_tenaga_kerja_3) / year_1.produktivitas_tenaga_kerja_3
+  data.ptk4[1] = 100 * (year_2.produktivitas_tenaga_kerja_4 - year_1.produktivitas_tenaga_kerja_4) / year_1.produktivitas_tenaga_kerja_4
+
+  return data
+})
+
+const pm_params = computed(() => {
+  const year_0 = rawData.value[Object.keys(rawData.value).at(-3)]
+  const year_1 = rawData.value[Object.keys(rawData.value).at(-2)]
+  const year_2 = rawData.value[Object.keys(rawData.value).at(-1)]
+
+  let data = {
+    label: [Object.keys(rawData.value).at(-2), Object.keys(rawData.value).at(-1)],
+    pm1: [],
+    pm2: [],
+    pm3: [],
+  }
+
+  data.pm1[0] = 100 * (year_1.produktivitas_modal_1 - year_0.produktivitas_modal_1) / year_0.produktivitas_modal_1
+  data.pm2[0] = 100 * (year_1.produktivitas_modal_2 - year_0.produktivitas_modal_2) / year_0.produktivitas_modal_2
+  data.pm3[0] = 100 * (year_1.produktivitas_modal_3 - year_0.produktivitas_modal_3) / year_0.produktivitas_modal_3
+
+  data.pm1[1] = 100 * (year_2.produktivitas_modal_1 - year_1.produktivitas_modal_1) / year_1.produktivitas_modal_1
+  data.pm2[1] = 100 * (year_2.produktivitas_modal_2 - year_1.produktivitas_modal_2) / year_1.produktivitas_modal_2
+  data.pm3[1] = 100 * (year_2.produktivitas_modal_3 - year_1.produktivitas_modal_3) / year_1.produktivitas_modal_3
+
+  return data
+})
+
+const pf_params = computed(() => {
+  const year_0 = rawData.value[Object.keys(rawData.value).at(-3)]
+  const year_1 = rawData.value[Object.keys(rawData.value).at(-2)]
+  const year_2 = rawData.value[Object.keys(rawData.value).at(-1)]
+
+  let data = {
+    label: [Object.keys(rawData.value).at(-2), Object.keys(rawData.value).at(-1)],
+    pf1: [],
+    pf2: [],
+    pf3: [],
+  }
+
+  data.pf1[0] = 100 * (year_1.profitabilitas_1 - year_0.profitabilitas_1) / year_0.profitabilitas_1
+  data.pf2[0] = 100 * (year_1.profitabilitas_2 - year_0.profitabilitas_2) / year_0.profitabilitas_2
+  data.pf3[0] = 100 * (year_1.profitabilitas_3 - year_0.profitabilitas_3) / year_0.profitabilitas_3
+
+  data.pf1[1] = 100 * (year_2.profitabilitas_1 - year_1.profitabilitas_1) / year_1.profitabilitas_1
+  data.pf2[1] = 100 * (year_2.profitabilitas_2 - year_1.profitabilitas_2) / year_1.profitabilitas_2
+  data.pf3[1] = 100 * (year_2.profitabilitas_3 - year_1.profitabilitas_3) / year_1.profitabilitas_3
+
+  return data
+})
+
+
+const rasio = computed(() => {
+  const year_0 = rawData.value[Object.keys(rawData.value).at(-3)]
+  const year_1 = rawData.value[Object.keys(rawData.value).at(-2)]
+  const year_2 = rawData.value[Object.keys(rawData.value).at(-1)]
+
+  let data = {
+    label: [Object.keys(rawData.value).at(-2), Object.keys(rawData.value).at(-1)],
+    latest1: Math.round(year_2.rasio_pendukung_1 * 100) / 100,
+    latest2: Math.round(year_2.rasio_pendukung_2 * 100) / 100,
+    latest3: Math.round(year_2.rasio_pendukung_3 * 100) / 100,
+    rasio1: [],
+    rasio2: [],
+    rasio3: [],
+  }
+
+  data.rasio1[0] = Math.round(100 * (year_1.rasio_pendukung_1 - year_0.rasio_pendukung_1) / year_0.rasio_pendukung_1) / 100
+  data.rasio2[0] = Math.round(100 * (year_1.rasio_pendukung_2 - year_0.rasio_pendukung_2) / year_0.rasio_pendukung_2) / 100
+  data.rasio3[0] = Math.round(100 * (year_1.rasio_pendukung_3 - year_0.rasio_pendukung_3) / year_0.rasio_pendukung_3) / 100
+
+  data.rasio1[1] = Math.round(100 * (year_2.rasio_pendukung_1 - year_1.rasio_pendukung_1) / year_1.rasio_pendukung_1) / 100
+  data.rasio2[1] = Math.round(100 * (year_2.rasio_pendukung_2 - year_1.rasio_pendukung_2) / year_1.rasio_pendukung_2) / 100
+  data.rasio3[1] = Math.round(100 * (year_2.rasio_pendukung_3 - year_1.rasio_pendukung_3) / year_1.rasio_pendukung_3) / 100
+  return data
+})
+
+console.log(rasio);
 
 const data = ref({
   produktivitas_tenaga_kerja: {
-    labels: ['2018', '2019'],
+    labels: ptk_params.value.label,
     datasets: [
       {
         label: 'Nilai Tambah / Jml Tenaga Kerja',
         backgroundColor: '#7EC27E',
-        data: [2.38, 2.07],
+        data: ptk_params.value.ptk1,
       },
       {
         label: 'Nilai Tambah / Jam Kerja',
         backgroundColor: '#FFEFA1',
-        data: [2.38, 2.07],
+        data: ptk_params.value.ptk2,
       },
       {
         label: 'Nilai Tambah / Biaya Tenaga Kerja',
         backgroundColor: '#FFBE85',
-        data: [-3.53, 13.15],
+        data: ptk_params.value.ptk3,
       },
       {
         label: 'Biaya Tenaga Kerja / Total Jam Kerja',
         backgroundColor: '#DE8CD4',
-        data: [6.12, -9.79],
+        data: ptk_params.value.ptk4,
       },
     ],
   },
   produktivitas_modal: {
-    labels: ['2018', '2019'],
+    labels: pm_params.value.label,
     datasets: [
       {
         label: 'Penjualan / Total Modal',
         backgroundColor: '#7EC27E',
-        data: [17.65, 2.83],
+        data: pm_params.value.pm1,
       },
       {
         label: 'Nilai Tambah / Total Modal',
         backgroundColor: '#FFEFA1',
-        data: [2.38, 2.07],
+        data: pm_params.value.pm2,
       },
       {
         label: 'Total Modal / Jml Tenaga Kerja',
         backgroundColor: '#FFBE85',
-        data: [0, 0],
+        data: pm_params.value.pm3,
       },
     ],
   },
   profitabilitas: {
-    labels: ['2018', '2019'],
+    labels: pf_params.value.label,
     datasets: [
       {
         label: 'Laba / Penjualan',
         backgroundColor: '#7EC27E',
-        data: [-82.57, 65.32],
+        data: pf_params.value.pf1,
       },
       {
         label: 'Laba / Pembelian Bahan',
         backgroundColor: '#FFEFA1',
-        data: [-87.86, 62.87],
+        data: pf_params.value.pf2,
       },
       {
         label: 'Laba / Total Modal',
         backgroundColor: '#FFBE85',
-        data: [-79.49, 70],
+        data: pf_params.value.pf3,
       },
     ],
   },
   ratio_pendukung: {
-    labels: ['2018', '2019'],
+    labels: rasio.value.label,
     datasets: [
       {
         label: 'Nilai Tambah / Penjualan',
         backgroundColor: '#7EC27E',
-        data: [-12.98, -0.74],
+        data: rasio.value.rasio1,
       },
       {
         label: 'Nilai Tambah / Pembelian Bahan',
         backgroundColor: '#FFEFA1',
-        data: [-39.38, -2.21],
+        data: rasio.value.rasio2,
       },
       {
         label: 'Laba / Biaya Tenaga Kerja',
         backgroundColor: '#FFBE85',
-        data: [-80.68, 88.45],
+        data: rasio.value.rasio3,
       },
     ],
   },
@@ -199,6 +319,16 @@ const data = ref({
         label: "",
         backgroundColor: '#034EA2',
         data: nilaiTambah.value.value,
+      },
+    ],
+  },
+  line2: {
+    labels: produktivitas.value.label,
+    datasets: [
+      {
+        label: "",
+        backgroundColor: '#034EA2',
+        data: produktivitas.value.value,
       },
     ],
   },

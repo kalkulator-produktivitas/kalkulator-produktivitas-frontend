@@ -312,7 +312,8 @@ const formRequest = async () => {
   try {
     const data = await $fetch(`${global.public.baseURL}/write/api/postdata`, {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        "x-api-authorization": JSON.stringify(authUser.value)
       },
       method: 'POST',
       body: JSON.stringify({

@@ -131,12 +131,34 @@ if (process.client) {
 let rawData = ref()
 
 try {
-  const response = await $fetch(`${global.public.baseURL}/read/dataperusahaan?id=${authUser.value.data.id_perusahaan}`, {
-    method: 'GET'
+  const res = await $fetch(`${global.public.baseURL}/read/dataperusahaan?id=${authUser.value.data.id_perusahaan}`, {
+    method: 'GET',
+    headers: {
+      "x-api-authorization": JSON.stringify(authUser.value)
+    },
   })
-  rawData.value = response
+  if (res.status && res.status >= 400) {
+    errorPage.value = true
+    loading.value = false
+    modal.value.show = true
+    modal.value.message = res.message
+    modal.value.status = res.status
+    modal.value.type = 'ERROR'
+    if (process.client) {
+      localStorage.removeItem("auth")
+      setTimeout(
+        reloadNuxtApp({
+          path: "/app/login",
+          ttl: 5000,
+        }),
+        5000
+      )
+    }
+  } else {
+    loading.value = false
+    rawData.value = res
+  }
 } catch (error) {
-  console.log(error);
   errorPage.value = true
   loading.value = false
   modal.value.show = true

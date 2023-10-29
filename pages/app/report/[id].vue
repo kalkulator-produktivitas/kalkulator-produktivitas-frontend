@@ -77,9 +77,42 @@ const closeModal = () => {
   modal.value.show = false
 }
 
-const { data: rawData, pending, error, refresh } = await useAsyncData(() => $fetch(`${global.public.baseURL}/read/api/getdata/${id}`))
-// console.log(rawData.value);
+let authUser
+if (process.client) {
+  authUser = ref(JSON.parse(localStorage.getItem("auth")))
+}
+
+let rawData = ref()
+
+const { data: res, pending, error, refresh } = await useAsyncData(() => $fetch(`${global.public.baseURL}/read/api/getdata/${id}`, {
+  headers: {
+    "x-api-authorization": JSON.stringify(authUser.value)
+  },
+}))
+
+if (res.status && res.status >= 400) {
+  loading.value = false
+  modal.value.show = true
+  modal.value.message = res.message
+  modal.value.status = res.status
+  modal.value.type = 'ERROR'
+  if (process.client) {
+    localStorage.removeItem("auth")
+    setTimeout(
+      reloadNuxtApp({
+        path: "/app/login",
+        ttl: 5000,
+      }),
+      5000
+    )
+  }
+} else {
+  loading.value = false
+  rawData.value = res.value
+}
+
 if (error.value) {
+  console.log(error.value);
   errorPage.value = true
   loading.value = false
   modal.value.show = true

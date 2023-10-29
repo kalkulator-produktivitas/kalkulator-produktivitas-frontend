@@ -10,7 +10,7 @@
     <div class="my-auto p-4">
       <Bar :options="config" :data="dataset" />
     </div>
-    <div v-if="showTooltip" class="absolute bottom-[15%] right-0 bg-gray-700/[.85] border text-white p-2">
+    <div v-if="showTooltip" class="absolute top-[32px] right-0 bg-gray-700/[.85] border text-white p-2">
       <div v-for="(dat, index) in dataset.datasets" :key="index" class="flex items-center">
         <div :style="{ 'background-color': dat.backgroundColor }" class="w-[20px] h-[15px]"></div>
         <p class="ml-2">{{ dat["label"] }}</p>

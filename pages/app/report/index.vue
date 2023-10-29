@@ -18,6 +18,7 @@
       <nuxt-link to="/app/report/new" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
         Buat Laporan
       </nuxt-link>
+
     </div>
     <div class="mt-4 px-2 py-3 border-black border-b-2 text-lg grid grid-cols-12 items-center">
       <div class="col-span-1">Tahun</div>
@@ -29,7 +30,8 @@
     <div v-if="filteredReports.length > 0" class="container my-2 mx-auto">
       <div class="">
         <ReportList v-for="rep of filteredReports" :year="rep.tahun_laporan" :title="rep.nama_laporan"
-          :reportId="rep.id_laporan" :reported_at="rep.created_at" :id="rep.id_laporan" @not-ready="tidakSiap" />
+          :reportId="rep.id_laporan" :reported_at="rep.created_at" :performance="filteredReports" :id="rep.id_laporan"
+          @not-ready="tidakSiap" />
       </div>
     </div>
     <div v-else class="container m-12 mt-6 mx-auto">
@@ -50,7 +52,7 @@ definePageMeta({
 const global = useRuntimeConfig();
 
 const errorPage = ref(false)
-const loading = ref(true)
+const loading = ref(false)
 let reports = ref()
 
 const modal = ref({
@@ -72,16 +74,39 @@ if (process.client) {
 }
 
 try {
-  const laporan = await $fetch(`${global.public.baseURL}/read/laporan`,
+  const res = await $fetch(`${global.public.baseURL}/read/laporan`,
     {
       method: "GET",
       query: {
         id: authUser.value.data.id_perusahaan
-      }
+      },
+      headers: {
+        "x-api-authorization": JSON.stringify(authUser.value)
+      },
     })
-  console.log(laporan);
-  reports.value = laporan
-  loading.value = false
+  if (res.status && res.status >= 400) {
+    errorPage.value = true
+    loading.value = false
+    modal.value.show = true
+    modal.value.message = res.message
+    modal.value.status = res.status
+    modal.value.type = 'ERROR'
+    if (process.client) {
+      localStorage.removeItem("auth")
+      setTimeout(
+        reloadNuxtApp({
+          path: "/app/login",
+          ttl: 5000,
+        }),
+        5000
+      )
+    }
+  } else {
+    // console.log(res);
+    reports.value = res
+    loading.value = false
+  }
+
 } catch (error) {
   errorPage.value = true
   loading.value = false
