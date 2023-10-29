@@ -9,8 +9,8 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     public: {
-      baseURL: 'http://localhost:2020',
-      // baseURL: process.env.API_BASE_URL || 'http://localhost:2020'
+      // baseURL: 'http://localhost:2020',
+      baseURL: process.env.API_BASE_URL
     },
   },
 })
