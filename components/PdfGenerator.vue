@@ -49,13 +49,14 @@
                 </div>
                 <div class="title" style="margin-top: 1em; margin-bottom: 1em;">
                   <p class="title-text">DIKELUARKAN OLEH:</p>
-                  <p class="normal-text">Kepala</p>
-                  <p class="normal-text">P3D DKI Jakarta</p>
+                  <p class="normal-text">Kepala Pusat Pengembangan Produktivitas Daerah</p>
+                  <p class="normal-text">Dinas Tenaga Kerja Transmigrasi dan Energi</p>
+                  <p class="normal-text">Pemerintah Provinsi DKI Jakarta</p>
                 </div>
                 <div>
                   <img src="../assets/QR_Pak_Tsani.png" alt="" srcset="" style="height: 4em;" class="qr-ttd">
                 </div>
-                <div style="font-size: 1em; text-align: center;">
+                <div style="font-size: 1.1em; text-align: center;" class="font-bold">
                   <p>M. Tsani Annafari</p>
                 </div>
               </div>
@@ -526,7 +527,8 @@ body {
 .qr-ttd {
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 1.5em;
+  margin-bottom: 1em;
+  margin-top: 1.5em;
 }
 
 .content {
@@ -544,7 +546,7 @@ body {
 
 .normal-text {
   font-family: 'Times New Roman', Times, serif;
-  font-size: 1.2em;
+  font-size: 1em;
   text-align: center;
 }
 
@@ -553,7 +555,7 @@ body {
   font-weight: 800;
   font-size: 1.25em;
   text-align: center;
-  margin-top: 2em;
+  margin-top: 1.6em;
 }
 
 .perusahaan {
