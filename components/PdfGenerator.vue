@@ -5,14 +5,10 @@
       <Icon name="fe:link-external" class="lg:mr-1 collapse lg:visible" />
       Certificate
     </button>
-
-    <div v-if="modal.show" class="modal-overlay z-20 ">
-      <div class="modal overflow-auto">
+    <div v-if="modal.show" class="modal-overlay absolute z-20">
+      <div class="mx-auto mt-2 overflow-y-auto h-[98vh]">
         <div class="mb-4 w-full flex">
           <div class="mx-auto">
-            <div class="absolute top-9 left-20 text-sm text-white font-bold">
-              * Tetapkan ukuran zoom layar browser 100% sebelum save dokumen
-            </div>
             <button type="button"
               class="mx-4 bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded-full w-32 h-9"
               @click="generatePDF">
@@ -25,12 +21,11 @@
             </button>
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-1 mx-auto flex-shrink-0">
-          <div class="mx-auto" style="height: 58rem; width: 40rem; visibility:visible;">
+        <div class="grid grid-rows-2 gap-1 mx-auto flex-shrink-0">
+          <div class="mx-auto" style="visibility:visible;">
             <div class="pdf-content" id="pdfContent1">
-
               <div class="content">
-                <img src="../assets/Emblem_sertifikat.png" alt="" srcset="" style="height: 6em;" class="emblem">
+                <img src="../assets/Emblem_sertifikat.png" alt="" srcset="" style="height: 8em;" class="emblem">
                 <div class="title">
                   <p class="title-text">SERTIFIKAT</p>
                   <p class="title-text">HASIL PENGUKURAN PRODUKTIVITAS</p>
@@ -67,13 +62,14 @@
             </div>
           </div>
 
-          <div class="mx-auto" style="height: 58rem; width: 40rem; visibility: visible;">
+          <div class="mx-auto" style="visibility: visible;">
             <div class="pdf-content-2" id="pdfContent2">
               <div class="content-2">
                 <div class="header-2">
                   <p>Tingkat Produktivitas Perusahaan Anda:</p>
                 </div>
-                <div class="grid grid-cols-3 gap-2 mt-4">
+                <p class="text-xl font-bold text-center mt-2">Kategori: {{ penilaian }}</p>
+                <div class="grid grid-cols-3 gap-2 mt-6">
                   <div class="col-span-1">
                     <table class="tables text-sm font-light text-center">
 
@@ -148,25 +144,25 @@
                   </div>
                 </div>
 
-                <div class="grid grid-rows-3 mt-2">
-                  <div style="height: 8em; width: 60%;" class="mx-auto">
+                <div class="grid grid-rows-3 mt-2 gap-4">
+                  <div style="height: 10em; width: 60%;" class="mx-auto">
                     <Bar :options="chartOptions1" :data="nilaiTambah" />
                   </div>
-                  <div style="height: 8em; width: 60%;" class="mx-auto">
+                  <div style="height: 10em; width: 60%;" class="mx-auto">
                     <Bar :options="chartOptions2" :data="produktivitas" />
                   </div>
-                  <div v-if="!result.fy" style="height: 8em">
+                  <div v-if="!result.fy" style="height: 10em; width: 80%;" class="mx-auto">
                     <Bar :options="chartOptions3" :data="produktivitas_tenaga_kerja" />
                   </div>
-                  <div v-else style="height: 8em" class="text-sm text-center py-12 text-red-800">
+                  <div v-else style="height: 10em" class="text-sm text-center py-12 text-red-800">
                     <p>
                       Kenaikan Produktivitas Belum bisa ditampilkan pada laporan pertama.
                     </p>
                   </div>
                 </div>
-                <div class="p-2">
-                  <p class="font-bold text-sm ">Disclaimers:</p>
-                  <ul class="list-disc text-xs">
+                <div class="p-2 mt-4">
+                  <p class="font-bold text-md ">Disclaimers:</p>
+                  <ul class="list-disc text-sm">
                     <li>
                       Hasil pengukuran akan sangat tergantung dengan input data yang perusahaan masukan, semakin presisi
                       data
@@ -453,20 +449,23 @@ const generatePDF = async () => {
   let title = `[example] Sertifikat_Produktivitas_${authUser.value.data.nama_perusahaan}_${props.analysis.year}.pdf`
 
   const htmlContent1 = document.getElementById('pdfContent1');
-  const canvas = await html2canvas(htmlContent1)
+  const canvas = await html2canvas(htmlContent1, {
+    scale: 1
+  })
 
   const htmlContent2 = document.getElementById('pdfContent2')
-  const canvas2 = await html2canvas(htmlContent2)
+  const canvas2 = await html2canvas(htmlContent2, {
+    scale: 1
+  })
 
   const doc = new jsPDF({
     orientation: "p",
-    unit: "mm",
+    unit: 'mm',
     format: "a4"
   });
 
   doc.addImage(canvas, 'PNG', 0, 0);
   doc.addPage()
-  doc.text("This is page 2", 10, 10)
   doc.addImage(canvas2, 'PNG', 0, 0)
 
   doc.save(title);
@@ -476,8 +475,11 @@ const generatePDF = async () => {
 </script>
 
 <style scoped>
+body {
+  zoom: 1
+}
+
 .modal-overlay {
-  position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
@@ -487,13 +489,6 @@ const generatePDF = async () => {
   background-color: #000000da;
 }
 
-.modal {
-  height: fit-content;
-  margin-top: 2%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .close {
   margin: 10% 0 0 16px;
   cursor: pointer;
@@ -501,14 +496,12 @@ const generatePDF = async () => {
 
 .pdf-content {
   background-image: url('../assets/Frame_Certificate.png');
-  /* background-color: #fffff6; */
-  /* background-color: #b1b116; */
   background-repeat: no-repeat;
   background-size: contain;
   /* background-position: center center; */
   /* Set your desired background color */
-  height: 60em;
-  /* width: 40em; */
+  height: 297mm;
+  width: 210mm;
 }
 
 .pdf-content-2 {
@@ -519,20 +512,21 @@ const generatePDF = async () => {
   background-size: contain;
   /* background-position: center center; */
   /* Set your desired background color */
-  height: 51em;
-  /* width: 40em; */
+  height: 297mm;
+  width: 210mm;
 }
 
 .emblem {
   margin-left: auto;
   margin-right: auto;
-  margin-top: 2em;
-  margin-bottom: 0.5em;
+  margin-top: 3em;
+  margin-bottom: 1em;
 }
 
 .qr-ttd {
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 1.5em;
 }
 
 .content {
@@ -545,29 +539,31 @@ const generatePDF = async () => {
 }
 
 .title-text {
-  font-size: 0.9em;
+  font-size: 1em;
 }
 
 .normal-text {
   font-family: 'Times New Roman', Times, serif;
-  font-size: 1em;
+  font-size: 1.2em;
   text-align: center;
 }
 
 .nomor-sertif {
   font-family: Arial, Helvetica, sans-serif;
   font-weight: 800;
-  font-size: 1em;
+  font-size: 1.25em;
   text-align: center;
-  margin-top: 1.5em;
+  margin-top: 2em;
 }
 
 .perusahaan {
   font-family: Arial, Helvetica, sans-serif;
   font-weight: 800;
-  font-size: 1.8em;
+  font-size: 2em;
   text-align: center;
-  margin-top: 1em;
+  margin-top: 1.5em;
+  line-height: 1.2;
+  height: 2.5em;
 }
 
 .table,
