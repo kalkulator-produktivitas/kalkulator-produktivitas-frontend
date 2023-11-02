@@ -139,25 +139,28 @@
           <div class="lg:col-span-1 lg:grid lg:grid-rows-2 gap-6">
             <div class="row-span-1 border">
               <CardInfo label="Kemampuan perusahaan dalam menciptakan penjualan melalui pendayagunaan modal"
-                :value="performance.produktivitas_tenaga_kerja_latest" :rate="performance.produktivitas_tenaga_kerja_rate"
-                unit="%" />
+                :value="performance.produktivitas_tenaga_kerja_latest"
+                :rate="Math.round(100 * performance.produktivitas_tenaga_kerja_rate) / 100" unit="" />
             </div>
             <div class="row-span-1 border">
               <CardInfo
                 label="Kontiribusi/Sumbangan rata-rata setiap jam tenaga kerja dalam bekerja dalam menciptakan nilai tambah"
-                :value="performance.produktivitas_modal_latest" :rate="performance.produktivitas_modal_rate" unit="%" />
+                :value="performance.produktivitas_modal_latest"
+                :rate="Math.round(100 * performance.produktivitas_modal_rate) / 100" unit="" />
             </div>
           </div>
           <div class="lg:col-span-1 lg:grid lg:grid-rows-2 gap-6">
             <div class="row-span-1 border">
               <CardInfo
                 label="Perbandingan antara nilai bersih yang didapatkan perusahaan dengan sejumlah biaya yang dikeluarkan untuk membayar bahan & jasa"
-                :value="performance.profitabilitas_latest" :rate="performance.profitabilitas_rate" unit="%" />
+                :value="performance.profitabilitas_latest" :rate="Math.round(100 * performance.profitabilitas_rate) / 100"
+                unit="" />
             </div>
             <div class="row-span-1 border">
               <CardInfo
                 label="Tingkat efisiensi proses pembuatan produk terhadap bahan dan jasa dalam rangka pembuatan produk akhir"
-                :value="performance.rasio_pendukung_latest" :rate="performance.rasio_pendukung_rate" unit="%" />
+                :value="performance.rasio_pendukung_latest"
+                :rate="Math.round(100 * performance.rasio_pendukung_rate) / 100" unit="" />
             </div>
           </div>
         </div>
@@ -268,7 +271,7 @@ const performance = computed(() => {
   // Produktivitas Tenaga Kerja
   laporan.produktivitas_tenaga_kerja_latest = ((data[0].produktivitas_tenaga_kerja_1 - data[1].produktivitas_tenaga_kerja_1) / data[1].produktivitas_tenaga_kerja_1 * 100).toFixed(2)
   let produktivitas_tenaga_kerja_before
-  if (!data[2].produktivitas_tenaga_kerja_1) {
+  if (!data[2] || !data[2].produktivitas_tenaga_kerja_1) {
     produktivitas_tenaga_kerja_before = 0
   } else {
     produktivitas_tenaga_kerja_before = ((data[1].produktivitas_tenaga_kerja_1 - data[2].produktivitas_tenaga_kerja_1) / data[2].produktivitas_tenaga_kerja_1 * 100).toFixed(2)
@@ -278,7 +281,7 @@ const performance = computed(() => {
   // Produktivitas Modal
   laporan.produktivitas_modal_latest = ((data[0].produktivitas_modal_1 - data[1].produktivitas_modal_1) / data[1].produktivitas_modal_1 * 100).toFixed(2)
   let produktivitas_modal_before
-  if (!data[2].produktivitas_modal_1) {
+  if (!data[2] || !data[2].produktivitas_modal_1) {
     produktivitas_modal_before = 0
   } else {
     produktivitas_modal_before = ((data[1].produktivitas_modal_1 - data[2].produktivitas_modal_1) / data[2].produktivitas_modal_1 * 100).toFixed(2)
@@ -288,7 +291,7 @@ const performance = computed(() => {
   // Profitabilitas
   laporan.profitabilitas_latest = ((data[0].profitabilitas_2 - data[1].profitabilitas_2) / data[1].profitabilitas_2 * 100).toFixed(2)
   let profitabilitas_before
-  if (!data[2].profitabilitas_2) {
+  if (!data[2] || !data[2].profitabilitas_2) {
     profitabilitas_before = 0
   } else {
     profitabilitas_before = ((data[1].profitabilitas_2 - data[2].profitabilitas_2) / data[2].profitabilitas_2 * 100).toFixed(2)
@@ -298,7 +301,7 @@ const performance = computed(() => {
   // Rasio Pendukung
   laporan.rasio_pendukung_latest = ((data[0].rasio_pendukung_1 - data[1].rasio_pendukung_1) / data[1].rasio_pendukung_1 * 100).toFixed(2)
   let rasio_pendukung_before
-  if (!data[2].rasio_pendukung_1) {
+  if (!data[2] || !data[2].rasio_pendukung_1) {
     rasio_pendukung_before = 0
   } else {
     rasio_pendukung_before = ((data[1].rasio_pendukung_1 - data[2].rasio_pendukung_1) / data[2].rasio_pendukung_1 * 100).toFixed(2)
@@ -314,25 +317,15 @@ const hitung_total_pendapatan = computed(() => {
 
     let data = rawData.value.total_penjualan[0].total_penjualan.toString()
     let num_string = ''
-    let c = 0
-    for (let i = (data.length - 1); i >= 0; i--) {
-      if (c % 3 === 0 && c !== 0) {
-        num_string = `${data[i]}.` + num_string
-        c += 1
-      } else {
-        num_string = `${data[i]}` + num_string
-        c += 1
-      }
-    }
 
-    if (data.length < 13) {
-      num_string = num_string.slice(0, 4) + " T"
-    } else if (data.length < 10) {
-      num_string = num_string.slice(0, 4) + " M"
-    } else if (data.length < 7) {
-      num_string = num_string.slice(0, 4) + " Jt"
+    if (data.length <= 15 && data.length > 12) {
+      num_string = Math.round(rawData.value.total_penjualan[0].total_penjualan / (Math.pow(10, 12))).toString() + " T"
+    } else if (data.length <= 12 && data.length > 9) {
+      num_string = Math.round(rawData.value.total_penjualan[0].total_penjualan / (Math.pow(10, 9))).toString() + " M"
+    } else if (data.length <= 9) {
+      num_string = Math.round(rawData.value.total_penjualan[0].total_penjualan / (Math.pow(10, 6))).toString() + " Jt"
     }
-
+    console.log(data);
     return num_string
   }
 })
