@@ -33,8 +33,8 @@
 
   </div>
   <div v-else>
-    <p class="text-xl text-center">
-      Belum Ada Laporan Dibuat
+    <p class="text-xl text-center text-black">
+      Belum Ada Laporan
     </p>
   </div>
   <Popup v-if="modal.show" :message="modal.message" :status="modal.status" :type="modal.type" @close="closeModal" />
@@ -104,7 +104,7 @@ try {
 } catch (error) {
   loading.value = false
   modal.value.show = true
-  modal.value.message = error.message
+  modal.value.message = "Laporan Tidak Ditemukan"
   modal.value.status = error.status
   modal.value.type = 'ERROR'
   // navigateTo('/error')
@@ -195,230 +195,237 @@ const ptk_params = computed(() => {
 )
 
 const pm_params = computed(() => {
-  const year_0 = rawData.value[Object.keys(rawData.value).at(-3)]
-  const year_1 = rawData.value[Object.keys(rawData.value).at(-2)]
-  const year_2 = rawData.value[Object.keys(rawData.value).at(-1)]
+  if (available.value) {
+    const year_0 = rawData.value[Object.keys(rawData.value).at(-3)]
+    const year_1 = rawData.value[Object.keys(rawData.value).at(-2)]
+    const year_2 = rawData.value[Object.keys(rawData.value).at(-1)]
 
-  let data = {
-    label: [],
-    pm1: [],
-    pm2: [],
-    pm3: [],
-  }
+    let data = {
+      label: [],
+      pm1: [],
+      pm2: [],
+      pm3: [],
+    }
 
-  if (!year_0 && !year_1) {
-    data.label = ["Laporan belum cukup"]
-    data.pm1[0] = 0
-    data.pm2[0] = 0
-    data.pm3[0] = 0
-  }
-  else if (!year_0) {
-    data.label = [Object.keys(rawData.value).at(-1)]
-    data.pm1[0] = Math.round(10000 * (year_2.produktivitas_modal_1 - year_1.produktivitas_modal_1) / year_1.produktivitas_modal_1) / 100
-    data.pm2[0] = Math.round(10000 * (year_2.produktivitas_modal_2 - year_1.produktivitas_modal_2) / year_1.produktivitas_modal_2) / 100
-    data.pm3[0] = Math.round(10000 * (year_2.produktivitas_modal_3 - year_1.produktivitas_modal_3) / year_1.produktivitas_modal_3) / 100
-  } else {
-    data.label = [Object.keys(rawData.value).at(-2), Object.keys(rawData.value).at(-1)]
-    data.pm1[0] = Math.round(10000 * (year_1.produktivitas_modal_1 - year_0.produktivitas_modal_1) / year_0.produktivitas_modal_1) / 100
-    data.pm2[0] = Math.round(10000 * (year_1.produktivitas_modal_2 - year_0.produktivitas_modal_2) / year_0.produktivitas_modal_2) / 100
-    data.pm3[0] = Math.round(10000 * (year_1.produktivitas_modal_3 - year_0.produktivitas_modal_3) / year_0.produktivitas_modal_3) / 100
+    if (!year_0 && !year_1) {
+      data.label = ["Laporan belum cukup"]
+      data.pm1[0] = 0
+      data.pm2[0] = 0
+      data.pm3[0] = 0
+    }
+    else if (!year_0) {
+      data.label = [Object.keys(rawData.value).at(-1)]
+      data.pm1[0] = Math.round(10000 * (year_2.produktivitas_modal_1 - year_1.produktivitas_modal_1) / year_1.produktivitas_modal_1) / 100
+      data.pm2[0] = Math.round(10000 * (year_2.produktivitas_modal_2 - year_1.produktivitas_modal_2) / year_1.produktivitas_modal_2) / 100
+      data.pm3[0] = Math.round(10000 * (year_2.produktivitas_modal_3 - year_1.produktivitas_modal_3) / year_1.produktivitas_modal_3) / 100
+    } else {
+      data.label = [Object.keys(rawData.value).at(-2), Object.keys(rawData.value).at(-1)]
+      data.pm1[0] = Math.round(10000 * (year_1.produktivitas_modal_1 - year_0.produktivitas_modal_1) / year_0.produktivitas_modal_1) / 100
+      data.pm2[0] = Math.round(10000 * (year_1.produktivitas_modal_2 - year_0.produktivitas_modal_2) / year_0.produktivitas_modal_2) / 100
+      data.pm3[0] = Math.round(10000 * (year_1.produktivitas_modal_3 - year_0.produktivitas_modal_3) / year_0.produktivitas_modal_3) / 100
 
-    data.pm1[1] = Math.round(10000 * (year_2.produktivitas_modal_1 - year_1.produktivitas_modal_1) / year_1.produktivitas_modal_1) / 100
-    data.pm2[1] = Math.round(10000 * (year_2.produktivitas_modal_2 - year_1.produktivitas_modal_2) / year_1.produktivitas_modal_2) / 100
-    data.pm3[1] = Math.round(10000 * (year_2.produktivitas_modal_3 - year_1.produktivitas_modal_3) / year_1.produktivitas_modal_3) / 100
+      data.pm1[1] = Math.round(10000 * (year_2.produktivitas_modal_1 - year_1.produktivitas_modal_1) / year_1.produktivitas_modal_1) / 100
+      data.pm2[1] = Math.round(10000 * (year_2.produktivitas_modal_2 - year_1.produktivitas_modal_2) / year_1.produktivitas_modal_2) / 100
+      data.pm3[1] = Math.round(10000 * (year_2.produktivitas_modal_3 - year_1.produktivitas_modal_3) / year_1.produktivitas_modal_3) / 100
+    }
+    return data
   }
-  return data
 })
 
 const pf_params = computed(() => {
-  const year_0 = rawData.value[Object.keys(rawData.value).at(-3)]
-  const year_1 = rawData.value[Object.keys(rawData.value).at(-2)]
-  const year_2 = rawData.value[Object.keys(rawData.value).at(-1)]
 
-  let data = {
-    label: [],
-    pf1: [],
-    pf2: [],
-    pf3: [],
+  if (available.value) {
+    const year_0 = rawData.value[Object.keys(rawData.value).at(-3)]
+    const year_1 = rawData.value[Object.keys(rawData.value).at(-2)]
+    const year_2 = rawData.value[Object.keys(rawData.value).at(-1)]
+
+    let data = {
+      label: [],
+      pf1: [],
+      pf2: [],
+      pf3: [],
+    }
+
+    if (!year_0 && !year_1) {
+      data.label = ["Laporan belum cukup"]
+      data.pf1[0] = 0
+      data.pf2[0] = 0
+      data.pf3[0] = 0
+    } else if (!year_0) {
+      data.label = [Object.keys(rawData.value).at(-1)]
+      data.pf1[0] = Math.round(10000 * (year_2.profitabilitas_1 - year_1.profitabilitas_1) / year_1.profitabilitas_1) / 100
+      data.pf2[0] = Math.round(10000 * (year_2.profitabilitas_2 - year_1.profitabilitas_2) / year_1.profitabilitas_2) / 100
+      data.pf3[0] = Math.round(10000 * (year_2.profitabilitas_3 - year_1.profitabilitas_3) / year_1.profitabilitas_3) / 100
+    } else {
+      data.label = [Object.keys(rawData.value).at(-2), Object.keys(rawData.value).at(-1)]
+      data.pf1[0] = Math.round(10000 * (year_1.profitabilitas_1 - year_0.profitabilitas_1) / year_0.profitabilitas_1) / 100
+      data.pf2[0] = Math.round(10000 * (year_1.profitabilitas_2 - year_0.profitabilitas_2) / year_0.profitabilitas_2) / 100
+      data.pf3[0] = Math.round(10000 * (year_1.profitabilitas_3 - year_0.profitabilitas_3) / year_0.profitabilitas_3) / 100
+
+      data.pf1[1] = Math.round(10000 * (year_2.profitabilitas_1 - year_1.profitabilitas_1) / year_1.profitabilitas_1) / 100
+      data.pf2[1] = Math.round(10000 * (year_2.profitabilitas_2 - year_1.profitabilitas_2) / year_1.profitabilitas_2) / 100
+      data.pf3[1] = Math.round(10000 * (year_2.profitabilitas_3 - year_1.profitabilitas_3) / year_1.profitabilitas_3) / 100
+    }
+    return data
   }
-
-  if (!year_0 && !year_1) {
-    data.label = ["Laporan belum cukup"]
-    data.pf1[0] = 0
-    data.pf2[0] = 0
-    data.pf3[0] = 0
-  } else if (!year_0) {
-    data.label = [Object.keys(rawData.value).at(-1)]
-    data.pf1[0] = Math.round(10000 * (year_2.profitabilitas_1 - year_1.profitabilitas_1) / year_1.profitabilitas_1) / 100
-    data.pf2[0] = Math.round(10000 * (year_2.profitabilitas_2 - year_1.profitabilitas_2) / year_1.profitabilitas_2) / 100
-    data.pf3[0] = Math.round(10000 * (year_2.profitabilitas_3 - year_1.profitabilitas_3) / year_1.profitabilitas_3) / 100
-  } else {
-    data.label = [Object.keys(rawData.value).at(-2), Object.keys(rawData.value).at(-1)]
-    data.pf1[0] = Math.round(10000 * (year_1.profitabilitas_1 - year_0.profitabilitas_1) / year_0.profitabilitas_1) / 100
-    data.pf2[0] = Math.round(10000 * (year_1.profitabilitas_2 - year_0.profitabilitas_2) / year_0.profitabilitas_2) / 100
-    data.pf3[0] = Math.round(10000 * (year_1.profitabilitas_3 - year_0.profitabilitas_3) / year_0.profitabilitas_3) / 100
-
-    data.pf1[1] = Math.round(10000 * (year_2.profitabilitas_1 - year_1.profitabilitas_1) / year_1.profitabilitas_1) / 100
-    data.pf2[1] = Math.round(10000 * (year_2.profitabilitas_2 - year_1.profitabilitas_2) / year_1.profitabilitas_2) / 100
-    data.pf3[1] = Math.round(10000 * (year_2.profitabilitas_3 - year_1.profitabilitas_3) / year_1.profitabilitas_3) / 100
-  }
-  return data
 })
 
 
 const rasio = computed(() => {
-  const year_0 = rawData.value[Object.keys(rawData.value).at(-3)]
-  const year_1 = rawData.value[Object.keys(rawData.value).at(-2)]
-  const year_2 = rawData.value[Object.keys(rawData.value).at(-1)]
+  if (available.value) {
+    const year_0 = rawData.value[Object.keys(rawData.value).at(-3)]
+    const year_1 = rawData.value[Object.keys(rawData.value).at(-2)]
+    const year_2 = rawData.value[Object.keys(rawData.value).at(-1)]
 
-  let data = {
-    label: [],
-    latest1: year_2 ? Math.round(year_2.rasio_pendukung_1 * 100) / 100 : 0,
-    latest2: year_2 ? Math.round(year_2.rasio_pendukung_2 * 100) / 100 : 0,
-    latest3: year_2 ? Math.round(year_2.rasio_pendukung_3 * 100) / 100 : 12,
-    rasio1: [],
-    rasio2: [],
-    rasio3: [],
+    let data = {
+      label: [],
+      latest1: year_2 ? Math.round(year_2.rasio_pendukung_1 * 100) / 100 : 0,
+      latest2: year_2 ? Math.round(year_2.rasio_pendukung_2 * 100) / 100 : 0,
+      latest3: year_2 ? Math.round(year_2.rasio_pendukung_3 * 100) / 100 : 12,
+      rasio1: [],
+      rasio2: [],
+      rasio3: [],
+    }
+
+    if (!year_0 && !year_1) {
+      data.label = ["Laporan belum cukup"]
+      data.rasio1[0] = 0
+      data.rasio2[0] = 0
+      data.rasio3[0] = 0
+    } else if (!year_0) {
+      data.label = [Object.keys(rawData.value).at(-1)]
+      data.rasio1[1] = Math.round(10000 * (year_2.rasio_pendukung_1 - year_1.rasio_pendukung_1) / year_1.rasio_pendukung_1) / 100
+      data.rasio2[1] = Math.round(10000 * (year_2.rasio_pendukung_2 - year_1.rasio_pendukung_2) / year_1.rasio_pendukung_2) / 100
+      data.rasio3[1] = Math.round(10000 * (year_2.rasio_pendukung_3 - year_1.rasio_pendukung_3) / year_1.rasio_pendukung_3) / 100
+    } else {
+      data.label = [Object.keys(rawData.value).at(-2), Object.keys(rawData.value).at(-1)]
+      data.rasio1[0] = Math.round(10000 * (year_1.rasio_pendukung_1 - year_0.rasio_pendukung_1) / year_0.rasio_pendukung_1) / 100
+      data.rasio2[0] = Math.round(10000 * (year_1.rasio_pendukung_2 - year_0.rasio_pendukung_2) / year_0.rasio_pendukung_2) / 100
+      data.rasio3[0] = Math.round(10000 * (year_1.rasio_pendukung_3 - year_0.rasio_pendukung_3) / year_0.rasio_pendukung_3) / 100
+
+      data.rasio1[1] = Math.round(10000 * (year_2.rasio_pendukung_1 - year_1.rasio_pendukung_1) / year_1.rasio_pendukung_1) / 100
+      data.rasio2[1] = Math.round(10000 * (year_2.rasio_pendukung_2 - year_1.rasio_pendukung_2) / year_1.rasio_pendukung_2) / 100
+      data.rasio3[1] = Math.round(10000 * (year_2.rasio_pendukung_3 - year_1.rasio_pendukung_3) / year_1.rasio_pendukung_3) / 100
+    }
+    return data
   }
-
-  if (!year_0 && !year_1) {
-    data.label = ["Laporan belum cukup"]
-    data.rasio1[0] = 0
-    data.rasio2[0] = 0
-    data.rasio3[0] = 0
-  } else if (!year_0) {
-    data.label = [Object.keys(rawData.value).at(-1)]
-    data.rasio1[1] = Math.round(10000 * (year_2.rasio_pendukung_1 - year_1.rasio_pendukung_1) / year_1.rasio_pendukung_1) / 100
-    data.rasio2[1] = Math.round(10000 * (year_2.rasio_pendukung_2 - year_1.rasio_pendukung_2) / year_1.rasio_pendukung_2) / 100
-    data.rasio3[1] = Math.round(10000 * (year_2.rasio_pendukung_3 - year_1.rasio_pendukung_3) / year_1.rasio_pendukung_3) / 100
-  } else {
-    data.label = [Object.keys(rawData.value).at(-2), Object.keys(rawData.value).at(-1)]
-    data.rasio1[0] = Math.round(10000 * (year_1.rasio_pendukung_1 - year_0.rasio_pendukung_1) / year_0.rasio_pendukung_1) / 100
-    data.rasio2[0] = Math.round(10000 * (year_1.rasio_pendukung_2 - year_0.rasio_pendukung_2) / year_0.rasio_pendukung_2) / 100
-    data.rasio3[0] = Math.round(10000 * (year_1.rasio_pendukung_3 - year_0.rasio_pendukung_3) / year_0.rasio_pendukung_3) / 100
-
-    data.rasio1[1] = Math.round(10000 * (year_2.rasio_pendukung_1 - year_1.rasio_pendukung_1) / year_1.rasio_pendukung_1) / 100
-    data.rasio2[1] = Math.round(10000 * (year_2.rasio_pendukung_2 - year_1.rasio_pendukung_2) / year_1.rasio_pendukung_2) / 100
-    data.rasio3[1] = Math.round(10000 * (year_2.rasio_pendukung_3 - year_1.rasio_pendukung_3) / year_1.rasio_pendukung_3) / 100
-  }
-  return data
 })
 
 
 const data = ref({
 
   produktivitas_tenaga_kerja: {
-    labels: ptk_params.value.label,
+    labels: ptk_params.value?.label,
     datasets: [
       {
         label: 'Nilai Tambah / Jml Tenaga Kerja',
         backgroundColor: '#7EC27E',
-        data: ptk_params.value.ptk1,
+        data: ptk_params.value?.ptk1,
       },
       {
         label: 'Nilai Tambah / Jam Kerja',
         backgroundColor: '#FFEFA1',
-        data: ptk_params.value.ptk2,
+        data: ptk_params.value?.ptk2,
       },
       {
         label: 'Nilai Tambah / Biaya Tenaga Kerja',
         backgroundColor: '#FFBE85',
-        data: ptk_params.value.ptk3,
+        data: ptk_params.value?.ptk3,
       },
       {
         label: 'Biaya Tenaga Kerja / Total Jam Kerja',
         backgroundColor: '#DE8CD4',
-        data: ptk_params.value.ptk4,
+        data: ptk_params.value?.ptk4,
       },
     ],
   },
   produktivitas_modal: {
-    labels: pm_params.value.label,
+    labels: pm_params.value?.label,
     datasets: [
       {
         label: 'Penjualan / Total Modal',
         backgroundColor: '#7EC27E',
-        data: pm_params.value.pm1,
+        data: pm_params.value?.pm1,
       },
       {
         label: 'Nilai Tambah / Total Modal',
         backgroundColor: '#FFEFA1',
-        data: pm_params.value.pm2,
+        data: pm_params.value?.pm2,
       },
       {
         label: 'Total Modal / Jml Tenaga Kerja',
         backgroundColor: '#FFBE85',
-        data: pm_params.value.pm3,
+        data: pm_params.value?.pm3,
       },
     ],
   },
   profitabilitas: {
-    labels: pf_params.value.label,
+    labels: pf_params.value?.label,
     datasets: [
       {
         label: 'Laba / Penjualan',
         backgroundColor: '#7EC27E',
-        data: pf_params.value.pf1,
+        data: pf_params.value?.pf1,
       },
       {
         label: 'Laba / Pembelian Bahan',
         backgroundColor: '#FFEFA1',
-        data: pf_params.value.pf2,
+        data: pf_params.value?.pf2,
       },
       {
         label: 'Laba / Total Modal',
         backgroundColor: '#FFBE85',
-        data: pf_params.value.pf3,
+        data: pf_params.value?.pf3,
       },
     ],
   },
   ratio_pendukung: {
-    labels: rasio.value.label,
+    labels: rasio.value?.label,
     datasets: [
       {
         label: 'Nilai Tambah / Penjualan',
         backgroundColor: '#7EC27E',
-        data: rasio.value.rasio1,
+        data: rasio.value?.rasio1,
       },
       {
         label: 'Nilai Tambah / Pembelian Bahan',
         backgroundColor: '#FFEFA1',
-        data: rasio.value.rasio2,
+        data: rasio.value?.rasio2,
       },
       {
         label: 'Laba / Biaya Tenaga Kerja',
         backgroundColor: '#FFBE85',
-        data: rasio.value.rasio3,
+        data: rasio.value?.rasio3,
       },
     ],
   },
   line: {
-    labels: nilaiTambah.value.label,
+    labels: nilaiTambah.value?.label,
     datasets: [
       {
         label: "",
         backgroundColor: '#034EA2',
-        data: nilaiTambah.value.value,
+        data: nilaiTambah.value?.value,
       },
     ],
   },
   line2: {
-    labels: produktivitas.value.label,
+    labels: produktivitas.value?.label,
     datasets: [
       {
         label: "",
         backgroundColor: '#034EA2',
-        data: produktivitas.value.value,
+        data: produktivitas.value?.value,
       },
     ],
   },
   pie: {
-    labels: nilaiTambah.value.pie_label,
+    labels: nilaiTambah.value?.pie_label,
     datasets: [
       {
         label: 'Data One',
         backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16', '#7F00FF'],
-        data: nilaiTambah.value.pie_value,
+        data: nilaiTambah.value?.pie_value,
       },
     ],
   },
