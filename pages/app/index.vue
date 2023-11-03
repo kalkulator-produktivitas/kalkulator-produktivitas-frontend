@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!errorPage" class="h-full grid grid-cols-2 gap-12">
+  <div class="h-full grid grid-cols-2 gap-12">
     <div class="max-w static rounded overflow shadow-lg bg-[#F6F6F6] card-border overflow-x-auto">
       <CardLabel label="Profil" />
       <div class="px-6 py-4 mt-6">
@@ -74,11 +74,14 @@
                 <div class="h-full border-t-2 grid grid-cols-2">
                   <div class="col m-2 h-full">
                     <p class="text-black">Selesai</p>
-                    <p class="text-green-600 text-[24px] font-bold text-center">{{ reports.selesai }}</p>
+                    <p v-if="!errorPage" class="text-green-600 text-[24px] font-bold text-center">{{ reports.selesai }}
+                    </p>
+                    <p v-else class="text-green-600 text-[24px] font-bold text-center">0</p>
                   </div>
                   <div class="col m-2 h-full">
                     <p class="text-black">Belum</p>
-                    <p class="text-red-600 text-[24px] font-bold text-center">{{ reports.belum }}</p>
+                    <p v-if="!errorPage" class="text-red-600 text-[24px] font-bold text-center">{{ reports.belum }}</p>
+                    <p v-else class="text-green-600 text-[24px] font-bold text-center">0</p>
                   </div>
                 </div>
               </div>
@@ -87,8 +90,11 @@
               <p class="font-normal text-zinc-900 dark:text-gray-400 px-2">Total Penjualan</p>
               <div class="flex justify-end h-full">
                 <div class="h-full">
-                  <p class="lg:text-[22px] text-green-600 font-bold text-center mr-3">Rp {{
-                    hitung_total_pendapatan }}
+                  <p v-if="!errorPage || rawData.value !== null || rawData.value !== undefined"
+                    class="lg:text-[22px] text-green-600 font-bold text-center mr-3">Rp {{
+                      hitung_total_pendapatan }}
+                  </p>
+                  <p v-else class="lg:text-[22px] text-green-600 font-bold text-center mr-3">Rp 0
                   </p>
                 </div>
               </div>
@@ -106,7 +112,7 @@
                       <th>Status</th>
                     </tr>
                   </thead>
-                  <tbody class="text-sm">
+                  <tbody v-if="!errorPage" class="text-sm">
                     <tr v-for="dat in rawData.laporan">
                       <td>{{ dat.tahun_laporan }}</td>
                       <td>{{ dateLocal(dat.created_at) }}</td>
@@ -138,29 +144,34 @@
         <div class="lg:grid lg:grid-cols-2 lg:flex-none gap-8 p-5 mt-2 lg:h-[85%]">
           <div class="lg:col-span-1 lg:grid lg:grid-rows-2 gap-6">
             <div class="row-span-1 border">
-              <CardInfo label="Kemampuan perusahaan dalam menciptakan penjualan melalui pendayagunaan modal"
+              <CardInfo v-if="!errorPage"
+                label="Kemampuan perusahaan dalam menciptakan penjualan melalui pendayagunaan modal"
                 :value="performance.produktivitas_tenaga_kerja_latest"
-                :rate="Math.round(100 * performance.produktivitas_tenaga_kerja_rate) / 100" unit="" />
+                :rate="performance.produktivitas_tenaga_kerja_rate ? Math.round(100 * performance.produktivitas_tenaga_kerja_rate) / 100 : 0"
+                unit="" />
             </div>
             <div class="row-span-1 border">
-              <CardInfo
+              <CardInfo v-if="!errorPage"
                 label="Kontiribusi/Sumbangan rata-rata setiap jam tenaga kerja dalam bekerja dalam menciptakan nilai tambah"
                 :value="performance.produktivitas_modal_latest"
-                :rate="Math.round(100 * performance.produktivitas_modal_rate) / 100" unit="" />
+                :rate="performance.produktivitas_modal_rate ? Math.round(100 * performance.produktivitas_modal_rate) / 100 : 0"
+                unit="" />
             </div>
           </div>
           <div class="lg:col-span-1 lg:grid lg:grid-rows-2 gap-6">
             <div class="row-span-1 border">
-              <CardInfo
+              <CardInfo v-if="!errorPage"
                 label="Perbandingan antara nilai bersih yang didapatkan perusahaan dengan sejumlah biaya yang dikeluarkan untuk membayar bahan & jasa"
-                :value="performance.profitabilitas_latest" :rate="Math.round(100 * performance.profitabilitas_rate) / 100"
+                :value="performance.profitabilitas_latest"
+                :rate="performance.profitabilitas_rate ? Math.round(100 * performance.profitabilitas_rate) / 100 : 0"
                 unit="" />
             </div>
             <div class="row-span-1 border">
-              <CardInfo
+              <CardInfo v-if="!errorPage"
                 label="Tingkat efisiensi proses pembuatan produk terhadap bahan dan jasa dalam rangka pembuatan produk akhir"
                 :value="performance.rasio_pendukung_latest"
-                :rate="Math.round(100 * performance.rasio_pendukung_rate) / 100" unit="" />
+                :rate="performance.rasio_pendukung_rate ? Math.round(100 * performance.rasio_pendukung_rate) / 100 : 0"
+                unit="" />
             </div>
           </div>
         </div>
@@ -266,58 +277,59 @@ const dateLocal = (dt) => {
 
 const performance = computed(() => {
   let laporan = {}
-  let data = rawData.value.hasil
+  let data = rawData.value?.hasil
+  if (errorPage && data !== null && data !== undefined) {
+    if (data[0] && data[1]) {
+      // Produktivitas Tenaga Kerja
 
-  // Produktivitas Tenaga Kerja
-  laporan.produktivitas_tenaga_kerja_latest = ((data[0].produktivitas_tenaga_kerja_1 - data[1].produktivitas_tenaga_kerja_1) / data[1].produktivitas_tenaga_kerja_1 * 100).toFixed(2)
-  let produktivitas_tenaga_kerja_before
-  if (!data[2] || !data[2].produktivitas_tenaga_kerja_1) {
-    produktivitas_tenaga_kerja_before = 0
-  } else {
-    produktivitas_tenaga_kerja_before = ((data[1].produktivitas_tenaga_kerja_1 - data[2].produktivitas_tenaga_kerja_1) / data[2].produktivitas_tenaga_kerja_1 * 100).toFixed(2)
+      laporan.produktivitas_tenaga_kerja_latest = ((data[0].produktivitas_tenaga_kerja_1 - data[1].produktivitas_tenaga_kerja_1) / data[1].produktivitas_tenaga_kerja_1 * 100).toFixed(2)
+      let produktivitas_tenaga_kerja_before
+      if (!data[2] || !data[2].produktivitas_tenaga_kerja_1) {
+        produktivitas_tenaga_kerja_before = 0
+      } else {
+        produktivitas_tenaga_kerja_before = ((data[1].produktivitas_tenaga_kerja_1 - data[2].produktivitas_tenaga_kerja_1) / data[2].produktivitas_tenaga_kerja_1 * 100).toFixed(2)
+      }
+      laporan.produktivitas_tenaga_kerja_rate = (laporan.produktivitas_tenaga_kerja_latest - produktivitas_tenaga_kerja_before).toFixed(2)
+
+      // Produktivitas Modal
+      laporan.produktivitas_modal_latest = ((data[0].produktivitas_modal_1 - data[1].produktivitas_modal_1) / data[1].produktivitas_modal_1 * 100).toFixed(2)
+      let produktivitas_modal_before
+      if (!data[2] || !data[2].produktivitas_modal_1) {
+        produktivitas_modal_before = 0
+      } else {
+        produktivitas_modal_before = ((data[1].produktivitas_modal_1 - data[2].produktivitas_modal_1) / data[2].produktivitas_modal_1 * 100).toFixed(2)
+      }
+      laporan.produktivitas_modal_rate = (laporan.produktivitas_modal_latest - produktivitas_modal_before).toFixed(2)
+
+      // Profitabilitas
+      laporan.profitabilitas_latest = ((data[0].profitabilitas_2 - data[1].profitabilitas_2) / data[1].profitabilitas_2 * 100).toFixed(2)
+      let profitabilitas_before
+      if (!data[2] || !data[2].profitabilitas_2) {
+        profitabilitas_before = 0
+      } else {
+        profitabilitas_before = ((data[1].profitabilitas_2 - data[2].profitabilitas_2) / data[2].profitabilitas_2 * 100).toFixed(2)
+      }
+      laporan.profitabilitas_rate = (laporan.profitabilitas_latest - profitabilitas_before).toFixed(2)
+
+      // Rasio Pendukung
+      laporan.rasio_pendukung_latest = ((data[0].rasio_pendukung_1 - data[1].rasio_pendukung_1) / data[1].rasio_pendukung_1 * 100).toFixed(2)
+      let rasio_pendukung_before
+      if (!data[2] || !data[2].rasio_pendukung_1) {
+        rasio_pendukung_before = 0
+      } else {
+        rasio_pendukung_before = ((data[1].rasio_pendukung_1 - data[2].rasio_pendukung_1) / data[2].rasio_pendukung_1 * 100).toFixed(2)
+      }
+      laporan.rasio_pendukung_rate = (laporan.rasio_pendukung_latest - rasio_pendukung_before).toFixed(2)
+    }
   }
-  laporan.produktivitas_tenaga_kerja_rate = (laporan.produktivitas_tenaga_kerja_latest - produktivitas_tenaga_kerja_before).toFixed(2)
-
-  // Produktivitas Modal
-  laporan.produktivitas_modal_latest = ((data[0].produktivitas_modal_1 - data[1].produktivitas_modal_1) / data[1].produktivitas_modal_1 * 100).toFixed(2)
-  let produktivitas_modal_before
-  if (!data[2] || !data[2].produktivitas_modal_1) {
-    produktivitas_modal_before = 0
-  } else {
-    produktivitas_modal_before = ((data[1].produktivitas_modal_1 - data[2].produktivitas_modal_1) / data[2].produktivitas_modal_1 * 100).toFixed(2)
-  }
-  laporan.produktivitas_modal_rate = (laporan.produktivitas_modal_latest - produktivitas_modal_before).toFixed(2)
-
-  // Profitabilitas
-  laporan.profitabilitas_latest = ((data[0].profitabilitas_2 - data[1].profitabilitas_2) / data[1].profitabilitas_2 * 100).toFixed(2)
-  let profitabilitas_before
-  if (!data[2] || !data[2].profitabilitas_2) {
-    profitabilitas_before = 0
-  } else {
-    profitabilitas_before = ((data[1].profitabilitas_2 - data[2].profitabilitas_2) / data[2].profitabilitas_2 * 100).toFixed(2)
-  }
-  laporan.profitabilitas_rate = (laporan.profitabilitas_latest - profitabilitas_before).toFixed(2)
-
-  // Rasio Pendukung
-  laporan.rasio_pendukung_latest = ((data[0].rasio_pendukung_1 - data[1].rasio_pendukung_1) / data[1].rasio_pendukung_1 * 100).toFixed(2)
-  let rasio_pendukung_before
-  if (!data[2] || !data[2].rasio_pendukung_1) {
-    rasio_pendukung_before = 0
-  } else {
-    rasio_pendukung_before = ((data[1].rasio_pendukung_1 - data[2].rasio_pendukung_1) / data[2].rasio_pendukung_1 * 100).toFixed(2)
-  }
-  laporan.rasio_pendukung_rate = (laporan.rasio_pendukung_latest - rasio_pendukung_before).toFixed(2)
-
   return laporan
 })
 
 const hitung_total_pendapatan = computed(() => {
-  if (rawData.value.total_penjualan[0].total_penjualan.toString()) {
-
-
-    let data = rawData.value.total_penjualan[0].total_penjualan.toString()
-    let num_string = ''
-
+  let data_checked = rawData.value?.total_penjualan[0]?.total_penjualan
+  let num_string = ''
+  if (errorPage && data_checked !== null && data_checked !== undefined) {
+    let data = data_checked.toString()
     if (data.length <= 15 && data.length > 12) {
       num_string = Math.round(rawData.value.total_penjualan[0].total_penjualan / (Math.pow(10, 12))).toString() + " T"
     } else if (data.length <= 12 && data.length > 9) {
@@ -325,7 +337,8 @@ const hitung_total_pendapatan = computed(() => {
     } else if (data.length <= 9) {
       num_string = Math.round(rawData.value.total_penjualan[0].total_penjualan / (Math.pow(10, 6))).toString() + " Jt"
     }
-    console.log(data);
+    return num_string
+  } else {
     return num_string
   }
 })

@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto flex flex-col gap-4 h-full w-full">
+  <div v-if="available" class="container mx-auto flex flex-col gap-4 h-full w-full">
     <!-- {{ nilaiTambah }} -->
     <div class="grid grid-cols-8 gap-4">
       <LineChart class="col-span-3 shadow-lg border" id="1" :config="lineOptions" :dataset="data.line"
@@ -32,6 +32,12 @@
     </div>
 
   </div>
+  <div v-else>
+    <p class="text-xl text-center">
+      Belum Ada Laporan Dibuat
+    </p>
+  </div>
+  <Popup v-if="modal.show" :message="modal.message" :status="modal.status" :type="modal.type" @close="closeModal" />
 </template>
 
 <script setup>
@@ -44,9 +50,22 @@ const global = useRuntimeConfig();
 let rawData = ref()
 let loading = ref(false)
 
+let available = ref(false)
+
 let authUser
 if (process.client) {
   authUser = ref(JSON.parse(localStorage.getItem("auth")))
+}
+
+const modal = ref({
+  show: false,
+  type: '',
+  message: '',
+  status: undefined
+})
+
+const closeModal = () => {
+  modal.value.show = false
 }
 
 try {
@@ -62,7 +81,6 @@ try {
     })
   // console.log(res);
   if (res.status && res.status >= 400) {
-    errorPage.value = true
     loading.value = false
     modal.value.show = true
     modal.value.message = res.message
@@ -79,14 +97,17 @@ try {
       )
     }
   } else {
-    console.log(res[Object.keys(res).at(-1)]);
+    available.value = true
     loading.value = false
     rawData.value = res
   }
 } catch (error) {
-  console.log(error);
   loading.value = false
-  navigateTo('/error')
+  modal.value.show = true
+  modal.value.message = error.message
+  modal.value.status = error.status
+  modal.value.type = 'ERROR'
+  // navigateTo('/error')
 }
 
 const formatter = new Intl.NumberFormat('en-US', {
@@ -130,47 +151,48 @@ const produktivitas = computed(() => {
 
 
 const ptk_params = computed(() => {
-  const year_0 = rawData.value[Object.keys(rawData.value).at(-3)]
-  const year_1 = rawData.value[Object.keys(rawData.value).at(-2)]
-  const year_2 = rawData.value[Object.keys(rawData.value).at(-1)]
 
-  let data = {
-    label: [],
-    ptk1: [],
-    ptk2: [],
-    ptk3: [],
-    ptk4: [],
+  if (available.value) {
+    const year_0 = rawData.value[Object.keys(rawData.value).at(-3)]
+    const year_1 = rawData.value[Object.keys(rawData.value).at(-2)]
+    const year_2 = rawData.value[Object.keys(rawData.value).at(-1)]
+
+    let data = {
+      label: [],
+      ptk1: [],
+      ptk2: [],
+      ptk3: [],
+      ptk4: [],
+    }
+
+    if (!year_0 && !year_1) {
+      data.label = ["Laporan belum cukup"]
+      data.ptk1[0] = 0
+      data.ptk2[0] = 0
+      data.ptk3[0] = 0
+      data.ptk4[0] = 0
+    } else if (!year_0) {
+      data.label = [Object.keys(rawData.value).at(-1)]
+      data.ptk1[0] = Math.round(10000 * (year_2.produktivitas_tenaga_kerja_1 - year_1.produktivitas_tenaga_kerja_1) / year_1.produktivitas_tenaga_kerja_1) / 100
+      data.ptk2[0] = Math.round(10000 * (year_2.produktivitas_tenaga_kerja_2 - year_1.produktivitas_tenaga_kerja_2) / year_1.produktivitas_tenaga_kerja_2) / 100
+      data.ptk3[0] = Math.round(10000 * (year_2.produktivitas_tenaga_kerja_3 - year_1.produktivitas_tenaga_kerja_3) / year_1.produktivitas_tenaga_kerja_3) / 100
+      data.ptk4[0] = Math.round(10000 * (year_2.produktivitas_tenaga_kerja_4 - year_1.produktivitas_tenaga_kerja_4) / year_1.produktivitas_tenaga_kerja_4) / 100
+    } else {
+      data.label = [Object.keys(rawData.value).at(-2), Object.keys(rawData.value).at(-1)]
+      data.ptk1[0] = Math.round(10000 * (year_1.produktivitas_tenaga_kerja_1 - year_0.produktivitas_tenaga_kerja_1) / year_0.produktivitas_tenaga_kerja_1) / 100
+      data.ptk2[0] = Math.round(10000 * (year_1.produktivitas_tenaga_kerja_2 - year_0.produktivitas_tenaga_kerja_2) / year_0.produktivitas_tenaga_kerja_2) / 100
+      data.ptk3[0] = Math.round(10000 * (year_1.produktivitas_tenaga_kerja_3 - year_0.produktivitas_tenaga_kerja_3) / year_0.produktivitas_tenaga_kerja_3) / 100
+      data.ptk4[0] = Math.round(10000 * (year_1.produktivitas_tenaga_kerja_4 - year_0.produktivitas_tenaga_kerja_4) / year_0.produktivitas_tenaga_kerja_4) / 100
+
+      data.ptk1[1] = Math.round(10000 * (year_2.produktivitas_tenaga_kerja_1 - year_1.produktivitas_tenaga_kerja_1) / year_1.produktivitas_tenaga_kerja_1) / 100
+      data.ptk2[1] = Math.round(10000 * (year_2.produktivitas_tenaga_kerja_2 - year_1.produktivitas_tenaga_kerja_2) / year_1.produktivitas_tenaga_kerja_2) / 100
+      data.ptk3[1] = Math.round(10000 * (year_2.produktivitas_tenaga_kerja_3 - year_1.produktivitas_tenaga_kerja_3) / year_1.produktivitas_tenaga_kerja_3) / 100
+      data.ptk4[1] = Math.round(10000 * (year_2.produktivitas_tenaga_kerja_4 - year_1.produktivitas_tenaga_kerja_4) / year_1.produktivitas_tenaga_kerja_4) / 100
+    }
+    return data
   }
-
-  if (!year_0 && !year_1) {
-    data.label = ["Laporan belum cukup"]
-    data.ptk1[0] = 0
-    data.ptk2[0] = 0
-    data.ptk3[0] = 0
-    data.ptk4[0] = 0
-  } else if (!year_0) {
-    data.label = [Object.keys(rawData.value).at(-1)]
-    data.ptk1[0] = Math.round(10000 * (year_2.produktivitas_tenaga_kerja_1 - year_1.produktivitas_tenaga_kerja_1) / year_1.produktivitas_tenaga_kerja_1) / 100
-    data.ptk2[0] = Math.round(10000 * (year_2.produktivitas_tenaga_kerja_2 - year_1.produktivitas_tenaga_kerja_2) / year_1.produktivitas_tenaga_kerja_2) / 100
-    data.ptk3[0] = Math.round(10000 * (year_2.produktivitas_tenaga_kerja_3 - year_1.produktivitas_tenaga_kerja_3) / year_1.produktivitas_tenaga_kerja_3) / 100
-    data.ptk4[0] = Math.round(10000 * (year_2.produktivitas_tenaga_kerja_4 - year_1.produktivitas_tenaga_kerja_4) / year_1.produktivitas_tenaga_kerja_4) / 100
-  } else {
-    data.label = [Object.keys(rawData.value).at(-2), Object.keys(rawData.value).at(-1)]
-    data.ptk1[0] = Math.round(10000 * (year_1.produktivitas_tenaga_kerja_1 - year_0.produktivitas_tenaga_kerja_1) / year_0.produktivitas_tenaga_kerja_1) / 100
-    data.ptk2[0] = Math.round(10000 * (year_1.produktivitas_tenaga_kerja_2 - year_0.produktivitas_tenaga_kerja_2) / year_0.produktivitas_tenaga_kerja_2) / 100
-    data.ptk3[0] = Math.round(10000 * (year_1.produktivitas_tenaga_kerja_3 - year_0.produktivitas_tenaga_kerja_3) / year_0.produktivitas_tenaga_kerja_3) / 100
-    data.ptk4[0] = Math.round(10000 * (year_1.produktivitas_tenaga_kerja_4 - year_0.produktivitas_tenaga_kerja_4) / year_0.produktivitas_tenaga_kerja_4) / 100
-
-    data.ptk1[1] = Math.round(10000 * (year_2.produktivitas_tenaga_kerja_1 - year_1.produktivitas_tenaga_kerja_1) / year_1.produktivitas_tenaga_kerja_1) / 100
-    data.ptk2[1] = Math.round(10000 * (year_2.produktivitas_tenaga_kerja_2 - year_1.produktivitas_tenaga_kerja_2) / year_1.produktivitas_tenaga_kerja_2) / 100
-    data.ptk3[1] = Math.round(10000 * (year_2.produktivitas_tenaga_kerja_3 - year_1.produktivitas_tenaga_kerja_3) / year_1.produktivitas_tenaga_kerja_3) / 100
-    data.ptk4[1] = Math.round(10000 * (year_2.produktivitas_tenaga_kerja_4 - year_1.produktivitas_tenaga_kerja_4) / year_1.produktivitas_tenaga_kerja_4) / 100
-  }
-
-
-
-  return data
-})
+}
+)
 
 const pm_params = computed(() => {
   const year_0 = rawData.value[Object.keys(rawData.value).at(-3)]
@@ -284,6 +306,7 @@ const rasio = computed(() => {
 
 
 const data = ref({
+
   produktivitas_tenaga_kerja: {
     labels: ptk_params.value.label,
     datasets: [
