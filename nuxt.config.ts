@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     'nuxt-icon',
     '@pinia/nuxt',
   ],
+  // plugins: ['~/plugins/rupiahFormatter.js'],
   runtimeConfig: {
     public: {
       // baseURL: 'http://localhost:2020',

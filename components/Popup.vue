@@ -36,7 +36,14 @@ const data = computed(() => {
     title = "SUCCESS"
     icon = "ic:round-check"
     textColor = "text-green-500"
-  } else {
+
+  } else if (props.type === 'NONE') {
+    bgColor = "bg-slate-200"
+    title = "HELLO"
+    icon = ""
+    textColor = "text-white"
+  }
+  else {
     bgColor = "bg-yellow-200"
     title = "PERHATIAN"
     icon = "fe:warning"

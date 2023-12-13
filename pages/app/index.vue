@@ -9,8 +9,6 @@
           <InputField1 label="Tanggal Daftar" wide="300" type="number" disabled="true"
             :modelValue="rawData.tanggal_registrasi" />
         </div>
-        <!-- <InputField1 label="Alamat" type="text" disabled="true"
-          :modelValue="rawData.alamat_perusahaan" /> -->
         <div class="flex gap-6">
           <InputField1 label="Email" type="text" disabled="true" :modelValue="rawData.email_user" />
           <div class="mb-4">
