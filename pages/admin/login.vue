@@ -120,7 +120,7 @@ export default {
       } catch (error) {
         this.loading = false
         this.modal.type = 'ERROR'
-        this.modal.message = "Internal Server Error"
+        this.modal.message = "Wrong Credentials"
         this.modal.show = true
         console.log(error);
       }
