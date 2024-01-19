@@ -24,7 +24,7 @@
                   comp.tanggal_pendirian.slice(0, 4) }}</td>
               <td class="text-center">{{ formatRegisterDate(comp.tanggal_registrasi) }}</td>
               <td class="text-center">{{ comp.tahun_laporan }}</td>
-              <td>{{ toRupiah(comp.nilai_tambah) }}</td>
+              <td>{{ rupiahFormatter(comp.nilai_tambah) }}</td>
               <td class="text-blue-400"><button
                   @click="nilaiTambahQuery(comp.id_perusahaan, comp.nama_perusahaan)">Detail</button></td>
             </tr>
@@ -43,7 +43,7 @@
 definePageMeta({
   layout: 'admin'
 });
-
+const { rupiahFormatter } = useRupiahFormatter();
 const global = useRuntimeConfig();
 const loading = ref(true)
 
@@ -159,30 +159,30 @@ const nilaiTambahQuery = async (idCompany, nameCompany) => {
   }
 }
 
-function toRupiah(price) {
-  // From price number 200000 to Rp200.000
-  let priceStr = Math.abs(price).toString();
-  let rupiah = ""
-  for (let i = priceStr.length - 1; i >= 0; i--) {
-    rupiah += priceStr[i]
-    let j = i - priceStr.length
-    if (i !== 0 && j % 3 === 0) {
-      rupiah += "."
-    }
-  }
-  // Reverse
-  let strArr = rupiah.split("");
-  rupiah = "";
-  for (let i = strArr.length - 1; i >= 0; i--) {
-    rupiah += strArr[i]
-  }
-  rupiah = "Rp " + rupiah
-  if (price < 0) {
-    rupiah = "(" + rupiah + ")"
-  }
+// function toRupiah(price) {
+//   // From price number 200000 to Rp200.000
+//   let priceStr = Math.abs(price).toString();
+//   let rupiah = ""
+//   for (let i = priceStr.length - 1; i >= 0; i--) {
+//     rupiah += priceStr[i]
+//     let j = i - priceStr.length
+//     if (i !== 0 && j % 3 === 0) {
+//       rupiah += "."
+//     }
+//   }
+//   // Reverse
+//   let strArr = rupiah.split("");
+//   rupiah = "";
+//   for (let i = strArr.length - 1; i >= 0; i--) {
+//     rupiah += strArr[i]
+//   }
+//   rupiah = "Rp " + rupiah
+//   if (price < 0) {
+//     rupiah = "(" + rupiah + ")"
+//   }
 
-  return rupiah
-}
+//   return rupiah
+// }
 
 </script>
 
