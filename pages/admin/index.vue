@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading || companies.length > 0" class="h-screen">
+  <div v-if="!loading || companies.length > 0" class="h-full">
     <div class="flex flex-col overflow-y-scroll">
       <div class="px-12 pt-4 mx-auto ">
         <table class="table-fixed">

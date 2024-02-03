@@ -1,12 +1,12 @@
 <template>
-  <div>
-    <header class="nav-header p-2 ">
-      <div class="absolute top-1 right-10">
-        <button type="button" @click="logout" :class="loggedIn ? 'show' : 'hidden'">
+  <div class="fixed top-0 w-screen">
+    <header class="nav-header shadow-lg p-2">
+      <div class="">
+        <button type="button" @click="logout" :class="loggedIn ? 'show' : 'hidden'" class="absolute top-1 right-4">
           Keluar
         </button>
       </div>
-      <div class="text-center text-white font-bold text-lg">
+      <div class="text-center text-black font-normal text-lg">
         <p>
           Admin Access
         </p>
@@ -17,9 +17,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useAuthStore } from '../store/auth';
 
-const authStore = useAuthStore()
 
 let adminUser = ref()
 if (process.client) {
@@ -47,18 +45,36 @@ const logout = async () => {
 
 <style scoped>
 .nav-header {
-  background-color: #034EA2;
+  background-color: #ffffff;
 }
 
 button {
-  background-color: #ee0000;
-  color: white;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
   padding-left: 20px;
   padding-right: 20px;
   padding-top: 3px;
+  border-width: 2px;
+  border-color: rgb(0, 0, 0);
   padding-bottom: 5px;
   border-radius: 5px;
   margin-left: 0px;
   font-weight: 600;
+  transition: 0.2s;
+}
+
+button:hover {
+  background-color: #3e3e3e;
+  color: rgb(255, 255, 255);
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 3px;
+  border-width: 2px;
+  border-color: rgb(0, 0, 0);
+  padding-bottom: 5px;
+  border-radius: 5px;
+  margin-left: 0px;
+  font-weight: 600;
+  transition: 0.2s;
 }
 </style>
