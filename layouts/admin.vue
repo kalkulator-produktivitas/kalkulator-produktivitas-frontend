@@ -2,7 +2,7 @@
   <div class="h-screen">
     <AdminHeaders />
     <AdminSidebar />
-    <div id="layout" class="flex bg-gray-100 h-full">
+    <div id="layout" class="flex bg-white h-full">
       <div class="container mx-auto mt-16 ">
         <slot />
       </div>

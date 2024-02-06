@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed top-0 w-screen">
+  <div class="fixed top-0 w-screen z-40">
     <header class="nav-header shadow-lg p-2">
       <div class="">
         <button type="button" @click="logout" :class="loggedIn ? 'show' : 'hidden'" class="absolute top-1 right-4">

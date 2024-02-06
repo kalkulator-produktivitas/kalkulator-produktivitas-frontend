@@ -11,7 +11,7 @@ export default function getAPI() {
   const data = ref<any>(null);
   const error: Ref<string> = ref('')
   const loading: Ref<boolean> = ref(false);
-  const getter = async (url: string, auth: object, queries: object) => {
+  const getter = async (url: string, auth: object | undefined, queries: object | undefined) => {
 
     loading.value = true;
     const res: ApiResponse = await $fetch(`${global.public.baseURL}${url}`,
@@ -23,6 +23,7 @@ export default function getAPI() {
         },
         query: queries
       })
+    console.log(queries);
 
     if (res.error !== '') {
       ok.value = false;

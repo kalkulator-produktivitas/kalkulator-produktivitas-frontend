@@ -1,7 +1,7 @@
 <template>
   <div class="flex">
     <aside @mouseover="isOpen = false" @mouseleave="isOpen = true" id="default-sidebar" :class="isOpen ? 'w-12' : 'w-48'"
-      class="fixed top-0 left-0 h-screen transition-all ease-in-out duration-500 z-30" aria-label="Sidebar">
+      class="fixed top-0 left-0 h-screen transition-all ease-in-out duration-500 z-50" aria-label="Sidebar">
       <div class="h-full bg-[#034EA2] overflow-none">
         <nuxt-link class="flex items-center" to="/">
           <img src="~/assets/P3D_logo_2.png" class="w-10 ml-1 pt-3 flex-none" alt="" srcset="">
