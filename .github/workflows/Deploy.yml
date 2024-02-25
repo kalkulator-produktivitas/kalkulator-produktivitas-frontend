@@ -1,0 +1,21 @@
+name: 'Netlify Deploy'
+
+on:
+  push:
+    branches: ['staging']
+
+jobs:
+  deploy:
+    name: 'Deploy'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      # - uses: jsmrcaga/action-netlify-deploy@master
+      - name: "Deploy Site"
+        run: curl -X POST -d {} ${{ secrets.NETLIFY_AUTO_DEPLOY }}
+        # with:
+        #   NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        #   NETLIFY_SITE_ID: ${{ secrets.NETLIFY_AUTO_DEPLOY }}
+        #   NETLIFY_DEPLOY_MESSAGE: "Prod deploy v${{ github.ref }}"
+        #   NETLIFY_DEPLOY_TO_PROD: true
