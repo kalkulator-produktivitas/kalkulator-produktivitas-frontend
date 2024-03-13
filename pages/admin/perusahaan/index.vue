@@ -47,10 +47,12 @@ const modal = ref({
 const perusahaan = ref([])
 
 try {
-  let res = await getter('/admin/test')
+  let res = await getter('/admin/semuaperusahaan')
   perusahaan.value = res.data
 } catch (err) {
 }
+
+
 
 </script>
 

@@ -10,8 +10,8 @@ export default defineNuxtConfig({
   // plugins: ['~/plugins/rupiahFormatter.js'],
   runtimeConfig: {
     public: {
-      // baseURL: 'http://localhost:2020',
-      baseURL: process.env.API_BASE_URL
+      baseURL: 'http://localhost:2020',
+      // baseURL: process.env.API_BASE_URL
     },
   },
 })

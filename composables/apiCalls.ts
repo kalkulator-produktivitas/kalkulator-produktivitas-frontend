@@ -23,7 +23,7 @@ export default function getAPI() {
         },
         query: queries
       })
-    console.log(queries);
+    // console.log(queries);
 
     if (res.error !== '') {
       ok.value = false;

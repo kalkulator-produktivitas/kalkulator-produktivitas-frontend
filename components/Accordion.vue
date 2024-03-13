@@ -8,9 +8,9 @@
         <p class="w-[300px] text-lg font-bold">{{ props.perusahaan.nama_perusahaan }}</p>
       </div>
       <svg class="w-3 ml-4 transition-all duration-200 transform" :class="{
-        'rotate-180': isOpen,
-        'rotate-0': !isOpen,
-      }" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 10" aria-hidden="true">
+      'rotate-180': isOpen,
+      'rotate-0': !isOpen,
+    }" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 10" aria-hidden="true">
         <path d="M15 1.2l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     </button>
@@ -19,7 +19,8 @@
       <div class="w-full relative">
         <table v-if="loaded" class="table-fixed w-full border border-transparent border-t-black border-b-black">
           <tbody>
-            <tr v-for="comp of Object.keys(detail_perushaan)" :key="index" :class="index % 2 === 1 ? 'bg-slate-200' : ''">
+            <tr v-for="comp of Object.keys(detail_perushaan)" :key="index"
+              :class="index % 2 === 1 ? 'bg-slate-200' : ''">
               <td class="text-left w-[40%]">{{ comp }}</td>
               <td class="text-left truncate">{{ detail_perushaan[comp] }}</td>
             </tr>
@@ -72,21 +73,38 @@ const detail_perushaan = ref({
   'Nama Pimpinan': "",
 })
 
+const filterLaporanDone = (data) => {
+  return data["status_laporan"] === "ACCEPTED"
+}
+
+const filterLaporanPending = (data) => {
+  return data["status_laporan"] !== "ACCEPTED" && data["status_laporan"] !== null
+}
+
 const toggleAccordion = async (params) => {
   isOpen.value = !isOpen.value;
   if (loaded.value === false) {
-    const res = await getter("/admin/compdata", '', { id: params })
-    detail_perushaan.value['Tahun Berdiri'] = res.data.tanggal_pendirian.slice(0, 4)
-    detail_perushaan.value['Email User'] = res.data.email_user
-    detail_perushaan.value['Tanggal Daftar'] = (new Date(res.data.tanggal_registrasi).toISOString()).slice(0, 10)
-    detail_perushaan.value['Nama Pimpinan'] = res.data.nama_pimpinan
+    const res = await getter("/admin/dataperusahaan", '', { id: params })
+    const dataLaporan = Object.values(res.data)
+    const dataPerusahaan = res.data[0]
+
+    const laporan_diterima = Object.values(res.data).filter(filterLaporanDone).length
+    const laporan_pending = Object.values(res.data).filter(filterLaporanPending).length
+    // console.log(laporan_diterima);
+
+    detail_perushaan.value['Jumlah Laporan'] = laporan_diterima
+    detail_perushaan.value['Laporan Pending'] = laporan_pending
+    detail_perushaan.value['Tahun Berdiri'] = dataPerusahaan.tanggal_pendirian.slice(0, 4)
+    detail_perushaan.value['Email User'] = dataPerusahaan.email_user
+    detail_perushaan.value['Tanggal Daftar'] = (new Date(dataPerusahaan.tanggal_registrasi).toISOString()).slice(0, 10)
+    detail_perushaan.value['Nama Pimpinan'] = dataPerusahaan.nama_pimpinan
     loaded.value = true
   }
 }
 
 
-const someFunc = () => {
-  prompt("Not ready yet")
+const someFunc = async () => {
+  await navigateTo(`/admin/perusahaan/${props.perusahaan.id_perusahaan}`)
 }
 </script>
 
