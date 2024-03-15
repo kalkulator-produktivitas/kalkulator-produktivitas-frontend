@@ -1,6 +1,6 @@
 <template>
   <div v-if="!loading" class="h-full flex flex-row">
-    <div class="w-[30%]">
+    <div class="w-[30%] pt-1">
       <AdminCard1 :value="data.perusahaanTerdaftar" label="Perusahaan Terdaftar" id="card1"
         class="bg-[#66a0d2] text-white" @click="linkPerusahaan" />
       <AdminCard1 :value="data.prosesPendaftaran" label="Dalam Proses Pendaftaran" id="card2"
@@ -14,9 +14,9 @@
         <table class="w-[100%]">
           <tbody>
             <tr v-for="(per, i) of data.rankingNilaiTambah" class="text-left text-black border-b-[1px] border-black">
-              <th class="text-sm">{{ i + 1 }}</th>
-              <th class="text-sm pl-1">{{ per.nama }}</th>
-              <th class="text-right text-sm w-[40%]">{{ rupiahFormatter(per.nilai) }}</th>
+              <th class="text-sm font-normal align-top">{{ i + 1 }}</th>
+              <th class="text-sm pl-1 font-normal">{{ per.nama }}</th>
+              <th class="text-right text-sm w-[40%] font-normal align-bottom">{{ rupiahFormatter(per.nilai) }}</th>
             </tr>
           </tbody>
         </table>
@@ -24,11 +24,22 @@
     </div>
     <div class="w-[70%] flex py-2 px-4">
       <div class="flex flex-col w-[50%]">
-        <LineChart class="shadow-lg border mb-4" id="1" :config="lineOptions" :dataset="data.line1"
+
+        <select id="param1" v-model="parameters.lineChart1"
+          class="bg-gray-50 border border-gray-800 text-gray-900 text-sm rounded-lg block w-full p-1.5 my-1">
+          <option v-for="param of paramList" :value="param">{{ param.replaceAll("_", " ") }}</option>
+        </select>
+        <LineChart class="shadow-lg border mb-1" id="1" :config="lineOptions" :dataset="chart1"
           title="Kenaikan Nilai Tambah" />
-        <AdminBarChart class="shadow-lg border mb-4" id="1" :config="lineOptions" :dataset="data.line2"
-          title="Rata-rata Produktivitas" />
-        <DoughnutChart class="shadow-lg border mb-2 transition-none" id="3" :config="pieOptions" :dataset="data.pie"
+
+        <select id="param2" v-model="parameters.lineChart2"
+          class="bg-gray-50 border border-gray-800 text-gray-900 text-sm rounded-lg block w-full p-1.5 my-1">
+          <option v-for="param of paramList" :value="param">{{ param.replaceAll("_", " ") }}</option>
+        </select>
+
+        <AdminBarChart class="shadow-lg border mb-4" id="2" :config="lineOptions" :dataset="chart2"
+          title="Rata-Rata Produktivitas" />
+        <DoughnutChart class="shadow-lg border mb-2" id="3" :config="pieOptions" :dataset="data.pie"
           title="Regional Perusahaan" />
       </div>
       <div class="w-[50%]">
@@ -36,7 +47,6 @@
           title="Jumlah Klasifikasi Perusahaan" :dataset="data.bar" :legend="dataIndustri" />
       </div>
     </div>
-    <!-- {{ data }} -->
   </div>
   <Loading v-if="loading" text="Please wait...." />
   <Popup v-if="modal.show" :message="modal.message" :status="modal.status" :type="modal.type" @close="closeModal" />
@@ -93,12 +103,10 @@ const dataIndustri = [
 ]
 
 const tahun = ref({})
-const selectYear = ref([])
+
 const rawAnalisis = ref({
 
 })
-
-
 
 const data = ref({
   perusahaanTerdaftar: 0,
@@ -117,26 +125,6 @@ const data = ref({
       },
     ],
   },
-  line1: {
-    labels: [],
-    datasets: [
-      {
-        label: "Data",
-        backgroundColor: '#034EA2',
-        data: [],
-      },
-    ],
-  },
-  line2: {
-    labels: ["asdasd"],
-    datasets: [
-      {
-        label: "",
-        backgroundColor: '#034EA2',
-        data: [1, 2, 3, 4, 7],
-      },
-    ],
-  },
   bar: {
     labels: "ABCDEFGHIJK",
     datasets: [
@@ -150,25 +138,10 @@ const data = ref({
   },
 })
 
-
-
-// const dataProcess = (dt) => {
-//   const parameter = 'produktivitas_modal_1'
-//   const parameter2 = 'profitabilitas_1'
-//   let labels = dt.map(item => item["tahun"]).reverse()
-//   let data1 = dt.map(item => item[parameter]).reverse()
-//   let data2 = dt.map(item => item[parameter2]).reverse()
-
-//   data.line1.labels = labels
-//   data.line2.labels = labels
-//   data.line1.datasets[0].data = data1
-//   data.line2.datasets[0].data = data2
-// }
-
-
 const lineOptions = {
   responsive: true,
-  maintainAspectRatio: false,
+  maintainAspectRatio: true,
+  aspectRatio: 3,
   plugins: {
     legend: {
       display: false,
@@ -180,11 +153,16 @@ const chartOptions = {
   indexAxis: 'y',
   responsive: true,
   maintainAspectRatio: true,
-  aspectRatio: 0.75,
+  aspectRatio: 0.64,
   plugins: {
     title: {
       display: true,
-      text: "Kategori Industri"
+      text: "Kategori Industri",
+      font: {
+        size: 18,
+        family: "helvetica",
+        weight: "normal"
+      }
     },
     legend: {
       display: false,
@@ -200,6 +178,7 @@ const chartOptions = {
         drawOnChartArea: false,
         drawTicks: false,
       },
+
     },
     y: {
       border: {
@@ -208,12 +187,13 @@ const chartOptions = {
       grid: {
         display: false,
         drawOnChartArea: true,
-        drawTicks: false
+        drawTicks: true
       },
       ticks: {
-        maxRotation: 90,
-        fontStyle: 'normal',
+        maxRotation: 45,
+        fontStyle: 'bold',
         fontSize: 24,
+        fontFamily: 'Arial', // Change this to the desired font family
       },
 
     }
@@ -239,28 +219,18 @@ const pieOptions = {
   },
 }
 
-
-
-// const chart2 = computed(() => {
-
-// })
-
 try {
   let res = await getter('/admin/home')
   data.value.perusahaanTerdaftar = res.data.terdaftar
   data.value.prosesPendaftaran = res.data.pendaftar
   data.value.totalLaporan = res.data.laporan
   let years = res.data.analisis.map(item => item["tahun"]).reverse()
-  const parameter = 'produktivitas_modal_1'
-  const parameter2 = 'profitabilitas_2'
-  data.value.line1.labels = years
-  data.value.line2.labels = years
+  for (let y of years) {
+    tahun.value[y] = true
+  }
+  rawAnalisis.value = res.data.analisis.reverse()
 
-
-  data.value.line1.datasets[0].data = res.data.analisis.map(item => item[parameter]).reverse()
-  data.value.line2.datasets[0].data = res.data.analisis.map(item => item[parameter2]).reverse()
-
-  data.value.rankingNilaiTambah = res.data.ranking.slice(0, 7)
+  data.value.rankingNilaiTambah = res.data.ranking
   data.value.pie.labels = res.data.provinsi.map(item => item["provinsi_perusahaan"])
   data.value.pie.datasets[0].data = res.data.provinsi.map(item => item["jumlah"])
   data.value.bar.labels = res.data.klasifikasi.map(item => item["letter"])
@@ -271,11 +241,76 @@ try {
 
 }
 
-// const chart1 = computed(() => {
-//   // rawAnalisis.value.filter(item => item.tahun)
+const paramList = [
+  'produktivitas_modal_1',
+  'produktivitas_modal_2',
+  'produktivitas_modal_3',
+  'produktivitas_modal_4',
+  "profitabilitas_1",
+  "profitabilitas_2",
+  "profitabilitas_3"
+]
 
-//   return { labels, data }
-// })
+const parameters = ref({
+  lineChart1: "produktivitas_modal_1",
+  lineChart2: "profitabilitas_1",
+  pieChart: ""
+})
+
+function filterArrays(array, booleans) {
+  return array.filter((_, index) => booleans[index]);
+}
+
+const chart1 = computed(() => {
+  let booleanList = Object.values(tahun.value)
+  let data = filterArrays(rawAnalisis.value, booleanList)
+  let labelFilter = data.map(item => item["tahun"])
+  let paramFilter = data.map(item => item[parameters.value.lineChart1])
+  return {
+    labels: labelFilter,
+    datasets: [
+      {
+        label: "Data",
+        backgroundColor: '#034EA2',
+        data: paramFilter,
+      },
+    ],
+  }
+})
+
+const chart2 = computed(() => {
+  let booleanList = Object.values(tahun.value)
+  let data = filterArrays(rawAnalisis.value, booleanList)
+  let labelFilter = data.map(item => item["tahun"])
+  let paramFilter = data.map(item => item[parameters.value.lineChart2])
+  return {
+    labels: labelFilter,
+    datasets: [
+      {
+        label: "Data",
+        backgroundColor: '#034EA2',
+        data: paramFilter,
+      },
+    ],
+  }
+})
+
+const pieChart = computed(() => {
+  let booleanList = Object.values(tahun.value)
+  let data = filterArrays(rawAnalisis.value, booleanList)
+  let labelFilter = data.map(item => item["tahun"])
+  let paramFilter = data.map(item => item["profitabilitas_1"])
+  return {
+    labels: labelFilter,
+    datasets: [
+      {
+        label: "Data",
+        backgroundColor: '#034EA2',
+        data: paramFilter,
+      },
+    ],
+  }
+})
 
 </script>
 

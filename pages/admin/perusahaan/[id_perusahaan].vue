@@ -3,7 +3,7 @@
     <div class="w-[90%] mb-4 flex justify-between">
       <p class="text-4xl font-bold">{{ dataPerusahaan['Nama Perusahaan'] }}</p>
       <button @click="viewReport(route.params.id_perusahaan)"
-        class="hover:bg-green-600 hover:border-green-600 hover:text-white transition h-8 text-lg font-normal border border-green-400 rounded-full px-3">
+        class="hover:bg-gray-600 hover:border-gray-600 hover:text-white transition h-8 text-lg font-normal border border-gray-400 rounded-full px-3">
         Lihat Laporan</button>
     </div>
     <div class="flex content-start flex-wrap md:flex-nowrap gap-4">
@@ -53,7 +53,7 @@
 
                   <button @click="" class="text-start p-1 hover:bg-gray-200">
                     Download</button>
-                  <button @click="" class="text-start p-1 hover:bg-gray-200">
+                  <button @click="revisiLaporan(lap.id_laporan)" class="text-start p-1 hover:bg-gray-200">
                     Revisi</button>
                   <button @click="" class="text-start p-1 hover:bg-gray-200">
                     Delete</button>
@@ -75,7 +75,9 @@ definePageMeta({
 });
 const { rupiahFormatter } = useRupiahFormatter();
 import getAPI from '@/composables/apiCalls'
+import postAPI from '@/composables/postCalls'
 const { getter } = getAPI()
+const { poster } = postAPI()
 
 const global = useRuntimeConfig();
 const loading = ref(false)
@@ -174,6 +176,11 @@ function createBooleanArray(length) {
 
 const viewReport = (id) => {
   navigateTo(`/admin/laporan/${id}`)
+}
+
+const revisiLaporan = async (idLaporan) => {
+  const res = await poster('/admin/dataperusahaandetail', "", { id: idLaporan })
+  console.log(res);
 }
 
 let dropDownArray = ref(createBooleanArray(dataLaporan.length))
