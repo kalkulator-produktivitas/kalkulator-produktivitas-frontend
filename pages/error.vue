@@ -8,16 +8,16 @@
     <p>{{ convertedTemp }}</p>
     <p>{{ newRupiah }}</p>
 
-    <button class="border border-green" @click="runApi">API</button>
+
 
   </div>
 </template>
 
 <script setup>
 import useTemperatureConverter from '@/composables/converter';
-import getAPI from '@/composables/apiCalls'
+
 import useRupiahFormatter from '@/composables/useRupiahFormatter';
-const { getter } = getAPI()
+
 const { celsiusToKelvin } = useTemperatureConverter();
 const { rupiahFormatter } = useRupiahFormatter();
 
@@ -37,12 +37,6 @@ const newRupiah = computed(() => {
 const convertedTemp = computed(() => {
   return celsiusToKelvin(temp.value)
 })
-
-const runApi = async () => {
-  let asd = await getter("/helloworld", authUser)
-  console.log(asd);
-  return asd
-}
 
 </script>
 
