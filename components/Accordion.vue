@@ -57,7 +57,7 @@
 <script setup>
 
 const props = defineProps(["accordId", "perusahaan"])
-import getAPI from '@/composables/apiCalls'
+import getAPI from '@/composables/getCalls'
 const { getter } = getAPI()
 
 const isOpen = ref(false)

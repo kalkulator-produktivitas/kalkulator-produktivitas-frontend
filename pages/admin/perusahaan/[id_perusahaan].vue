@@ -74,7 +74,7 @@ definePageMeta({
   layout: 'admin'
 });
 const { rupiahFormatter } = useRupiahFormatter();
-import getAPI from '@/composables/apiCalls'
+import getAPI from '@/composables/getCalls'
 import postAPI from '@/composables/postCalls'
 const { getter } = getAPI()
 const { poster } = postAPI()
@@ -114,7 +114,7 @@ const data = ref([])
 try {
   let res = await getter('/admin/dataperusahaandetail', "", { id: route.params.id_perusahaan })
   data.value = res.data
-  console.log(res.data);
+  // console.log(res.data);
 
 } catch (err) {
   console.log(err);

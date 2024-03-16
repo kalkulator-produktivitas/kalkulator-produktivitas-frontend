@@ -17,7 +17,7 @@
 definePageMeta({
   layout: 'admin'
 });
-import getAPI from '@/composables/apiCalls'
+import getAPI from '@/composables/getCalls'
 
 const { rupiahFormatter } = useRupiahFormatter();
 const { getter } = getAPI()
@@ -56,4 +56,4 @@ try {
 
 </script>
 
-<style scoped></style>
+<style scoped></style>composables/getCalls

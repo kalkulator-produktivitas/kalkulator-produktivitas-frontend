@@ -27,14 +27,14 @@
 
         <select id="param1" v-model="parameters.lineChart1"
           class="bg-gray-50 border border-gray-800 text-gray-900 text-sm rounded-lg block w-full p-1.5 my-1">
-          <option v-for="param of paramList" :value="param">{{ param.replaceAll("_", " ") }}</option>
+          <option v-for="param of paramList" :value="param">{{ capitalizeLetter(param.replaceAll("_", " ")) }}</option>
         </select>
         <LineChart class="shadow-lg border mb-1" id="1" :config="lineOptions" :dataset="chart1"
           title="Kenaikan Nilai Tambah" />
 
         <select id="param2" v-model="parameters.lineChart2"
           class="bg-gray-50 border border-gray-800 text-gray-900 text-sm rounded-lg block w-full p-1.5 my-1">
-          <option v-for="param of paramList" :value="param">{{ param.replaceAll("_", " ") }}</option>
+          <option v-for="param of paramList" :value="param">{{ capitalizeLetter(param.replaceAll("_", " ")) }}</option>
         </select>
 
         <AdminBarChart class="shadow-lg border mb-4" id="2" :config="lineOptions" :dataset="chart2"
@@ -56,7 +56,7 @@
 definePageMeta({
   layout: 'admin'
 });
-import getAPI from '@/composables/apiCalls'
+import getAPI from '@/composables/getCalls'
 
 const { rupiahFormatter } = useRupiahFormatter();
 const { getter } = getAPI()
@@ -295,22 +295,27 @@ const chart2 = computed(() => {
   }
 })
 
-const pieChart = computed(() => {
-  let booleanList = Object.values(tahun.value)
-  let data = filterArrays(rawAnalisis.value, booleanList)
-  let labelFilter = data.map(item => item["tahun"])
-  let paramFilter = data.map(item => item["profitabilitas_1"])
-  return {
-    labels: labelFilter,
-    datasets: [
-      {
-        label: "Data",
-        backgroundColor: '#034EA2',
-        data: paramFilter,
-      },
-    ],
-  }
-})
+// const pieChart = computed(() => {
+//   let booleanList = Object.values(tahun.value)
+//   let data = filterArrays(rawAnalisis.value, booleanList)
+//   let labelFilter = data.map(item => item["tahun"])
+//   let paramFilter = data.map(item => item["profitabilitas_1"])
+//   return {
+//     labels: labelFilter,
+//     datasets: [
+//       {
+//         label: "Data",
+//         backgroundColor: '#034EA2',
+//         data: paramFilter,
+//       },
+//     ],
+//   }
+// })
+
+const capitalizeLetter = (param) => {
+  let replaced = param.replaceAll("_", " ")
+  return replaced.charAt(0).toUpperCase() + replaced.slice(1)
+}
 
 </script>
 
