@@ -52,6 +52,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      # - uses: jsmrcaga/action-netlify-deploy@master
+      - uses: jsmrcaga/action-netlify-deploy@master
       - name: "Deploy Site"
-        run: curl -X POST -d {} ${{ secrets.NETLIFY_AUTO_DEPLOY }}
+        with:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTO_DEPLOY }}
+          NETLIFY_DEPLOY_MESSAGE: "Deployed from GitHub action"
+          build_directory: .output/public
+          install_command: "echo Skipping installing the dependencies"
+          build_command: "echo Skipping building the web files"
