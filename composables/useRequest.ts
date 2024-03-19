@@ -33,9 +33,9 @@ export function useRequest<
     loading.value = true;
 
     try {
-      const response = await fn(...args) as T;
-      data.value = response;
-      resolve?.(response);
+      const response = await fn(...args) as ApiSuccessResponse<T>;
+      data.value = response.data;
+      resolve?.(response.data);
     } catch(e) {
       error.value = e;
       reject?.(e);
@@ -49,10 +49,10 @@ export function useRequest<
     error.value = undefined;
     loading.value = true;
 
-    const response = await fn(...args) as T;
-    data.value = response;
-    resolve?.(response)
-    return response;
+    const response = await fn(...args) as ApiSuccessResponse<T>;
+    data.value = response.data;
+    resolve?.(response.data)
+    return response.data;
   }
 
   return { data, loading, error, request, call };
