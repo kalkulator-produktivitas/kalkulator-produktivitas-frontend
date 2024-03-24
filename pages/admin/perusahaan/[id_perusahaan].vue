@@ -1,20 +1,20 @@
 <template>
   <div v-if="!loading" class="h-full flex flex-col">
-    <div class="w-[90%] mb-4 flex justify-between">
+    <div class="w-[80%] mb-4 flex justify-between">
       <p class="text-4xl font-bold">{{ dataPerusahaan['Nama Perusahaan'] }}</p>
       <button @click="viewReport(route.params.id_perusahaan)"
-        class="hover:bg-gray-600 hover:border-gray-600 hover:text-white transition h-8 text-lg font-normal border border-gray-400 rounded-full px-3">
+        class="mt-2 hover:bg-gray-600 hover:border-gray-600 hover:text-white transition h-8 text-lg font-normal border border-gray-400 rounded-full px-3">
         Lihat Laporan</button>
     </div>
     <div class="flex content-start flex-wrap md:flex-nowrap gap-4">
       <div class="w-full">
         <table style=""
-          class="border-separate border-spacing-x-[1px] border-spacing-y-[1px] border border-[0.5px] border-slate-600 bg-white rounded-md bg-slate-600 shadow-md table-fixed">
+          class="w-full border-separate border-spacing-x-[1px] border-spacing-y-[1px] border border-[0.5px] border-slate-600 bg-white rounded-md bg-slate-600 shadow-md table-fixed">
 
 
-          <tbody>
+          <tbody class="">
             <tr class="bg-white" v-for="par of Object.keys(dataPerusahaan)">
-              <td class="" v-if="par !== 'Nama Perusahaan'">{{ par }}</td>
+              <td class="lg:w-[220px]" v-if="par !== 'Nama Perusahaan'">{{ par }}</td>
               <td class="text-left" v-if="par === 'Telpon / Fax' || par === 'Kontak User'">+62 {{ dataPerusahaan[par] }}
               </td>
               <td class="text-left" v-else-if="par === 'Tanggal Registrasi'">{{ created_time(dataPerusahaan[par]) }}

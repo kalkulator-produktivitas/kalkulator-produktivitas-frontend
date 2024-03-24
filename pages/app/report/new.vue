@@ -26,7 +26,8 @@
           class="flex items-center mb-4 ml-4">
           <input @change="zeroParams(tab)" :id="labeling(tab + '_checkbox')" type="checkbox" v-model="total_fill[tab]"
             class="w-4 h-4 bg-gray-100 rounded-2 dark:bg-gray-700">
-          <label :for="labeling(tab + '_checkbox')" class="ml-2 text-sm font-medium text-gray-900">Isi Total Saja</label>
+          <label :for="labeling(tab + '_checkbox')" class="ml-2 text-sm font-medium text-gray-900">Isi Total
+            Saja</label>
         </div>
         <div v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja' && tab !== 'Informasi Tambahan'"
           v-for="param in Object.keys(parameters[tab])" class="mb-4 md:flex md:items-center">
@@ -41,8 +42,9 @@
               :class="total_fill[tab] ? 'bg-gray-100' : 'bg-white'" disabled readonly type="text" value="Rp">
             <input
               class="appearance-none border-b-2 w-full h-100 py-2.5 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
-              :class="total_fill[tab] ? 'bg-gray-100' : ''" :id="labeling(param)" type="number"
-              :readonly="total_fill[tab]" v-model="parameters[tab][param]">
+              :class="total_fill[tab] ? 'bg-gray-100' : ''" :id="labeling(param)" type="text"
+              :value="parameters[tab][param]" @change="" @keypress="NumbersOnly($event)"
+              @input="numberFormatter(tab, param, $event.target.value)">
           </div>
         </div>
         <hr v-if="tab !== 'default' && tab !== 'Jumlah Tenaga Kerja' && tab !== 'Informasi Tambahan'"
@@ -61,7 +63,7 @@
             <input
               class="appearance-none border-b-2 w-full h-100 py-2.5 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
               :class="!total_fill[tab] ? 'bg-gray-100' : ''" :disabled="!total_fill[tab]" :id="labeling(tab + '_total')"
-              type="number" v-model="totals[tab]">
+              type="text" v-model="totals[tab]">
             <button
               class="bg-transparent hover:text-white hover:bg-gray-400 hover:border-transparent  text-gray-400 font-bold py-1 px-4 border border-blue  rounded ml-1"
               :class="total_fill[tab] ? 'hidden' : ''" @click="sumParams(tab)" :disabled="total_fill[tab]">
@@ -123,6 +125,8 @@ if (process.client) {
   authUser = ref(JSON.parse(localStorage.getItem("auth")))
 }
 
+const formatter = new Intl.NumberFormat("de-DE");
+
 const loading = ref(false)
 
 const modal = ref({
@@ -181,13 +185,17 @@ const parameters = ref({
 
 function sumParams(tabs) {
   for (let params of Object.keys(parameters.value[tabs])) {
-    if (!parameters.value[tabs][params]) {
-      parameters.value[tabs][params] = 0
+    if (!parameters.value[tabs][params] || parameters.value[tabs][params].length === 0) {
+      parameters.value[tabs][params] = "0"
     }
   }
-  const sums = Object.values(parameters.value[tabs]).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-  console.log(sums);
-  totals.value[tabs] = sums
+  let raw = JSON.parse(JSON.stringify(parameters.value[tabs]))
+  for (let i of Object.keys(raw)) {
+    raw[i] = Number(raw[i].replaceAll(".", ""))
+  }
+  const sums = Object.values(raw).reduce((accumulator, currentValue) =>
+    accumulator + currentValue, 0)
+  totals.value[tabs] = formatter.format(sums.toString())
 }
 
 function zeroParams(tabs) {
@@ -309,6 +317,25 @@ const closeModal = () => {
 
 const formRequest = async () => {
   loading.value = true
+  let sendData = JSON.parse(JSON.stringify(parameters.value))
+  for (let i of Object.keys(sendData)) {
+    for (let j of Object.keys(sendData[i])) {
+      if (sendData[i][j] !== null) {
+        sendData[i][j] = Number(sendData[i][j].replaceAll(".", ""))
+      } else sendData[i][j] = 0
+    }
+  }
+  let answer = {}
+  for (let ans of informasi_tambahan.value) {
+    answer[ans.id] = ans.jawaban
+  }
+  sendData["Informasi Tambahan"] = answer
+  let totalLaporan = JSON.parse(JSON.stringify(totals.value))
+  for (let i of Object.keys(totalLaporan)) {
+    if (totalLaporan[i] !== null) {
+      totalLaporan[i] = Number(totalLaporan[i].replaceAll(".", ""))
+    } else totalLaporan[i] = 0
+  }
   try {
     const data = await $fetch(`${global.public.baseURL}/write/api/postdata`, {
       headers: {
@@ -320,8 +347,8 @@ const formRequest = async () => {
         year_report: selectedYear.value,
         id_perusahaan: authUser.value.data.id_perusahaan,
         nama_laporan: `Laporan Produktivitas Tahun ${selectedYear.value}`,
-        raw_data: (all_params.value),
-        totals: (totals.value),
+        raw_data: (sendData),
+        totals: (totalLaporan),
         analysis: ({
           pembelian_bahan: total_pembelian_bahan.value,
           nilai_tambah: nilai_tambah.value,
@@ -337,16 +364,34 @@ const formRequest = async () => {
     modal.value.status = null
     modal.value.message = 'Data Berhasil Ditambahkan'
     modal.value.type = 'SUCCESS'
-    reloadNuxtApp({
-      path: "/app/report",
-      ttl: 5000,
-    });
+    setTimeout(
+      reloadNuxtApp({
+        path: "/app/report",
+        ttl: 5000,
+      }),
+      2000
+    )
+
   } catch (error) {
     loading.value = false
     modal.value.show = true
     modal.value.message = error.message
     modal.value.status = 500
     modal.value.type = 'ERROR'
+  }
+}
+
+const numberFormatter = (tabs, params, vals) => {
+  let priceStr = vals.toString().replaceAll(".", "");
+  parameters.value[tabs][params] = formatter.format(priceStr.toString())
+}
+
+const NumbersOnly = (evt) => {
+  var charCode = (evt.which) ? evt.which : evt.keyCode;
+  if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+    evt.preventDefault();;
+  } else {
+    return true;
   }
 }
 
