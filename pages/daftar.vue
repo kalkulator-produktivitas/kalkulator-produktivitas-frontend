@@ -172,8 +172,7 @@
       <div class="flex">
         <button @click="registerAuth"
           class="text-white font-bold py-2 px-4 rounded-full mx-auto w-40 ease-in-out duration-300 mt-4"
-          :class="(validasiPage1.output === 0 && validasiPage2.output === 0) ? 'bg-blue-500 hover:bg-blue-700' : 'bg-gray-500'"
-          :disabled="!(validasiPage1.output === 0 && validasiPage2.output === 0)">
+          :class="(validasiPage1.output === 0 && validasiPage2.output === 0) ? 'bg-blue-500 hover:bg-blue-700' : 'bg-gray-500'">
           Daftar
         </button>
       </div>
@@ -357,32 +356,17 @@ const validasiPage2 = computed(() => {
   return { vals, output, submitClicked }
 })
 
-// const noEmpty = computed(() => {
-//   const obj = register
-//   for (const key in obj) {
-//     if (obj.hasOwnProperty(key)) {
-//       const value = obj[key];
-
-//       // Check if the value has a length property (e.g., it's a string or array)
-//       if (value.length !== undefined && value.length === 0) {
-//         return false; // If any value has length 0, return false
-//       }
-//     }
-//   }
-//   return true; // If all values are not empty, return true
-// })
-
 const registerAuth = async () => {
   reaction.value.submit += 1
-  if (validasiPage2.value.output === 0) {
+  if (validasiPage1.value.output === 0 && validasiPage2.value.output === 0) {
     try {
-      // const data = await $fetch(`${global.public.baseURL}/auth/register`, {
-      //   headers: {
-      //     "Content-Type": "application/json"
-      //   },
-      //   method: 'POST',
-      //   body: JSON.stringify(register)
-      // })
+      const data = await $fetch(`${global.public.baseURL}/auth/register`, {
+        headers: {
+          "Content-Type": "application/json"
+        },
+        method: 'POST',
+        body: JSON.stringify(register)
+      })
       loading.value = false
       modal.value.show = true
       modal.value.status = null
@@ -394,13 +378,14 @@ const registerAuth = async () => {
           ttl: 5000,
         });
       }, 1500);
-
     } catch (error) {
       loading.value = false
       modal.value.show = true
       modal.value.message = "Terjadi Kendala Pada Server"
       modal.value.type = 'ERROR'
     }
+  } else {
+    return
   }
 }
 
