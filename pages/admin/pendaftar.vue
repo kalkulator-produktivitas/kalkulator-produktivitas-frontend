@@ -50,13 +50,13 @@ const modal = ref({
 })
 
 const dummy = [{
-  nama_perusahaan: "PT. Karbitan Lestari",
+  nama_perusahaan: "PT. Makmur Baru Sejahtera",
   tahun_daftar: 2010,
-  nama_user: "Ahmad Sahroni",
-  email_user: "ahmad.sahroni@gmail.com",
+  nama_user: "Ahmad",
+  email_user: "ahmad123@gmail.com",
   telpon: "08545651231356"
 }]
 
 </script>
-  
+
 <style scoped></style>
